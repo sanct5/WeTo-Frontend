@@ -35,7 +35,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography color="inherit" noWrap sx={{ mr: 2, display: { xs: 'none', sm: 'block' } }}>
-                        {user.name}
+                        {user.userName}
                     </Typography>
                     <IconButton color="inherit" component={Link} to='/app/profile'>
                         <AccountCircle />

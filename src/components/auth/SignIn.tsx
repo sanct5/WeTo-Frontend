@@ -38,7 +38,6 @@ const SignIn = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        console.log(isLoading);
         dispatch(setStayLogged(checkedRemember));
         const data = new FormData(e.currentTarget);
         // @ts-ignore

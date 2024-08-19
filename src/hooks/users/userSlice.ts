@@ -1,11 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+
+export type Role = "RESIDENT" | "ADMIN";
 export interface UserState {
     idDocument: string;
-    name: string;
+    userName: string;
+    idComplex: string;
     email: string;
     phone: string;
-    stayLogged: boolean;
+    apartment: string;
+    role: Role;
     config: UserConfig;
+    stayLogged: boolean;
     isLogged: boolean;
 }
 
@@ -16,14 +21,17 @@ interface UserConfig {
 
 const initialState: UserState = {
     idDocument: "",
-    name: "",
+    userName: "",
+    idComplex: "",
     email: "",
     phone: "",
-    stayLogged: false,
+    apartment: "",
+    role: "RESIDENT",
     config: {
         primaryColor: undefined,
         secondaryColor: undefined,
     },
+    stayLogged: false,
     isLogged: false,
 };
 
@@ -34,9 +42,12 @@ export const userSlice = createSlice({
         resetUser: () => initialState,
         setUser: (state, action) => {
             state.idDocument = action.payload.idDocument;
-            state.name = action.payload.name;
+            state.userName = action.payload.userName;
+            state.idComplex = action.payload.idComplex;
             state.email = action.payload.email;
             state.phone = action.payload.phone;
+            state.apartment = action.payload.apartment;
+            state.role = action.payload.role;
             state.config = action.payload.config;
             state.isLogged = action.payload.isLogged;
         },

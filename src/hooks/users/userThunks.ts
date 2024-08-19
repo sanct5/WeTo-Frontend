@@ -1,4 +1,4 @@
-import { setUser } from "./userSlice";
+import { setUser, UserState } from "./userSlice";
 import { toast } from 'react-toastify';
 import { AuthService } from "../../api/AuthService";
 import axios, { AxiosError } from 'axios';
@@ -23,6 +23,7 @@ export const LoginUser = (data: FormData) => {
 
         //Petición POST al backend
         try {
+            /*
             const response = await axios.post(`${AuthService.baseUrl}${AuthService.endpoints.login}`, {
                 email: email,
                 password: password,
@@ -31,18 +32,38 @@ export const LoginUser = (data: FormData) => {
             const loginResponse = response.data;
 
             const user = {
-                idDocument: loginResponse.userData.idDocument,
-                name: loginResponse.userData.fullName,
-                email: loginResponse.userData.email,
-                phone: loginResponse.userData.phoneNumber,
-                config: loginResponse.userData.userConfig,
+                idDocument: loginResponse.idDocument,
+                userName: loginResponse.name,
+                idComplex: loginResponse.idComplex,
+                email: loginResponse.email,
+                phone: loginResponse.phone,
+                apartment: loginResponse.apartment,
+                role: loginResponse.role,
+                config: {
+                    primaryColor: loginResponse.primaryColor,
+                    secondaryColor: loginResponse.secondaryColor,
+                },
                 isLogged: true,
+            } */
+
+            // Simulación de la respuesta del backend, se debe reemplazar por la petición real
+            const user: UserState = {
+                idDocument: "123456789",
+                userName: "John Doe",
+                idComplex: "123456789",
+                email: "JohnDoe@gmail.com",
+                phone: "1234567890",
+                apartment: "A1",
+                role: "ADMIN",
+                config: {
+                    primaryColor: undefined,
+                    secondaryColor: undefined,
+                },
+                isLogged: true,
+                stayLogged: true,
             }
 
             dispatch(setUser(user));
-
-            const token = 'Bearer ' + loginResponse.accessToken;
-            localStorage.setItem('token', token);
 
             const { stayLogged } = getState().user;
 
@@ -50,7 +71,7 @@ export const LoginUser = (data: FormData) => {
                 localStorage.setItem('user', JSON.stringify(user));
             }
 
-            toast.success(`Bienvenid@ ${user.name}`);
+            toast.success(`Bienvenid@ ${user.userName}`);
         } catch (error) {
             const res = (error as AxiosError).response?.status;
             if (res === 400) {

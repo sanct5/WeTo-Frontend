@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUser, UserState, resetUser } from '../../hooks/users/userSlice';
 import { toast } from 'react-toastify';
 import { userOptions } from './NavOptions';
+import { Role } from '../../hooks/users/userSlice';
 
 const drawerWidth = 200;
 
@@ -73,7 +74,7 @@ export default function SideBar() {
             <Toolbar />
             <Divider />
             <List>
-                {userOptions.map((item) => (
+                {userOptions.map((item) => item.role.includes(user.role as Role) && (
                     <ListItem key={item.text} disablePadding>
                         <ListItemButton component={Link} to={item.link} onClick={handleDrawerClose}>
                             <ListItemIcon>{item.icon}</ListItemIcon>
@@ -142,7 +143,7 @@ export default function SideBar() {
                 }}
             >
                 <Toolbar sx={{ marginBottom: 2 }} />
-                    <Outlet />
+                <Outlet />
             </Box>
         </Box>
     );
