@@ -54,7 +54,7 @@ const SignIn = () => {
         }
 
         if (isLogged) {
-            navigate('/app/dashboard');
+            navigate('/app/announcements');
         }
     }, [isLogged]);
 

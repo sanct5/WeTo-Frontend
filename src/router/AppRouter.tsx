@@ -29,7 +29,24 @@ const router = createBrowserRouter([
             {
                 path: 'profile',
                 element: <WorkingOn />,
-            }
+            },
+            // Residents
+            {
+                path: 'residents',
+                element: <WorkingOn />,
+            },
+            {
+                path: 'residents/:id',
+                element: <WorkingOn />,
+            },
+            {
+                path: 'residents/create',
+                element: <WorkingOn />,
+            },
+            {
+                path: 'residents/edit/:id',
+                element: <WorkingOn />,
+            },
         ],
     },
 ]);

@@ -65,7 +65,7 @@ export default function SideBar() {
         if (!user.isLogged && !loggedUser) {
             localStorage.clear();
             toast.error('Por favor inicia sesión nuevamente');
-            //navigate('/login');
+            navigate('/login');
         }
     }, [user.isLogged])
 
