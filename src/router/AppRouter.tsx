@@ -3,6 +3,7 @@ import NotFound404 from './pages/404';
 import SignIn from '../components/auth/SignIn';
 import SideBar from '../components/layout/SideBar';
 import WorkingOn from './pages/WorkingOn';
+import ViewAll from '../components/apps/residents/ViewAll';
 
 const router = createBrowserRouter([
     {
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
             // Residents
             {
                 path: 'residents',
-                element: <WorkingOn />,
+                element: <ViewAll />,
             },
             {
                 path: 'residents/:id',
