@@ -3,6 +3,8 @@ import NotFound404 from './pages/404';
 import SignIn from '../components/auth/SignIn';
 import SideBar from '../components/layout/SideBar';
 import WorkingOn from './pages/WorkingOn';
+import CreateForm from '../components/apps/residents/CreateForm';
+import EditForm from '../components/apps/residents/EditForm';
 
 const router = createBrowserRouter([
     {
@@ -41,11 +43,11 @@ const router = createBrowserRouter([
             },
             {
                 path: 'residents/create',
-                element: <WorkingOn />,
+                element: <CreateForm />,
             },
             {
                 path: 'residents/edit/:id',
-                element: <WorkingOn />,
+                element: <EditForm />,
             },
         ],
     },
