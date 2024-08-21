@@ -28,7 +28,6 @@ const EditForm = () => {
             try {
                 const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUserById}`, { params: userId });
                 setFormData(response.data);
-                console.log("Datos del residente:", response.data);
             } catch (error) {
                 toast.error('Error al cargar los datos del residente');
             }

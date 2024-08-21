@@ -46,7 +46,8 @@ const viewAll = () => {
 
             try {
                 const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUsersByComplex}`, { params: body });
-                setResidents(response.data);
+                const sortedResidents = response.data.sort((a: any, b: any) => a.userName.localeCompare(b.userName));
+                setResidents(sortedResidents);
             } catch (error) {
                 toast.error('Ocurrió un error al obtener los residentes');
             } finally {
@@ -87,7 +88,7 @@ const viewAll = () => {
                     </Typography>
                     <IconButton
                         component={Link}
-                        to="/residents/create"
+                        to="create"
                         variant="contained"
                         color="primary"
                         aria-label="Create"
@@ -123,7 +124,7 @@ const viewAll = () => {
                                         <TableCell align="right">
                                             <IconButton
                                                 component={Link}
-                                                to={`/residents/edit/${resident._id}`}
+                                                to={`edit/${resident._id}`}
                                                 aria-label="Edit"
                                                 color='primary'
                                             >

@@ -50,8 +50,6 @@ const CreateForm = () => {
                 idComplex,
             };
 
-            console.log("Datos del usuario:", userData);
-
             // Llamada a la API
             await axios.post(`${UserService.baseUrl}${UserService.endpoints.AddUser}`, userData);
             toast.success('Residente creado correctamente');
