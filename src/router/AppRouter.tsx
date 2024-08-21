@@ -5,6 +5,7 @@ import SideBar from '../components/layout/SideBar';
 import WorkingOn from './pages/WorkingOn';
 import CreateForm from '../components/apps/residents/CreateForm';
 import EditForm from '../components/apps/residents/EditForm';
+import ViewAll from '../components/apps/residents/ViewAll';
 
 const router = createBrowserRouter([
     {
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
             // Residents
             {
                 path: 'residents',
-                element: <WorkingOn />,
+                element: <ViewAll />,
             },
             {
                 path: 'residents/:id',
