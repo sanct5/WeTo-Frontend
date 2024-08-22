@@ -1,8 +1,9 @@
-import { setUser, UserState } from "./userSlice";
+import { setUser } from "./userSlice";
 import { toast } from 'react-toastify';
 import { AuthService } from "../../api/AuthService";
 import axios, { AxiosError } from 'axios';
 import { Dispatch } from "@reduxjs/toolkit";
+import { ComplexService } from "../../api/ComplexService";
 
 // POST
 //LoginUser es un thunk que se encarga de realizar la petición POST al backend para iniciar sesión
@@ -23,7 +24,6 @@ export const LoginUser = (data: FormData) => {
 
         //Petición POST al backend
         try {
-            /*
             const response = await axios.post(`${AuthService.baseUrl}${AuthService.endpoints.login}`, {
                 email: email,
                 password: password,
@@ -31,37 +31,31 @@ export const LoginUser = (data: FormData) => {
 
             const loginResponse = response.data;
 
+            if (!loginResponse) {
+                toast.warn('Correo electrónico o contraseña incorrectos');
+                return;
+            }
+
+            const responseColors = await axios.get(`${ComplexService.baseUrl}${ComplexService.endpoints.ComplexColors}/${loginResponse.idComplex}`);
+
+            const complexColors = responseColors.data
+
             const user = {
                 idDocument: loginResponse.idDocument,
-                userName: loginResponse.name,
+                userName: loginResponse.userName,
                 idComplex: loginResponse.idComplex,
                 email: loginResponse.email,
                 phone: loginResponse.phone,
                 apartment: loginResponse.apartment,
                 role: loginResponse.role,
                 config: {
-                    primaryColor: loginResponse.primaryColor,
-                    secondaryColor: loginResponse.secondaryColor,
+                    primaryColor: complexColors.config.primaryColor,
+                    secondaryColor: complexColors.config.secondaryColor,
                 },
                 isLogged: true,
-            } */
-
-            // Simulación de la respuesta del backend, se debe reemplazar por la petición real
-            const user: UserState = {
-                idDocument: "123456789",
-                userName: "John Doe",
-                idComplex: "66c57ee8b91863b1f0bc2d32",
-                email: "JohnDoe@gmail.com",
-                phone: "1234567890",
-                apartment: "A1",
-                role: "ADMIN",
-                config: {
-                    primaryColor: undefined,
-                    secondaryColor: undefined,
-                },
-                isLogged: true,
-                stayLogged: true,
             }
+
+            console.log(user);
 
             dispatch(setUser(user));
 

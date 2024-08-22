@@ -89,9 +89,8 @@ const viewAll = () => {
                     <IconButton
                         component={Link}
                         to="create"
-                        variant="contained"
-                        color="primary"
                         aria-label="Create"
+                        color='primary'
                     >
                         <AddBox />
                     </IconButton>
