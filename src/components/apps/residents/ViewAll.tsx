@@ -46,7 +46,9 @@ const viewAll = () => {
 
             try {
                 const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUsersByComplex}`, { params: body });
-                const sortedResidents = response.data.sort((a: any, b: any) => a.userName.localeCompare(b.userName));
+                const sortedResidents = response.data
+                    .sort((a: any, b: any) => a.userName.localeCompare(b.userName))
+                    .filter((resident: any) => resident.idDocument !== user.idDocument);
                 setResidents(sortedResidents);
             } catch (error) {
                 toast.error('Ocurrió un error al obtener los residentes');
@@ -97,7 +99,9 @@ const viewAll = () => {
                 </Box>
                 <TableContainer component={Paper}>
                     {loading ? (
-                        <CircularProgress />
+                        <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
+                            <CircularProgress />
+                        </Box>
                     ) : (
                         <Table>
                             <TableHead>
