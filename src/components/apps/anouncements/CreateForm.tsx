@@ -88,7 +88,7 @@ const CreateFormAnnouncements = () => {
     };
 
     return (
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
             <Box sx={{ backgroundColor: 'white', borderRadius: '20px', padding: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <IconButton
@@ -117,11 +117,11 @@ const CreateFormAnnouncements = () => {
                         apiKey='bfqew20400z8yzz2jqkg6yp4p7f6ur54kqikor53k2betw6u'
                         value={formData.Body}
                         init={{
-                            height: 400,
+                            height: 500,
                             menubar: false,
                             toolbar: 'undo redo | formatselect | bold italic backcolor | \
                           alignleft aligncenter alignright alignjustify | \
-                          bullist numlist outdent indent | removeformat ',
+                          bullist numlist outdent indent | removeformat | fontsize | styles',
                             Body_css: 'https://www.tiny.cloud/css/codepen.min.css',
                         }}
                         onEditorChange={handleEditorChange}
