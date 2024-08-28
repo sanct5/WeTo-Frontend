@@ -53,7 +53,7 @@ const EditForm = () => {
 
         setIsLoading(true);
         try {
-            await axios.put(`${UserService.baseUrl}${UserService.endpoints.UpdateUser}?id=${id}`, formData);
+            await axios.put(`${UserService.baseUrl}${UserService.endpoints.UpdateUser}/${id}`, formData);
             toast.success('Residente actualizado correctamente');
             navigate('/app/residents');
         } catch (error) {

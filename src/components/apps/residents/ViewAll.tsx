@@ -42,10 +42,9 @@ const viewAll = () => {
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            let body = { idComplex: user.idComplex };
-
+            let idComplex = user.idComplex;
             try {
-                const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUsersByComplex}`, { params: body });
+                const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUsersByComplex}/${idComplex}`);
                 const sortedResidents = response.data
                     .sort((a: any, b: any) => a.userName.localeCompare(b.userName))
                     .filter((resident: any) => resident.idDocument !== user.idDocument);
