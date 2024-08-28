@@ -6,12 +6,17 @@ import WorkingOn from './pages/WorkingOn';
 import CreateForm from '../components/apps/residents/CreateForm';
 import EditForm from '../components/apps/residents/EditForm';
 import ViewAll from '../components/apps/residents/ViewAll';
+import ListAll from '../components/apps/anouncements/ListAll';
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <Navigate to="login" replace />,
         errorElement: <NotFound404 />,
+    },
+    {
+        path: '/404',
+        element: <NotFound404 />,
     },
     {
         path: '/login',
@@ -27,7 +32,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'announcements',
-                element: <WorkingOn />,
+                element: <ListAll />,
             },
             {
                 path: 'profile',
