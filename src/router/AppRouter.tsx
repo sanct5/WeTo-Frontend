@@ -6,6 +6,8 @@ import WorkingOn from './pages/WorkingOn';
 import CreateForm from '../components/apps/residents/CreateForm';
 import EditForm from '../components/apps/residents/EditForm';
 import ViewAll from '../components/apps/residents/ViewAll';
+import CreateFormAnnouncements from '../components/apps/anouncements/CreateForm';
+import EditFormAnnouncements from '../components/apps/anouncements/EditForm';
 
 const router = createBrowserRouter([
     {
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
             {
                 path: 'announcements',
                 element: <WorkingOn />,
+            },
+            {
+                path: 'announcements/create',
+                element: <CreateFormAnnouncements />,
+            },
+            {
+                path: 'announcements/edit/:id',
+                element: <EditFormAnnouncements />,
             },
             {
                 path: 'profile',

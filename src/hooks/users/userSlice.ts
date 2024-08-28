@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export type Role = "RESIDENT" | "ADMIN";
 export interface UserState {
+    _id: string;
     idDocument: string;
     userName: string;
     idComplex: string;
@@ -20,6 +21,7 @@ interface UserConfig {
 }
 
 const initialState: UserState = {
+    _id: "",
     idDocument: "",
     userName: "",
     idComplex: "",
@@ -41,6 +43,7 @@ export const userSlice = createSlice({
     reducers: {
         resetUser: () => initialState,
         setUser: (state, action) => {
+            state._id = action.payload._id;
             state.idDocument = action.payload.idDocument;
             state.userName = action.payload.userName;
             state.idComplex = action.payload.idComplex;

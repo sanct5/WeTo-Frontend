@@ -178,7 +178,7 @@ const CreateForm = () => {
                         loading={isLoading}
                         loadingPosition="center"
                     >
-                        Guardar cambios
+                        Guardar
                     </LoadingButton>
                 </Box>
             </Box>

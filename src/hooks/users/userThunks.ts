@@ -31,6 +31,7 @@ export const LoginUser = (data: FormData) => {
 
             const loginResponse = response.data;
 
+
             if (!loginResponse) {
                 toast.warn('Correo electrónico o contraseña incorrectos');
                 return;
@@ -41,6 +42,7 @@ export const LoginUser = (data: FormData) => {
             const complexColors = responseColors.data
 
             const user = {
+                _id: loginResponse._id,
                 idDocument: loginResponse.idDocument,
                 userName: loginResponse.userName,
                 idComplex: loginResponse.idComplex,
@@ -54,8 +56,6 @@ export const LoginUser = (data: FormData) => {
                 },
                 isLogged: true,
             }
-
-            console.log(user);
 
             dispatch(setUser(user));
 
