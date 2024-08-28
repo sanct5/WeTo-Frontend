@@ -24,9 +24,8 @@ const EditForm = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            let userId = { idUser: id };
             try {
-                const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUserById}`, { params: userId });
+                const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUserById}/${id}`);
                 setFormData(response.data);
             } catch (error) {
                 toast.error('Error al cargar los datos del residente');
