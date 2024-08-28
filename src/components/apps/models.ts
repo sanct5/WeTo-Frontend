@@ -11,3 +11,4 @@ export type Announcements = {
 }
 
 export type AnnouncementCategory = "Mantenimiento" | "Servicios" | "General" | "Reuniones";
+

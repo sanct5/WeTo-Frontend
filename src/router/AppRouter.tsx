@@ -8,12 +8,17 @@ import EditForm from '../components/apps/residents/EditForm';
 import ViewAll from '../components/apps/residents/ViewAll';
 import CreateFormAnnouncements from '../components/apps/anouncements/CreateForm';
 import EditFormAnnouncements from '../components/apps/anouncements/EditForm';
+import ListAll from '../components/apps/anouncements/ListAll';
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <Navigate to="login" replace />,
         errorElement: <NotFound404 />,
+    },
+    {
+        path: '/404',
+        element: <NotFound404 />,
     },
     {
         path: '/login',
@@ -29,7 +34,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'announcements',
-                element: <WorkingOn />,
+                element: <ListAll />,
             },
             {
                 path: 'announcements/create',
