@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -25,7 +24,7 @@ import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
 import { Announcements } from '../models'
 import parse from 'html-react-parser'
-import { CalendarMonth, DateRangeRounded, AddBox, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House } from '@mui/icons-material';
+import { CalendarMonth, DateRangeRounded, AddBox, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House, Announcement } from '@mui/icons-material';
 
 const ListAll = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -87,21 +86,24 @@ const ListAll = () => {
                         ),
                     }}
                 />
-                <Box display={{ xs: 'block', sm: 'none' }} marginRight={2}>
-                    <Link to="/app/announcements/create">
-                        <IconButton color="primary">
-                            <AddBox fontSize="large" />
-                        </IconButton>
-                    </Link>
-                </Box>
-                <Box display={{ xs: 'none', sm: 'block' }} marginRight={2}>
-                    <Link to="/app/announcements/create">
-                        <Button variant="contained" color="primary">
-                            Agregar
-                        </Button>
-                    </Link>
-
-                </Box>
+                {user.role === 'ADMIN' &&
+                    <>
+                        <Box display={{ xs: 'block', sm: 'none' }} marginRight={2}>
+                            <Link to="/app/announcements/create">
+                                <IconButton color="primary">
+                                    <AddBox fontSize="large" />
+                                </IconButton>
+                            </Link>
+                        </Box>
+                        <Box display={{ xs: 'none', sm: 'block' }} marginRight={2}>
+                            <Link to="/app/announcements/create">
+                                <Button variant="contained" color="primary">
+                                    Agregar
+                                </Button>
+                            </Link>
+                        </Box>
+                    </>
+                }
             </Box>}
             {loading ? (
                 <Grid container justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
@@ -111,50 +113,61 @@ const ListAll = () => {
                     </Typography>
                 </Grid>
             ) : (
-                <Grid container spacing={2} justifyContent="flex-start">
-                    {adminAnnouncements.map((announcement) => (
-                        <Grid item key={announcement._id} xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
-                            <Card sx={{ display: 'flex', flexDirection: 'column', minWidth: 275, width: '100%', position: 'relative', pt: 1 }}>
-                                <Box sx={{ position: 'absolute', top: 0, right: 0, display: 'flex', gap: 1 }}>
-                                    <IconButton aria-label="edit" size="small">
-                                        <Link to={`/app/announcements/edit/${announcement._id}`}>
-                                            <Edit fontSize="small" />
-                                        </Link>
-                                    </IconButton>
-                                    <IconButton aria-label="delete" size="small" onClick={() => openDeleteDialog(announcement._id, announcement.CreatedBy)}>
-                                        <Delete fontSize="small" />
-                                    </IconButton>
-                                </Box>
-                                <CardContent>
-                                    <Typography variant="h5" component="div" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                                        {announcement.category === 'Mantenimiento' ? <Handyman color='primary' /> :
-                                            announcement.category === 'Servicios' ? <House color='primary' /> :
-                                                announcement.category === 'General' ? <Interests color='primary' /> :
-                                                    announcement.category === 'Reuniones' ? <Groups color='primary' /> : null}
-                                        <Box sx={{ ml: 1 }}>
-                                            {announcement.Title}
+                adminAnnouncements.length === 0 ? (
+                    <Grid container direction="column" justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
+                        <Typography variant="h3" component="div" sx={{mb: 4}}>
+                            Aún no hay anuncios
+                        </Typography>
+                        <Announcement color='primary'  style={{ fontSize: 80 }} />
+                    </Grid>
+                ) : (
+                    <Grid container spacing={2} justifyContent="flex-start">
+                        {adminAnnouncements.map((announcement) => (
+                            <Grid item key={announcement._id} xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <Card sx={{ display: 'flex', flexDirection: 'column', minWidth: 275, width: '100%', position: 'relative', pt: user.role === 'ADMIN' ? 1 : 0 }}>
+                                    {user.role === 'ADMIN' &&
+                                        <Box sx={{ position: 'absolute', top: 0, right: 0, display: 'flex', gap: 1 }}>
+                                            <IconButton aria-label="edit" size="small">
+                                                <Link to={`/app/announcements/edit/${announcement._id}`}>
+                                                    <Edit fontSize="small" />
+                                                </Link>
+                                            </IconButton>
+                                            <IconButton aria-label="delete" size="small" onClick={() => openDeleteDialog(announcement._id, announcement.CreatedBy)}>
+                                                <Delete fontSize="small" />
+                                            </IconButton>
                                         </Box>
-                                    </Typography>
-                                    <Typography variant="body2" component="p">
-                                        {parse(announcement.Body)}
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginTop: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
-                                        <Typography variant="body2" component="p" sx={{ mr: 2 }}>
-                                            <DateRangeRounded color='primary' sx={{ mr: 1 }} />
-                                            Publicado el: {format(announcement.Date, { date: "long", time: "short" })}
+                                    }
+                                    <CardContent>
+                                        <Typography variant="h5" component="div" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                                            {announcement.category === 'Mantenimiento' ? <Handyman color='primary' /> :
+                                                announcement.category === 'Servicios' ? <House color='primary' /> :
+                                                    announcement.category === 'General' ? <Interests color='primary' /> :
+                                                        announcement.category === 'Reuniones' ? <Groups color='primary' /> : null}
+                                            <Box sx={{ ml: 1 }}>
+                                                {announcement.Title}
+                                            </Box>
                                         </Typography>
-                                        {announcement.Date !== announcement.LastModify && (
-                                            <Typography variant="body2" component="p">
-                                                <CalendarMonth color='secondary' sx={{ mr: 1 }} />
-                                                Ultima modificación: {format(announcement.LastModify, { date: "long", time: "short" })}
+                                        <Typography variant="body2" component="p">
+                                            {parse(announcement.Body)}
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginTop: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
+                                            <Typography variant="body2" component="p" sx={{ mr: 2 }}>
+                                                <DateRangeRounded color='primary' sx={{ mr: 1 }} />
+                                                Publicado el: {format(announcement.Date, { date: "long", time: "short" })}
                                             </Typography>
-                                        )}
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
+                                            {announcement.Date !== announcement.LastModify && (
+                                                <Typography variant="body2" component="p">
+                                                    <CalendarMonth color='secondary' sx={{ mr: 1 }} />
+                                                    Ultima modificación: {format(announcement.LastModify, { date: "long", time: "short" })}
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                )
             )}
 
             <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
