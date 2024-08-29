@@ -9,6 +9,8 @@ import ViewAll from '../components/apps/residents/ViewAll';
 import CreateFormAnnouncements from '../components/apps/anouncements/CreateForm';
 import EditFormAnnouncements from '../components/apps/anouncements/EditForm';
 import ListAll from '../components/apps/anouncements/ListAll';
+import ProtectedRoute from './ProtectedRoute';
+
 
 const router = createBrowserRouter([
     {
@@ -59,11 +61,19 @@ const router = createBrowserRouter([
             },
             {
                 path: 'residents/create',
-                element: <CreateForm />,
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <CreateForm />
+                    </ProtectedRoute>
+                ),
             },
             {
                 path: 'residents/edit/:id',
-                element: <EditForm />,
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <EditForm />
+                    </ProtectedRoute>
+                ),
             },
         ],
     },
