@@ -6,9 +6,9 @@ import WorkingOn from './pages/WorkingOn';
 import CreateForm from '../components/apps/residents/CreateForm';
 import EditForm from '../components/apps/residents/EditForm';
 import ViewAll from '../components/apps/residents/ViewAll';
-import CreateFormAnnouncements from '../components/apps/anouncements/CreateForm';
-import EditFormAnnouncements from '../components/apps/anouncements/EditForm';
-import ListAll from '../components/apps/anouncements/ListAll';
+import CreateFormAnnouncements from '../components/apps/announcements/CreateForm';
+import EditFormAnnouncements from '../components/apps/announcements/EditForm';
+import ListAll from '../components/apps/announcements/ListAll';
 import ProtectedRoute from './ProtectedRoute';
 
 
