@@ -6,12 +6,21 @@ import WorkingOn from './pages/WorkingOn';
 import CreateForm from '../components/apps/residents/CreateForm';
 import EditForm from '../components/apps/residents/EditForm';
 import ViewAll from '../components/apps/residents/ViewAll';
+import CreateFormAnnouncements from '../components/apps/announcements/CreateForm';
+import EditFormAnnouncements from '../components/apps/announcements/EditForm';
+import ListAll from '../components/apps/announcements/ListAll';
+import ProtectedRoute from './ProtectedRoute';
+
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <Navigate to="login" replace />,
         errorElement: <NotFound404 />,
+    },
+    {
+        path: '/404',
+        element: <NotFound404 />,
     },
     {
         path: '/login',
@@ -27,7 +36,15 @@ const router = createBrowserRouter([
             },
             {
                 path: 'announcements',
-                element: <WorkingOn />,
+                element: <ListAll />,
+            },
+            {
+                path: 'announcements/create',
+                element: <CreateFormAnnouncements />,
+            },
+            {
+                path: 'announcements/edit/:id',
+                element: <EditFormAnnouncements />,
             },
             {
                 path: 'profile',
@@ -44,11 +61,19 @@ const router = createBrowserRouter([
             },
             {
                 path: 'residents/create',
-                element: <CreateForm />,
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <CreateForm />
+                    </ProtectedRoute>
+                ),
             },
             {
                 path: 'residents/edit/:id',
-                element: <EditForm />,
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <EditForm />
+                    </ProtectedRoute>
+                ),
             },
         ],
     },
