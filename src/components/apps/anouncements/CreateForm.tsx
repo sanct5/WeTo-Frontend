@@ -75,7 +75,6 @@ const CreateFormAnnouncements = () => {
             toast.success('Anuncio creado correctamente');
             navigate('/app/announcements');
         } catch (error) {
-            console.error('Error:', error);
             toast.error('No se pudo crear el anuncio');
         } finally {
             setIsLoading(false);
