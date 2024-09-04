@@ -10,6 +10,7 @@ import CreateFormAnnouncements from '../components/apps/announcements/CreateForm
 import EditFormAnnouncements from '../components/apps/announcements/EditForm';
 import ListAll from '../components/apps/announcements/ListAll';
 import ProtectedRoute from './ProtectedRoute';
+import AdTabs from '../components/apps/ads/AdTabs';
 
 
 const router = createBrowserRouter([
@@ -50,7 +51,7 @@ const router = createBrowserRouter([
             // Ads
             {
                 path: 'ads',
-                element: <WorkingOn />,
+                element: <AdTabs />,
             },
             // Profile
             {
