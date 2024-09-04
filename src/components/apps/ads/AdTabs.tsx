@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import AllAds from './allAds';
+import AllAds from './AllAds';
 import MyAds from './MyAds';
 import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
