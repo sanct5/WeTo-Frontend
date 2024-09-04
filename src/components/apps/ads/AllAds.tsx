@@ -31,7 +31,7 @@ const AllAds = () => {
     const [residentAds, setResidentAds] = useState<Announcements[]>([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
-    const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '', userId: '' });
+    const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
 
     const user = useSelector((state: { user: UserState }) => state.user);
 
@@ -54,10 +54,10 @@ const AllAds = () => {
         setDeleteModalOpen(true);
     }
 
-    const handleDelete = async (announcementId: String, userId: string) => {
+    const handleDelete = async (announcementId: String) => {
         setIsDeleting(true);
         try {
-            axios.delete(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.DeleteAnnouncement}/${announcementId}/${userId}`);
+            axios.delete(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.DeleteAnnouncement}/${announcementId}/${user._id}`);
             setReloadFlag(!reloadFlag);
             setDeleteModalOpen(false);
             setIsDeleting(false);
@@ -156,7 +156,7 @@ const AllAds = () => {
                     <Button onClick={() => setDeleteModalOpen(false)} color="secondary">
                         Cancelar
                     </Button>
-                    <Button onClick={() => handleDelete(selectedAnnouncement.AnnouncementId, selectedAnnouncement.userId)} color="primary">
+                    <Button onClick={() => handleDelete(selectedAnnouncement.AnnouncementId)} color="primary">
                         Eliminar
                     </Button>
                 </DialogActions>

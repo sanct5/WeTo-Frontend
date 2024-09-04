@@ -21,7 +21,7 @@ import {
     DialogActions,
     CircularProgress,
 } from '@mui/material'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { AddBox, Delete, Edit } from '@mui/icons-material'
 import WarningIcon from '@mui/icons-material/Warning';
 import { toast } from 'react-toastify';
@@ -45,11 +45,12 @@ const MyAds = () => {
             setLoading(true);
             try {
                 const response = await axios.get(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByUser}/${user._id}`);
+
                 const sortedAds = response.data
                     .sort((a: any, b: any) => a.Title.localeCompare(b.Title));
                 setAds(sortedAds);
-            } catch (error) {
-                toast.error('Ocurrió un error al obtener las publicaciones');
+            } catch (error: AxiosError | any) {
+                toast.info('No se encontraron publicaciones');
             } finally {
                 setLoading(false);
             }
@@ -154,7 +155,7 @@ const MyAds = () => {
                     <DialogContent>
                         {!isDeleting ? (<WarningIcon color="secondary" style={{ fontSize: 60, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />) : <CircularProgress style={{ fontSize: 50, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />}
                         <DialogContentText align="center" fontSize={20} sx={{ marginTop: "25px" }}>
-                            ¿Estás segur@ de que deseas eliminar la publicación: <b>{selectedAd.Title}</b>?
+                            ¿Estás segur@ de que deseas eliminar la publicación: <b>{selectedAd.adTitle}</b>?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
