@@ -34,6 +34,7 @@ const router = createBrowserRouter([
                 path: 'dashboard',
                 element: <WorkingOn />,
             },
+            // Announcements
             {
                 path: 'announcements',
                 element: <ListAll />,
@@ -46,6 +47,12 @@ const router = createBrowserRouter([
                 path: 'announcements/edit/:id',
                 element: <EditFormAnnouncements />,
             },
+            // Ads
+            {
+                path: 'ads',
+                element: <WorkingOn />,
+            },
+            // Profile
             {
                 path: 'profile',
                 element: <WorkingOn />,
