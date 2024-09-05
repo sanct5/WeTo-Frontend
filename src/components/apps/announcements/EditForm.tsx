@@ -95,7 +95,11 @@ const EditFormAnnouncements = () => {
 
     const handleCancel = () => {
         toast.info('Los cambios no se guardaron');
-        navigate('/app/announcements');
+        if (user.role === 'RESIDENT') {
+            navigate('/app/ads');
+        } else {
+            navigate('/app/announcements');
+        }
     };
 
     return (
