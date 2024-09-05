@@ -22,6 +22,8 @@ const EditFormAnnouncements = () => {
     });
     const [isLoading, setIsLoading] = useState(false);
 
+    const [lastToastTime, setLastToastTime] = useState<number>(0);
+
     const user = useSelector((state: { user: UserState }) => state.user);
     
 
@@ -75,10 +77,19 @@ const EditFormAnnouncements = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleEditorChange = (Body: string) => {
+    const handleEditorChange = (content: string) => {
+        const MAX_LENGTH = 3500;
+        const currentTime = Date.now();
+        if (content.length > MAX_LENGTH) {
+            if (currentTime - lastToastTime > 5000) { 
+                toast.warning(`El contenido excede el límite de ${MAX_LENGTH} caracteres.`);
+                setLastToastTime(currentTime);
+            }
+            content = content.substring(0, MAX_LENGTH);
+        }
         setFormData({
             ...formData,
-            Body,
+            Body: content,
         });
     };
 
