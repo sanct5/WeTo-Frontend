@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
     Box,
     IconButton,
@@ -24,12 +23,12 @@ import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
 import { Announcements } from '../models'
 import parse from 'html-react-parser'
-import { CalendarMonth, DateRangeRounded, AddBox, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House, Announcement } from '@mui/icons-material';
+import { CalendarMonth, DateRangeRounded, Delete, Warning, Search, Announcement, SellOutlined } from '@mui/icons-material';
 
-const ListAll = () => {
+const AllAds = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [reloadFlag, setReloadFlag] = useState<boolean>(false);
-    const [adminAnnouncements, setAdminAnnouncements] = useState<Announcements[]>([]);
+    const [residentAds, setResidentAds] = useState<Announcements[]>([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
@@ -37,21 +36,21 @@ const ListAll = () => {
     const user = useSelector((state: { user: UserState }) => state.user);
 
     useEffect(() => {
-        const getAdminAnnouncements = async () => {
+        const getResidentAds = async () => {
             setLoading(true);
             let idComplex = user.idComplex;
             const response = await axios.get<Announcements[]>(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByComplex}/${idComplex}`);
-            const sortedAnnouncements = response.data
-                .filter(announcement => announcement.isAdmin)
+            const sortedAds = response.data
+                .filter(announcement => !announcement.isAdmin)
                 .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
-            setAdminAnnouncements(sortedAnnouncements);
+            setResidentAds(sortedAds);
             setLoading(false);
         };
-        getAdminAnnouncements();
+        getResidentAds();
     }, [reloadFlag]);
 
-    const openDeleteDialog = (AnnouncementId: string, AnnouncementUser: string) => {
-        setselectedAnnouncement({ AnnouncementId, AnnouncementUser });
+    const openDeleteDialog = (AnnouncementId: string, AnnouncementUser: string, userId: string) => {
+        setselectedAnnouncement({ AnnouncementId, AnnouncementUser, userId });
         setDeleteModalOpen(true);
     }
 
@@ -62,10 +61,10 @@ const ListAll = () => {
             setReloadFlag(!reloadFlag);
             setDeleteModalOpen(false);
             setIsDeleting(false);
-            toast.success('Anuncio eliminado correctamente');
+            toast.success('Publicidad eliminada correctamente');
         } catch (error) {
             setIsDeleting(false);
-            toast.error('Error al eliminar el anuncio');
+            toast.error('Error al eliminar la publicidad');
         }
     }
 
@@ -74,10 +73,10 @@ const ListAll = () => {
             {!loading && <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', maxWidth: 800, margin: 'auto' }}>
                 <TextField
                     fullWidth
-                    label="Buscar anuncio"
+                    label="Buscar publicación"
                     variant="outlined"
                     sx={{ backgroundColor: 'white', maxWidth: 600, margin: 2 }}
-                    placeholder='Buscar un anuncio'
+                    placeholder='Nombre de la publicación'
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
@@ -86,24 +85,6 @@ const ListAll = () => {
                         ),
                     }}
                 />
-                {user.role === 'ADMIN' &&
-                    <>
-                        <Box display={{ xs: 'block', sm: 'none' }} marginRight={2}>
-                            <Link to="/app/announcements/create">
-                                <IconButton color="primary">
-                                    <AddBox fontSize="large" />
-                                </IconButton>
-                            </Link>
-                        </Box>
-                        <Box display={{ xs: 'none', sm: 'block' }} marginRight={2}>
-                            <Link to="/app/announcements/create">
-                                <Button variant="contained" color="primary">
-                                    Agregar
-                                </Button>
-                            </Link>
-                        </Box>
-                    </>
-                }
             </Box>}
             {loading ? (
                 <Grid container justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
@@ -113,36 +94,30 @@ const ListAll = () => {
                     </Typography>
                 </Grid>
             ) : (
-                adminAnnouncements.length === 0 ? (
+                residentAds.length === 0 ? (
                     <Grid container direction="column" justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
-                        <Typography variant="h3" component="div" sx={{mb: 4}}>
-                            Aún no hay anuncios
+                        <Typography variant="h3" component="div" sx={{ mb: 4 }}>
+                            Aún no hay publicidad
                         </Typography>
-                        <Announcement color='primary'  style={{ fontSize: 80 }} />
+                        <Announcement color='primary' style={{ fontSize: 80 }} />
                     </Grid>
                 ) : (
                     <Grid container spacing={2} justifyContent="flex-start">
-                        {adminAnnouncements.map((announcement) => (
+                        {residentAds.map((announcement) => (
                             <Grid item key={announcement._id} xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
                                 <Card sx={{ display: 'flex', flexDirection: 'column', minWidth: 275, width: '100%', position: 'relative', pt: user.role === 'ADMIN' ? 1 : 0 }}>
                                     {user.role === 'ADMIN' &&
                                         <Box sx={{ position: 'absolute', top: 0, right: 0, display: 'flex', gap: 1 }}>
-                                            <IconButton aria-label="edit" size="small">
-                                                <Link to={`/app/announcements/edit/${announcement._id}`}>
-                                                    <Edit fontSize="small" />
-                                                </Link>
-                                            </IconButton>
-                                            <IconButton aria-label="delete" size="small" onClick={() => openDeleteDialog(announcement._id, announcement.CreatedBy)}>
+                                            <IconButton aria-label="delete" size="small" onClick={() => openDeleteDialog(announcement._id, announcement.CreatedBy, announcement.User)}>
                                                 <Delete fontSize="small" />
                                             </IconButton>
                                         </Box>
                                     }
                                     <CardContent>
                                         <Typography variant="h5" component="div" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                                            {announcement.category === 'Mantenimiento' ? <Handyman color='primary' /> :
-                                                announcement.category === 'Servicios' ? <House color='primary' /> :
-                                                    announcement.category === 'General' ? <Interests color='primary' /> :
-                                                        announcement.category === 'Reuniones' ? <Groups color='primary' /> : null}
+                                            {announcement.category === 'Publicidad' ? (
+                                                <SellOutlined color={user.userName === announcement.CreatedBy ? 'secondary' : 'primary'} />
+                                            ) : null}
                                             <Box sx={{ ml: 1 }}>
                                                 {announcement.Title}
                                             </Box>
@@ -174,7 +149,7 @@ const ListAll = () => {
                 <DialogContent>
                     {!isDeleting ? (<Warning color="secondary" style={{ fontSize: 60, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />) : <CircularProgress style={{ fontSize: 50, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />}
                     <DialogContentText align="center" fontSize={20} sx={{ marginTop: "25px" }}>
-                        ¿Estás segur@ de que deseas eliminar el anuncio creado por: <b>{selectedAnnouncement.AnnouncementUser}</b>?
+                        ¿Estás segur@ de que deseas eliminar la publicidad creada por: <b>{selectedAnnouncement.AnnouncementUser}</b>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -191,4 +166,4 @@ const ListAll = () => {
     );
 }
 
-export default ListAll
+export default AllAds

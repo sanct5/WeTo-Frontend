@@ -21,20 +21,21 @@ import {
     DialogActions,
     CircularProgress,
 } from '@mui/material'
-import axios from 'axios'
-import { UserService } from '../../../api/UserService'
+import axios, { AxiosError } from 'axios'
 import { AddBox, Delete, Edit } from '@mui/icons-material'
 import WarningIcon from '@mui/icons-material/Warning';
 import { toast } from 'react-toastify';
+import { AnnouncementsService } from '../../../api/Anouncements'
+import { format } from '@formkit/tempo'
 
 
 
-const viewAll = () => {
+const MyAds = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [reloadFlag, setReloadFlag] = useState<boolean>(false);
-    const [residents, setResidents] = useState<any[]>([]);
+    const [ads, setAds] = useState<any[]>([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-    const [selectedUser, setSelectedUser] = useState<any>({ userId: '', userName: '' });
+    const [selectedAd, setSelectedAd] = useState<any>({ adId: '', adTitle: '' });
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
     const user = useSelector((state: { user: UserState }) => state.user);
@@ -42,15 +43,13 @@ const viewAll = () => {
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            let idComplex = user.idComplex;
             try {
-                const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUsersByComplex}/${idComplex}`);
-                const sortedResidents = response.data
-                    .sort((a: any, b: any) => a.userName.localeCompare(b.userName))
-                    .filter((resident: any) => resident.idDocument !== user.idDocument);
-                setResidents(sortedResidents);
-            } catch (error) {
-                toast.error('Ocurrió un error al obtener los residentes');
+                const response = await axios.get(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByUser}/${user._id}`);
+                const sortedAds = response.data
+                    .sort((a: any, b: any) => a.Title.localeCompare(b.Title));
+                setAds(sortedAds);
+            } catch (error: AxiosError | any) {
+                return;
             } finally {
                 setLoading(false);
             }
@@ -59,23 +58,22 @@ const viewAll = () => {
         fetchData();
     }, [reloadFlag]);
 
-    const openDeleteDialog = (userId: string, userName: string) => {
-        setSelectedUser({ userId, userName });
+    const openDeleteDialog = (adId: string, adTitle: string) => {
+        setSelectedAd({ adId, adTitle });
         setDeleteModalOpen(true);
     }
 
-    const handleDelete = async (userId: String) => {
+    const handleDelete = async (adId: String) => {
         setIsDeleting(true);
         try {
-            await axios.delete(`${UserService.baseUrl}${UserService.endpoints.DeleteUser}/${userId}`);
-
+            await axios.delete(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.DeleteAnnouncement}/${adId}/${user._id}`);
             setReloadFlag(!reloadFlag);
             setDeleteModalOpen(false);
             setIsDeleting(false);
-            toast.success('Usuario eliminado correctamente');
+            toast.success('Publicación eliminada correctamente');
         } catch (error) {
             setIsDeleting(false);
-            toast.error('Error al eliminar el Usuario');
+            toast.error('Error al eliminar la publicación');
         }
     }
 
@@ -84,16 +82,22 @@ const viewAll = () => {
             <Box sx={{ flexGrow: 1, maxWidth: 1024, minHeight: '80vh', p: 4 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Typography variant="h5" component="h1" gutterBottom>
-                        Mis residentes
+                        Mis publicaciones
                     </Typography>
-                    <IconButton
-                        component={Link}
-                        to="create"
-                        aria-label="Create"
-                        color='primary'
-                    >
-                        <AddBox />
-                    </IconButton>
+                    <Box display={{ xs: 'block', sm: 'none' }} marginRight={2}>
+                        <Link to="/app/announcements/create">
+                            <IconButton color="primary">
+                                <AddBox fontSize="large" />
+                            </IconButton>
+                        </Link>
+                    </Box>
+                    <Box display={{ xs: 'none', sm: 'block' }} marginRight={2}>
+                        <Link to="/app/announcements/create">
+                            <Button variant="contained" color="primary">
+                                Agregar
+                            </Button>
+                        </Link>
+                    </Box>
                 </Box>
                 <TableContainer component={Paper}>
                     {loading ? (
@@ -104,37 +108,35 @@ const viewAll = () => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align='center'>Nombre</TableCell>
-                                    <TableCell align='center'>Departamento</TableCell>
-                                    <TableCell align='center'>Teléfono</TableCell>
+                                    <TableCell align='center'>Título</TableCell>
+                                    <TableCell align='center'>Fecha de publicación</TableCell>
+                                    <TableCell align='center'>Última modificación</TableCell>
                                     <TableCell align="right"></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {residents.map((resident) => (
-                                    <TableRow key={resident.idDocument}>
+                                {ads.map((ad) => (
+                                    <TableRow key={ad._id}>
                                         <TableCell component="th" scope="row" align='center'>
-                                            {resident.userName}
+                                            {ad.Title}
                                         </TableCell>
                                         <TableCell component="th" scope="row" align='center'>
-                                            {resident.apartment}
+                                            {format(ad.Date, { date: "short", time: "short" })}
                                         </TableCell>
                                         <TableCell component="th" scope="row" align='center'>
-                                            {resident.phone}
+                                            {format(ad.LastModified, { date: "short", time: "short" })}
                                         </TableCell>
                                         <TableCell align="right">
+                                            <Link to={`/app/announcements/edit/${ad._id}`}>
+                                                <IconButton
+                                                    aria-label="Edit"
+                                                    color='primary'
+                                                >
+                                                    <Edit />
+                                                </IconButton>
+                                            </Link>
                                             <IconButton
-                                                component={Link}
-                                                to={`edit/${resident._id}`}
-                                                aria-label="Edit"
-                                                color='primary'
-                                            >
-                                                <Edit />
-                                            </IconButton>
-                                            <IconButton
-                                                onClick={() => {
-                                                    openDeleteDialog(resident._id, resident.userName);
-                                                }}
+                                                onClick={() => openDeleteDialog(ad._id, ad.Title)}
                                                 aria-label="Delete"
                                                 color='secondary'
                                             >
@@ -152,14 +154,14 @@ const viewAll = () => {
                     <DialogContent>
                         {!isDeleting ? (<WarningIcon color="secondary" style={{ fontSize: 60, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />) : <CircularProgress style={{ fontSize: 50, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />}
                         <DialogContentText align="center" fontSize={20} sx={{ marginTop: "25px" }}>
-                            ¿Estás segur@ de que deseas eliminar al usuario: <b>{selectedUser.userName}</b>?
+                            ¿Estás segur@ de que deseas eliminar la publicación: <b>{selectedAd.adTitle}</b>?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => setDeleteModalOpen(false)} color="secondary">
                             Cancelar
                         </Button>
-                        <Button onClick={() => handleDelete(selectedUser.userId)} color="primary">
+                        <Button onClick={() => handleDelete(selectedAd.adId)} color="primary">
                             Eliminar
                         </Button>
                     </DialogActions>
@@ -170,4 +172,4 @@ const viewAll = () => {
     )
 }
 
-export default viewAll
+export default MyAds

@@ -10,6 +10,7 @@ import CreateFormAnnouncements from '../components/apps/announcements/CreateForm
 import EditFormAnnouncements from '../components/apps/announcements/EditForm';
 import ListAll from '../components/apps/announcements/ListAll';
 import ProtectedRoute from './ProtectedRoute';
+import AdTabs from '../components/apps/ads/AdTabs';
 
 
 const router = createBrowserRouter([
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
                 path: 'dashboard',
                 element: <WorkingOn />,
             },
+            // Announcements
             {
                 path: 'announcements',
                 element: <ListAll />,
@@ -46,6 +48,12 @@ const router = createBrowserRouter([
                 path: 'announcements/edit/:id',
                 element: <EditFormAnnouncements />,
             },
+            // Ads
+            {
+                path: 'ads',
+                element: <AdTabs />,
+            },
+            // Profile
             {
                 path: 'profile',
                 element: <WorkingOn />,

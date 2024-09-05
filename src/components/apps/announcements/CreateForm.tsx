@@ -25,6 +25,8 @@ const CreateFormAnnouncements = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const [lastToastTime, setLastToastTime] = useState<number>(0);
+
     const navigate = useNavigate();
 
     const user = useSelector((state: { user: UserState }) => state.user);
@@ -44,13 +46,22 @@ const CreateFormAnnouncements = () => {
         });
     };
 
-    const handleEditorChange = (Body: string) => {
+    const handleEditorChange = (content: string) => {
+        const MAX_LENGTH = 3500;
+        const currentTime = Date.now();
+        if (content.length > MAX_LENGTH) {
+            if (currentTime - lastToastTime > 5000) { 
+                toast.warning(`El contenido excede el límite de ${MAX_LENGTH} caracteres.`);
+                setLastToastTime(currentTime);
+            }
+            content = content.substring(0, MAX_LENGTH);
+        }
         setFormData({
             ...formData,
-            Body,
+            Body: content,
         });
     };
-
+    
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -73,7 +84,12 @@ const CreateFormAnnouncements = () => {
             // Llamada a la API
             await axios.post(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.AddAnnouncement}`, AnnouncementData);
             toast.success('Anuncio creado correctamente');
-            navigate('/app/announcements');
+            // Redirigir según el rol del usuario
+            if (user.role === 'RESIDENT') {
+                navigate('/app/ads');
+            } else {
+                navigate('/app/announcements');
+            }
         } catch (error) {
             toast.error('No se pudo crear el anuncio');
         } finally {
@@ -110,6 +126,7 @@ const CreateFormAnnouncements = () => {
                         label="Título"
                         name="Title"
                         value={formData.Title}
+                        inputProps={{ maxLength: 100 }}
                         onChange={handleChange}
                     />
                     <Editor
@@ -125,23 +142,38 @@ const CreateFormAnnouncements = () => {
                         }}
                         onEditorChange={handleEditorChange}
                     />
-                    <TextField
-                        select
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="category"
-                        label="Categoría"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                    >
-                        {categories.map((category) => (
-                            <MenuItem key={category} value={category}>
-                                {category}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                    {user.role === 'RESIDENT' ? (
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="category"
+                            label="Categoría"
+                            name="category"
+                            value="Publicidad"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                    ) : (
+                        <TextField
+                            select
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="category"
+                            label="Categoría"
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                        >
+                            {categories.map((category) => (
+                                <MenuItem key={category} value={category}>
+                                    {category}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    )}
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', mt: 2 }}>
                         <Button
                             color='secondary'

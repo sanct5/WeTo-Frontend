@@ -8,20 +8,24 @@ import { LoadingButton } from '@mui/lab';
 import { AnnouncementsService } from '../../../api/Anouncements';
 import { AnnouncementCategory } from '../models';
 import { Editor } from '@tinymce/tinymce-react';
+import { UserState } from '../../../hooks/users/userSlice';
+import { useSelector } from 'react-redux';
 
 const EditFormAnnouncements = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [formData, setFormData] = useState<{
-        Title: string;
-        Body: string;
-        category: AnnouncementCategory;
-    }>({
+    const [formData, setFormData] = useState({
+        _id: id,
         Title: '',
         Body: '',
         category: 'General',
     });
     const [isLoading, setIsLoading] = useState(false);
+
+    const [lastToastTime, setLastToastTime] = useState<number>(0);
+
+    const user = useSelector((state: { user: UserState }) => state.user);
+    
 
     const categories: AnnouncementCategory[] = [
         "General",
@@ -54,9 +58,13 @@ const EditFormAnnouncements = () => {
 
         setIsLoading(true);
         try {
-            await axios.put(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.UpdateAnnouncement}?id=${id}`, formData);
+            await axios.put(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.UpdateAnnouncement}/${user._id}`, formData);
             toast.success('Anuncio actualizado correctamente');
-            navigate('/app/announcements');
+            if (user.role === 'RESIDENT') {
+                navigate('/app/ads');
+            } else {
+                navigate('/app/announcements');
+            }
         } catch (error) {
             toast.error('Error al actualizar el anuncio');
         } finally {
@@ -69,10 +77,19 @@ const EditFormAnnouncements = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleEditorChange = (Body: string) => {
+    const handleEditorChange = (content: string) => {
+        const MAX_LENGTH = 3500;
+        const currentTime = Date.now();
+        if (content.length > MAX_LENGTH) {
+            if (currentTime - lastToastTime > 5000) { 
+                toast.warning(`El contenido excede el límite de ${MAX_LENGTH} caracteres.`);
+                setLastToastTime(currentTime);
+            }
+            content = content.substring(0, MAX_LENGTH);
+        }
         setFormData({
             ...formData,
-            Body,
+            Body: content,
         });
     };
 
@@ -112,6 +129,7 @@ const EditFormAnnouncements = () => {
                     value={formData.Title}
                     onChange={handleChange}
                     size="medium"
+                    inputProps={{ maxLength: 100 }}
                     fullWidth
                 />
                 <Editor
@@ -128,23 +146,38 @@ const EditFormAnnouncements = () => {
                     }}
                     onEditorChange={handleEditorChange}
                 />
-                <TextField
-                    select
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="category"
-                    label="Categoría"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                >
-                    {categories.map((category) => (
-                        <MenuItem key={category} value={category}>
-                            {category}
-                        </MenuItem>
-                    ))}
-                </TextField>
+                {user.role === 'RESIDENT' ? (
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="category"
+                        label="Categoría"
+                        name="category"
+                        value="Publicidad"
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                ) : (
+                    <TextField
+                        select
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="category"
+                        label="Categoría"
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                    >
+                        {categories.map((category) => (
+                            <MenuItem key={category} value={category}>
+                                {category}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                )}
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', mt: 2 }}>
                     <Button
                         color='secondary'
