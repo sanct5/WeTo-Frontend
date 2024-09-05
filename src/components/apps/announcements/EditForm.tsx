@@ -25,7 +25,7 @@ const EditFormAnnouncements = () => {
     const [lastToastTime, setLastToastTime] = useState<number>(0);
 
     const user = useSelector((state: { user: UserState }) => state.user);
-    
+
 
     const categories: AnnouncementCategory[] = [
         "General",
@@ -81,7 +81,7 @@ const EditFormAnnouncements = () => {
         const MAX_LENGTH = 3500;
         const currentTime = Date.now();
         if (content.length > MAX_LENGTH) {
-            if (currentTime - lastToastTime > 5000) { 
+            if (currentTime - lastToastTime > 5000) {
                 toast.warning(`El contenido excede el límite de ${MAX_LENGTH} caracteres.`);
                 setLastToastTime(currentTime);
             }
@@ -107,7 +107,7 @@ const EditFormAnnouncements = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <IconButton
                     color="secondary"
-                    onClick={() => navigate('/app/announcements')}
+                    onClick={() => navigate(user.role === 'RESIDENT' ? '/app/ads' : '/app/announcements')}
                     sx={{ mr: 2 }}
                 >
                     <ArrowBackIosIcon />

@@ -50,7 +50,7 @@ const CreateFormAnnouncements = () => {
         const MAX_LENGTH = 3500;
         const currentTime = Date.now();
         if (content.length > MAX_LENGTH) {
-            if (currentTime - lastToastTime > 5000) { 
+            if (currentTime - lastToastTime > 5000) {
                 toast.warning(`El contenido excede el límite de ${MAX_LENGTH} caracteres.`);
                 setLastToastTime(currentTime);
             }
@@ -61,7 +61,7 @@ const CreateFormAnnouncements = () => {
             Body: content,
         });
     };
-    
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -99,7 +99,11 @@ const CreateFormAnnouncements = () => {
 
     const handleCancel = () => {
         toast.info('Los cambios no se guardaron');
-        navigate('/app/announcements');
+        if (user.role === 'RESIDENT') {
+            navigate('/app/ads');
+        } else {
+            navigate('/app/announcements');
+        }
     };
 
     return (
@@ -108,7 +112,7 @@ const CreateFormAnnouncements = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <IconButton
                         color="secondary"
-                        onClick={() => navigate('/app/announcements')}
+                        onClick={() => navigate(user.role === 'RESIDENT' ? '/app/ads' : '/app/announcements')}
                         sx={{ mr: 2 }}
                     >
                         <ArrowBackIosIcon />
