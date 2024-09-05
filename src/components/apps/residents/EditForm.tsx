@@ -11,6 +11,7 @@ const EditForm = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
+        _id: id,
         idDocument: '',
         userName: '',
         email: '',
@@ -52,7 +53,7 @@ const EditForm = () => {
 
         setIsLoading(true);
         try {
-            await axios.put(`${UserService.baseUrl}${UserService.endpoints.UpdateUser}/${id}`, formData);
+            await axios.put(`${UserService.baseUrl}${UserService.endpoints.UpdateUser}`, formData);
             toast.success('Residente actualizado correctamente');
             navigate('/app/residents');
         } catch (error) {

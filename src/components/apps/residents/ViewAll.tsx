@@ -67,8 +67,7 @@ const viewAll = () => {
     const handleDelete = async (userId: String) => {
         setIsDeleting(true);
         try {
-            let body = { _id: userId };
-            await axios.delete(`${UserService.baseUrl}${UserService.endpoints.DeleteUser}`, { data: body });
+            await axios.delete(`${UserService.baseUrl}${UserService.endpoints.DeleteUser}/${userId}`);
 
             setReloadFlag(!reloadFlag);
             setDeleteModalOpen(false);

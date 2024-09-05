@@ -45,12 +45,11 @@ const MyAds = () => {
             setLoading(true);
             try {
                 const response = await axios.get(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByUser}/${user._id}`);
-
                 const sortedAds = response.data
                     .sort((a: any, b: any) => a.Title.localeCompare(b.Title));
                 setAds(sortedAds);
             } catch (error: AxiosError | any) {
-                toast.info('No se encontraron publicaciones');
+                return;
             } finally {
                 setLoading(false);
             }
