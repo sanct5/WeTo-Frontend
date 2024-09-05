@@ -68,7 +68,6 @@ const viewAll = () => {
         setIsDeleting(true);
         try {
             await axios.delete(`${UserService.baseUrl}${UserService.endpoints.DeleteUser}/${userId}`);
-
             setReloadFlag(!reloadFlag);
             setDeleteModalOpen(false);
             setIsDeleting(false);

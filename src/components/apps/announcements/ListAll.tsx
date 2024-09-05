@@ -58,7 +58,7 @@ const ListAll = () => {
     const handleDelete = async (announcementId: String) => {
         setIsDeleting(true);
         try {
-            axios.delete(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.DeleteAnnouncement}/${announcementId}/${user._id}`);
+            await axios.delete(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.DeleteAnnouncement}/${announcementId}/${user._id}`);
             setReloadFlag(!reloadFlag);
             setDeleteModalOpen(false);
             setIsDeleting(false);
