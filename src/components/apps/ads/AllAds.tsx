@@ -97,7 +97,7 @@ const AllAds = () => {
                 residentAds.length === 0 ? (
                     <Grid container direction="column" justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
                         <Typography variant="h3" component="div" sx={{ mb: 4 }}>
-                            Aún no hay anuncios
+                            Aún no hay publicidad
                         </Typography>
                         <Announcement color='primary' style={{ fontSize: 80 }} />
                     </Grid>
