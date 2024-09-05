@@ -73,7 +73,12 @@ const CreateFormAnnouncements = () => {
             // Llamada a la API
             await axios.post(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.AddAnnouncement}`, AnnouncementData);
             toast.success('Anuncio creado correctamente');
-            navigate('/app/announcements');
+            // Redirigir según el rol del usuario
+            if (user.role === 'RESIDENT') {
+                navigate('/app/ads');
+            } else {
+                navigate('/app/announcements');
+            }
         } catch (error) {
             toast.error('No se pudo crear el anuncio');
         } finally {
@@ -110,6 +115,7 @@ const CreateFormAnnouncements = () => {
                         label="Título"
                         name="Title"
                         value={formData.Title}
+                        inputProps={{ maxLength: 100 }}
                         onChange={handleChange}
                     />
                     <Editor
@@ -125,23 +131,38 @@ const CreateFormAnnouncements = () => {
                         }}
                         onEditorChange={handleEditorChange}
                     />
-                    <TextField
-                        select
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="category"
-                        label="Categoría"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                    >
-                        {categories.map((category) => (
-                            <MenuItem key={category} value={category}>
-                                {category}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                    {user.role === 'RESIDENT' ? (
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="category"
+                            label="Categoría"
+                            name="category"
+                            value="Publicidad"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />
+                    ) : (
+                        <TextField
+                            select
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="category"
+                            label="Categoría"
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                        >
+                            {categories.map((category) => (
+                                <MenuItem key={category} value={category}>
+                                    {category}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    )}
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', mt: 2 }}>
                         <Button
                             color='secondary'
