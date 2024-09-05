@@ -45,6 +45,11 @@ const MyAds = () => {
             setLoading(true);
             try {
                 const response = await axios.get(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByUser}/${user._id}`);
+                console.log(response.data);
+                if (response.data.status === 404) {
+                    setAds([]);
+                    return;
+                }
                 const sortedAds = response.data
                     .sort((a: any, b: any) => a.Title.localeCompare(b.Title));
                 setAds(sortedAds);
