@@ -22,7 +22,7 @@ import {
     CircularProgress,
 } from '@mui/material'
 import axios from 'axios'
-import { AddBox, Delete, Edit } from '@mui/icons-material'
+import { AddBox, Delete, Edit, Help } from '@mui/icons-material'
 import WarningIcon from '@mui/icons-material/Warning';
 import { toast } from 'react-toastify';
 import { AnnouncementsService } from '../../../api/Anouncements'
@@ -51,7 +51,7 @@ const MyAds = () => {
                     return;
                 }
                 const sortedAds = response.data
-                    .sort((a: any, b: any) => a.Title.localeCompare(b.Title));
+                    .sort((a: any, b: any) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
                 setAds(sortedAds);
             } catch (error) {
                 toast.error('Error al cargar las publicaciones');
@@ -83,7 +83,7 @@ const MyAds = () => {
     }
 
     return (
-        <Container disableGutters className="bg-white flex justify-center max-w-3xl rounded-lg">
+        <Container disableGutters className="bg-white flex justify-center max-w-4xl rounded-lg">
             <Box sx={{ flexGrow: 1, maxWidth: 1024, minHeight: '80vh', p: 4 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Typography variant="h5" component="h1" gutterBottom>
@@ -104,12 +104,12 @@ const MyAds = () => {
                         </Link>
                     </Box>
                 </Box>
-                <TableContainer component={Paper}>
-                    {loading ? (
-                        <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
-                            <CircularProgress />
-                        </Box>
-                    ) : (
+                {loading ? (
+                    <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
+                        <CircularProgress />
+                    </Box>
+                ) : (
+                    <TableContainer component={Paper}>
                         <Table>
                             <TableHead>
                                 <TableRow>
@@ -120,40 +120,53 @@ const MyAds = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {ads.map((ad) => (
-                                    <TableRow key={ad._id}>
-                                        <TableCell component="th" scope="row" align='center'>
-                                            {ad.Title}
-                                        </TableCell>
-                                        <TableCell component="th" scope="row" align='center'>
-                                            {format(ad.Date, { date: "short", time: "short" })}
-                                        </TableCell>
-                                        <TableCell component="th" scope="row" align='center'>
-                                            {format(ad.LastModified, { date: "short", time: "short" })}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Link to={`/app/announcements/edit/${ad._id}`}>
-                                                <IconButton
-                                                    aria-label="Edit"
-                                                    color='primary'
-                                                >
-                                                    <Edit />
-                                                </IconButton>
-                                            </Link>
-                                            <IconButton
-                                                onClick={() => openDeleteDialog(ad._id, ad.Title)}
-                                                aria-label="Delete"
-                                                color='secondary'
-                                            >
-                                                <Delete />
-                                            </IconButton>
+                                {ads.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={4} align="center">
+                                            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                                                <Help sx={{ mb: 2 }} fontSize='large' color='secondary' />
+                                                <Typography variant="h5" component="p" gutterBottom>
+                                                    No tienes publicaciones, puedes crear una nueva tocando el botón de arriba
+                                                </Typography>
+                                            </Box>
                                         </TableCell>
                                     </TableRow>
-                                ))}
+                                ) : (
+                                    ads.map((ad) => (
+                                        <TableRow key={ad._id}>
+                                            <TableCell component="th" scope="row" align='center'>
+                                                {ad.Title}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row" align='center'>
+                                                {format(ad.Date, { date: "short", time: "short" })}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row" align='center'>
+                                                {format(ad.LastModified, { date: "short", time: "short" })}
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <Link to={`/app/announcements/edit/${ad._id}`}>
+                                                    <IconButton
+                                                        aria-label="Edit"
+                                                        color='primary'
+                                                    >
+                                                        <Edit />
+                                                    </IconButton>
+                                                </Link>
+                                                <IconButton
+                                                    onClick={() => openDeleteDialog(ad._id, ad.Title)}
+                                                    aria-label="Delete"
+                                                    color='secondary'
+                                                >
+                                                    <Delete />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
                             </TableBody>
                         </Table>
-                    )}
-                </TableContainer>
+                    </TableContainer>
+                )}
 
                 <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
                     <DialogContent>

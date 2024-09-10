@@ -31,6 +31,7 @@ const AllAds = () => {
     const [residentAds, setResidentAds] = useState<Announcements[]>([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
+    const [keyWord, setKeyWord] = useState<string>('');
     const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
 
     const user = useSelector((state: { user: UserState }) => state.user);
@@ -68,23 +69,41 @@ const AllAds = () => {
         }
     }
 
+    const handleSearch = async () => {
+        setLoading(true);
+        if (keyWord.trim() === '') {
+            setReloadFlag(!reloadFlag);
+            return;
+        }
+
+        const response = await axios.get<Announcements[]>(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.SearchAnnouncements}/${keyWord.trim()}`);
+        if (response.data.length === 0) {
+            toast.info('No se encontraron anuncios con la palabra clave ingresada');
+            setLoading(false);
+            return;
+        }
+        const sortedAnnouncements = response.data
+            .filter(announcement => !announcement.isAdmin)
+            .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
+        setResidentAds(sortedAnnouncements);
+        setLoading(false);
+    }
+
     return (
         <Box sx={{ backgroundColor: '#F0F0F0', height: 'max-content', minHeight: '100vh' }}>
-            {!loading && <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', maxWidth: 800, margin: 'auto' }}>
+            {!loading && <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', maxWidth: 800, margin: 'auto' }}>
                 <TextField
                     fullWidth
-                    label="Buscar publicación"
+                    value={keyWord}
+                    onChange={(e) => setKeyWord(e.target.value)}
+                    label="Buscar publicidad"
                     variant="outlined"
-                    sx={{ backgroundColor: 'white', maxWidth: 600, margin: 2 }}
-                    placeholder='Nombre de la publicación'
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <Search />
-                            </InputAdornment>
-                        ),
-                    }}
+                    sx={{ backgroundColor: 'white', margin: 2, maxWidth: 600 }}
+                    placeholder='Buscar por título o contenido'
                 />
+                <IconButton sx={{ mr: 2 }} onClick={handleSearch}>
+                    <Search color='secondary' fontSize='large' />
+                </IconButton>
             </Box>}
             {loading ? (
                 <Grid container justifyContent="center" alignItems="center" style={{ height: '50vh' }}>

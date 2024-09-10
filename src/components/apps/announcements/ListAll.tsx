@@ -108,7 +108,7 @@ const ListAll = () => {
         }
     }
 
-    const handleSerach = async () => {
+    const handleSearch = async () => {
         setLoading(true);
         if (keyWord.trim() === '') {
             setReloadFlag(!reloadFlag);
@@ -158,7 +158,7 @@ const ListAll = () => {
                         sx={{ backgroundColor: 'white', margin: 2, maxWidth: 600 }}
                         placeholder='Buscar un anuncio'
                     />
-                    <IconButton sx={{ mr: 2 }} onClick={handleSerach}>
+                    <IconButton sx={{ mr: 2 }} onClick={handleSearch}>
                         <Search color='secondary' fontSize='large' />
                     </IconButton>
                     {user.role === 'ADMIN' &&
