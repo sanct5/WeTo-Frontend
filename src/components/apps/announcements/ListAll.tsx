@@ -36,6 +36,7 @@ const ListAll = () => {
     const [filteredAnnouncements, setFilteredAnnouncements] = useState<Announcements[]>([]);
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
+    const [keyWord, setKeyWord] = useState<string>('');
     const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
 
     const [tabValue, setTabValue] = useState('one');
@@ -77,8 +78,7 @@ const ListAll = () => {
     useEffect(() => {
         const getAdminAnnouncements = async () => {
             setLoading(true);
-            let idComplex = user.idComplex;
-            const response = await axios.get<Announcements[]>(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByComplex}/${idComplex}`);
+            const response = await axios.get<Announcements[]>(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByComplex}/${user.idComplex}`);
             const sortedAnnouncements = response.data
                 .filter(announcement => announcement.isAdmin)
                 .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
@@ -108,6 +108,27 @@ const ListAll = () => {
         }
     }
 
+    const handleSerach = async () => {
+        setLoading(true);
+        if (keyWord.trim() === '') {
+            setReloadFlag(!reloadFlag);
+            return;
+        }
+
+        const response = await axios.get<Announcements[]>(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.SearchAnnouncements}/${keyWord.trim()}`);
+        if (response.data.length === 0) {
+            toast.info('No se encontraron anuncios con la palabra clave ingresada');
+            setLoading(false);
+            return;
+        }
+        const sortedAnnouncements = response.data
+            .filter(announcement => announcement.isAdmin)
+            .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
+        setAdminAnnouncements(sortedAnnouncements);
+        setFilteredAnnouncements(sortedAnnouncements);
+        setLoading(false);
+    }
+
     return (
         <Box sx={{ backgroundColor: '#F0F0F0', height: 'max-content', minHeight: '100vh' }}>
             {!loading && <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-evenly', alignItems: 'center', margin: 'auto' }}>
@@ -130,12 +151,14 @@ const ListAll = () => {
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '80%' }}>
                     <TextField
                         fullWidth
+                        value={keyWord}
+                        onChange={(e) => setKeyWord(e.target.value)}
                         label="Buscar anuncio"
                         variant="outlined"
                         sx={{ backgroundColor: 'white', margin: 2, maxWidth: 600 }}
                         placeholder='Buscar un anuncio'
                     />
-                    <IconButton sx={{ mr: 2 }}>
+                    <IconButton sx={{ mr: 2 }} onClick={handleSerach}>
                         <Search color='secondary' fontSize='large' />
                     </IconButton>
                     {user.role === 'ADMIN' &&
