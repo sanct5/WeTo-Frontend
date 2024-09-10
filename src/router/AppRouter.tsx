@@ -55,17 +55,13 @@ const router = createBrowserRouter([
             },
             // Profile
             {
-                path: 'profile',
+                path: 'profile/:id',
                 element: <WorkingOn />,
             },
             // Residents
             {
                 path: 'residents',
                 element: <ViewAll />,
-            },
-            {
-                path: 'residents/:id',
-                element: <WorkingOn />,
             },
             {
                 path: 'residents/create',
