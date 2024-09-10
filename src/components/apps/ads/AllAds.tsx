@@ -47,7 +47,7 @@ const AllAds = () => {
             setLoading(false);
         };
         getResidentAds();
-    }, [reloadFlag]);
+    }, [reloadFlag, user.idComplex]);
 
     const openDeleteDialog = (AnnouncementId: string, AnnouncementUser: string, userId: string) => {
         setselectedAnnouncement({ AnnouncementId, AnnouncementUser, userId });

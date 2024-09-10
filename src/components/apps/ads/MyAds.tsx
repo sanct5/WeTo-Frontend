@@ -21,7 +21,7 @@ import {
     DialogActions,
     CircularProgress,
 } from '@mui/material'
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { AddBox, Delete, Edit } from '@mui/icons-material'
 import WarningIcon from '@mui/icons-material/Warning';
 import { toast } from 'react-toastify';
@@ -53,15 +53,15 @@ const MyAds = () => {
                 const sortedAds = response.data
                     .sort((a: any, b: any) => a.Title.localeCompare(b.Title));
                 setAds(sortedAds);
-            } catch (error: AxiosError | any) {
-                return;
+            } catch (error) {
+                toast.error('Error al cargar las publicaciones');
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, [reloadFlag]);
+    }, [reloadFlag, user._id]);
 
     const openDeleteDialog = (adId: string, adTitle: string) => {
         setSelectedAd({ adId, adTitle });
