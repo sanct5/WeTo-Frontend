@@ -12,8 +12,7 @@ import {
     DialogActions,
     CircularProgress,
     DialogContentText,
-    TextField,
-    InputAdornment
+    TextField
 } from '@mui/material';
 import { format } from '@formkit/tempo';
 import axios from 'axios';
