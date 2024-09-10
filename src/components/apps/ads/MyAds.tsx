@@ -45,7 +45,7 @@ const MyAds = () => {
             setLoading(true);
             try {
                 const response = await axios.get(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByUser}/${user._id}`);
-                console.log(response.data);
+
                 if (response.data.status === 404) {
                     setAds([]);
                     return;
