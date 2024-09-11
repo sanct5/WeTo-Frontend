@@ -59,6 +59,7 @@ const AllAds = () => {
         try {
             await axios.delete(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.DeleteAnnouncement}/${announcementId}/${user._id}`);
             setReloadFlag(!reloadFlag);
+            setKeyWord('');
             setDeleteModalOpen(false);
             setIsDeleting(false);
             toast.success('Publicidad eliminada correctamente');
@@ -75,15 +76,23 @@ const AllAds = () => {
             return;
         }
 
-        const response = await axios.get<Announcements[]>(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.SearchAnnouncements}/${keyWord.trim()}`);
+        const response = await axios.get<Announcements[]>(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.SearchAnnouncements}/${keyWord.trim()}/${user.idComplex}`);
         if (response.data.length === 0) {
             toast.info('No se encontraron anuncios con la palabra clave ingresada');
             setLoading(false);
             return;
         }
+
         const sortedAnnouncements = response.data
             .filter(announcement => !announcement.isAdmin)
             .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
+
+        // Esto es debido a que el back trae tanto los anuncios de los residentes como los de los admins, se debe crear otro endpoint para traer solo los anuncios de los residentes
+        if (sortedAnnouncements.length === 0) {
+            toast.info('No se encontraron anuncios con la palabra clave ingresada');
+            setLoading(false);
+            return;
+        }
         setResidentAds(sortedAnnouncements);
         setLoading(false);
     }
