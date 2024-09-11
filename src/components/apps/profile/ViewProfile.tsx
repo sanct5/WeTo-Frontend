@@ -2,16 +2,26 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UserService } from '../../../api/UserService';
 import axios from 'axios';
-import { Container, CardContent, Typography, Grid, Avatar, Box } from '@mui/material';
+import {
+    Container,
+    CardContent,
+    Typography,
+    Grid,
+    Avatar,
+    Box,
+    CircularProgress
+} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
-import BadgeIcon from '@mui/icons-material/Badge';
-import EmailIcon from '@mui/icons-material/Email';
-import HomeIcon from '@mui/icons-material/Home';
-import PhoneIcon from '@mui/icons-material/Phone';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import { UserState } from '../../../hooks/users/userSlice';
 import { useSelector } from 'react-redux';
-
+import {
+    ErrorOutline,
+    Badge,
+    Email,
+    Home,
+    Phone,
+    AssignmentInd
+} from '@mui/icons-material';
 
 const ViewProfile = () => {
     const { id } = useParams<{ id: string }>();
@@ -25,7 +35,7 @@ const ViewProfile = () => {
             const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUserById}/${id}`);
             setProfile(response.data);
         } catch (error) {
-            console.error('Error fetching user:', error);
+            return;
         } finally {
             setLoading(false);
         }
@@ -36,19 +46,23 @@ const ViewProfile = () => {
             if (user.role === 'ADMIN' || user._id === id) {
                 fetchUserById(id);
             } else {
-                navigate('/404');
+                if (!user._id) {
+                    return;
+                } else {
+                    navigate(`/404`);
+                }
             }
         }
 
-    }, [id]);
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    }, [user._id, id]);
 
     return (
-        <Container maxWidth="sm" sx={{ height: {xs: '100vh', sm: 'fit-content'}, backgroundColor: 'white', borderRadius: '20px', padding: 2, boxShadow: 3 }}>
-            {profile ? (
+        <Container maxWidth="sm" sx={{ height: { xs: '100vh', sm: 'fit-content' }, backgroundColor: 'white', borderRadius: '20px', padding: 2, boxShadow: 3 }}>
+            {loading ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                    <CircularProgress />
+                </Box>
+            ) : profile ? (
                 <CardContent>
                     <Box display="flex" justifyContent="center" mb={3}>
                         <Avatar sx={{ bgcolor: 'primary.main', width: 64, height: 64 }}>
@@ -59,43 +73,51 @@ const ViewProfile = () => {
                         {profile.userName}
                     </Typography>
                     <Grid container spacing={2}>
-                        <Grid item xs={2}>
-                            <BadgeIcon color="secondary" />
+                        <Grid item xs={2} container alignItems="center">
+                            <Badge fontSize='large' color="secondary" />
                         </Grid>
-                        <Grid item xs={10}>
+                        <Grid item xs={10} container alignItems="center">
                             <Typography variant="body1"><strong>Número de documento:</strong> {profile.idDocument}</Typography>
                         </Grid>
 
-                        <Grid item xs={2}>
-                            <EmailIcon color="secondary"/>
+                        <Grid item xs={2} container alignItems="center">
+                            <Email color="secondary" fontSize='large' />
                         </Grid>
-                        <Grid item xs={10}>
+                        <Grid item xs={10} container alignItems="center">
                             <Typography variant="body1"><strong>Email:</strong> {profile.email}</Typography>
                         </Grid>
 
-                        <Grid item xs={2}>
-                            <HomeIcon color="secondary"/>
+                        <Grid item xs={2} container alignItems="center">
+                            <Home color="secondary" fontSize='large' />
                         </Grid>
-                        <Grid item xs={10}>
+                        <Grid item xs={10} container alignItems="center">
                             <Typography variant="body1"><strong>Apartamento:</strong> {profile.apartment}</Typography>
                         </Grid>
 
-                        <Grid item xs={2}>
-                            <PhoneIcon color="secondary"/>
+                        <Grid item xs={2} container alignItems="center">
+                            <Phone color="secondary" fontSize='large' />
                         </Grid>
-                        <Grid item xs={10}>
+                        <Grid item xs={10} container alignItems="center">
                             <Typography variant="body1"><strong>Teléfono:</strong> {profile.phone}</Typography>
                         </Grid>
-                        <Grid item xs={2}>
-                            <AssignmentIndIcon color="secondary"/>
+                        <Grid item xs={2} container alignItems="center">
+                            <AssignmentInd color="secondary" fontSize='large' />
                         </Grid>
-                        <Grid item xs={10}>
+                        <Grid item xs={10} container alignItems="center">
                             <Typography variant="body1"><strong>Rol:</strong> {profile.role}</Typography>
                         </Grid>
                     </Grid>
                 </CardContent>
             ) : (
-                <Typography variant="body1" align="center">No se encontró el usuario</Typography>
+                <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100%">
+                    <ErrorOutline sx={{ fontSize: 40, mb: 2 }} color='primary' />
+                    <Typography variant="h5" align="center" gutterBottom>
+                        No se encontró el usuario
+                    </Typography>
+                    <Typography variant="body1" align="center">
+                        Por favor, verifica la información e intenta nuevamente.
+                    </Typography>
+                </Box>
             )}
         </Container>
     );
