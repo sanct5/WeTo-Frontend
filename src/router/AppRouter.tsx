@@ -11,6 +11,7 @@ import EditFormAnnouncements from '../components/apps/announcements/EditForm';
 import ListAll from '../components/apps/announcements/ListAll';
 import ProtectedRoute from './ProtectedRoute';
 import AdTabs from '../components/apps/ads/AdTabs';
+import ViewProfile from '../components/apps/profile/ViewProfile';
 
 
 const router = createBrowserRouter([
@@ -56,12 +57,16 @@ const router = createBrowserRouter([
             // Profile
             {
                 path: 'profile/:id',
-                element: <WorkingOn />,
+                element: <ViewProfile />,
             },
             // Residents
             {
                 path: 'residents',
-                element: <ViewAll />,
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <ViewAll />
+                    </ProtectedRoute>
+                ),
             },
             {
                 path: 'residents/create',
