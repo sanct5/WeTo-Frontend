@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children }) => {
-    let user = localStorage.getItem('user');
+    const user = localStorage.getItem('user') || sessionStorage.getItem('user');
     let role = user ? JSON.parse(user).role : 'RESIDENT';
     return allowedRoles.includes(role) ? <>{children}</> : <Navigate to="/404" replace />;
 };

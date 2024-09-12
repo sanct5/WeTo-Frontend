@@ -63,6 +63,8 @@ export const LoginUser = (data: FormData) => {
 
             if (stayLogged) {
                 localStorage.setItem('user', JSON.stringify(user));
+            } else {
+                sessionStorage.setItem('user', JSON.stringify(user));
             }
 
             toast.success(`Bienvenid@ ${user.userName}`);
