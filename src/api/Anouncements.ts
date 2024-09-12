@@ -7,5 +7,6 @@ export const AnnouncementsService = {
         UpdateAnnouncement: '/updateAnoun',
         AddAnnouncement: '/addAnoun',
         DeleteAnnouncement: '/deleteAnoun',
+        SearchAnnouncements: '/searchAnnouncements',
     },
 };

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { UserState } from '../../../hooks/users/userSlice'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
     Box,
     Button,
@@ -37,27 +37,26 @@ const viewAll = () => {
     const [selectedUser, setSelectedUser] = useState<any>({ userId: '', userName: '' });
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
+    const navigate = useNavigate();
+
     const user = useSelector((state: { user: UserState }) => state.user);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             let idComplex = user.idComplex;
-            try {
-                const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUsersByComplex}/${idComplex}`);
-                const sortedResidents = response.data
-                    .sort((a: any, b: any) => a.userName.localeCompare(b.userName))
-                    .filter((resident: any) => resident.idDocument !== user.idDocument);
-                setResidents(sortedResidents);
-            } catch (error) {
-                toast.error('Ocurrió un error al obtener los residentes');
-            } finally {
-                setLoading(false);
-            }
+
+            const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUsersByComplex}/${idComplex}`);
+            const sortedResidents = response.data
+                .sort((a: any, b: any) => a.userName.localeCompare(b.userName))
+                .filter((resident: any) => resident.idDocument !== user.idDocument);
+            setResidents(sortedResidents);
+
+            setLoading(false);
         };
 
         fetchData();
-    }, [reloadFlag]);
+    }, [reloadFlag, user.idComplex]);
 
     const openDeleteDialog = (userId: string, userName: string) => {
         setSelectedUser({ userId, userName });
@@ -79,7 +78,7 @@ const viewAll = () => {
     }
 
     return (
-        <Container disableGutters className="bg-white flex justify-center max-w-3xl rounded-lg">
+        <Container disableGutters className="bg-white flex justify-center max-w-4xl rounded-lg">
             <Box sx={{ flexGrow: 1, maxWidth: 1024, minHeight: '80vh', p: 4 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Typography variant="h5" component="h1" gutterBottom>
@@ -94,6 +93,9 @@ const viewAll = () => {
                         <AddBox />
                     </IconButton>
                 </Box>
+                <Typography variant="body1" mb={2}>
+                    Aquí puedes ver a todos los residentes de tu unidad. Para ver más detalles de un residente, haz clic en su nombre.
+                </Typography>
                 <TableContainer component={Paper}>
                     {loading ? (
                         <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
@@ -112,7 +114,14 @@ const viewAll = () => {
                             <TableBody>
                                 {residents.map((resident) => (
                                     <TableRow key={resident.idDocument}>
-                                        <TableCell component="th" scope="row" align='center'>
+                                        <TableCell
+                                            component="th"
+                                            scope="row"
+                                            align="center"
+                                            onClick={() => navigate(`/app/profile/${resident._id}`)}
+                                            sx={{ cursor: 'pointer' }}
+                                            className="transform transition-transform duration-300 hover:scale-125 hover:font-bold"
+                                        >
                                             {resident.userName}
                                         </TableCell>
                                         <TableCell component="th" scope="row" align='center'>

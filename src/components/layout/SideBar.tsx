@@ -47,6 +47,7 @@ export default function SideBar() {
     //Función para cerrar sesión
     const handleLogout = () => {
         localStorage.clear();
+        sessionStorage.clear();
         dispatch(resetUser());
         navigate("/login");
     }
@@ -54,7 +55,7 @@ export default function SideBar() {
     //Estado para almacenar los datos del usuario
     const user = useSelector((state: { user: UserState }) => state.user);
 
-    const loggedUser = JSON.parse(localStorage.getItem('user') as string);
+    const loggedUser = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') as string);
 
     //Si el usuario no está logueado y no marcó la casilla de "recuerdame", se redirige al login
     useEffect(() => {
