@@ -27,7 +27,7 @@ import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
 import { Announcements } from '../models'
 import parse from 'html-react-parser'
-import { CalendarMonth, DateRangeRounded, AddBox, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House, Announcement } from '@mui/icons-material';
+import { CalendarMonth, DateRangeRounded, AddBox, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House, Announcement, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
 const ListAll = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -37,6 +37,7 @@ const ListAll = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const [keyWord, setKeyWord] = useState<string>('');
+    const [orderMostRecent, setOrderMostRecent] = useState<boolean>(true);
     const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
 
     const [tabValue, setTabValue] = useState('one');
@@ -139,6 +140,20 @@ const ListAll = () => {
         setLoading(false);
     }
 
+    const handleOrder = () => {
+        setLoading(true);
+        if (orderMostRecent) {
+            const sortedAnnouncements = adminAnnouncements.sort((a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime());
+            setFilteredAnnouncements(sortedAnnouncements);
+            setOrderMostRecent(false);
+        } else {
+            const sortedAnnouncements = adminAnnouncements.sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
+            setFilteredAnnouncements(sortedAnnouncements);
+            setOrderMostRecent(true);
+        }
+        setLoading(false);
+    }
+
     return (
         <Box sx={{ backgroundColor: '#F0F0F0', height: 'max-content', minHeight: '100vh' }}>
             {!loading && <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-evenly', alignItems: 'center', margin: 'auto' }}>
@@ -158,7 +173,27 @@ const ListAll = () => {
                     <Tab icon={<Groups />} iconPosition='start' value="four" label={isXs ? '' : 'Reuniones'} />
                     <Tab icon={<Handyman />} iconPosition='start' value="five" label={isXs ? '' : 'Mantenimiento'} />
                 </Tabs>
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '80%' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '90%' }}>
+                    <>
+                        {isXs ? (
+                            <IconButton onClick={handleOrder}>
+                                {orderMostRecent ? (
+                                    <ArrowDownward color='secondary' fontSize='large' />
+                                ) : (
+                                    <ArrowUpward color='secondary' fontSize='large' />
+                                )}
+                            </IconButton>
+                        ) : (
+                            <Button
+                                variant="contained"
+                                color={orderMostRecent ? 'secondary' : 'primary'}
+                                onClick={handleOrder}
+                                size='small'
+                            >
+                                {orderMostRecent ? 'Antiguos' : 'Recientes'}
+                            </Button>
+                        )}
+                    </>
                     <TextField
                         fullWidth
                         value={keyWord}
