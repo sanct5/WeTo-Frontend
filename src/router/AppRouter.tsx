@@ -42,6 +42,18 @@ const router = createBrowserRouter([
                 element: <ListAll />,
             },
             {
+                path: 'cases',
+                element: <WorkingOn />,
+            },
+            {
+                path: 'pqrs',
+                element: <WorkingOn />,
+            },
+            {
+                path: 'pqrs/create',
+                element: <WorkingOn />,
+            },
+            {
                 path: 'announcements/create',
                 element: <CreateFormAnnouncements />,
             },
@@ -84,6 +96,10 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 ),
             },
+            {
+                path: 'config',
+                element: <WorkingOn />,
+            }
         ],
     },
 ]);
