@@ -92,7 +92,7 @@ const ComplexColors = () => {
                         onChange={(newColor) => handleColorChange(newColor, 'primary')}
                         fullWidth
                         format='hex'
-                        sx={{ backgroundColor: 'white'}}
+                        sx={{ backgroundColor: 'white' }}
                     />
                 </Grid>
                 <Grid item xs={12} md={6}>
