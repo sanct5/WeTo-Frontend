@@ -115,6 +115,7 @@ const ListAll = () => {
         setLoading(true);
         if (keyWord.trim() === '') {
             setReloadFlag(!reloadFlag);
+            setTabValue('one');
             return;
         }
 
@@ -135,6 +136,8 @@ const ListAll = () => {
             setLoading(false);
             return;
         }
+
+        setTabValue('one');
         setAdminAnnouncements(sortedAnnouncements);
         setFilteredAnnouncements(sortedAnnouncements);
         setLoading(false);
@@ -143,12 +146,12 @@ const ListAll = () => {
     const handleOrder = () => {
         setLoading(true);
         if (orderMostRecent) {
-            const sortedAnnouncements = adminAnnouncements.sort((a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime());
-            setFilteredAnnouncements(sortedAnnouncements);
+            adminAnnouncements.sort((a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime());
+            filterAnnouncements(tabValue);
             setOrderMostRecent(false);
         } else {
-            const sortedAnnouncements = adminAnnouncements.sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
-            setFilteredAnnouncements(sortedAnnouncements);
+            adminAnnouncements.sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
+            filterAnnouncements(tabValue);
             setOrderMostRecent(true);
         }
         setLoading(false);
