@@ -43,15 +43,27 @@ const router = createBrowserRouter([
             },
             {
                 path: 'cases',
-                element: <WorkingOn />,
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <WorkingOn />
+                    </ProtectedRoute>
+                )
             },
             {
                 path: 'pqrs',
-                element: <WorkingOn />,
+                element: (
+                    <ProtectedRoute allowedRoles={['RESIDENT']}>
+                        <WorkingOn />
+                    </ProtectedRoute>
+                )
             },
             {
                 path: 'pqrs/create',
-                element: <WorkingOn />,
+                element: (
+                    <ProtectedRoute allowedRoles={['RESIDENT']}>
+                        <WorkingOn />
+                    </ProtectedRoute>
+                )
             },
             {
                 path: 'announcements/create',
@@ -98,7 +110,11 @@ const router = createBrowserRouter([
             },
             {
                 path: 'config',
-                element: <WorkingOn />,
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <WorkingOn />
+                    </ProtectedRoute>
+                )
             }
         ],
     },
