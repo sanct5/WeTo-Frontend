@@ -12,6 +12,7 @@ import ListAll from '../components/apps/announcements/ListAll';
 import ProtectedRoute from './ProtectedRoute';
 import AdTabs from '../components/apps/ads/AdTabs';
 import ViewProfile from '../components/apps/profile/ViewProfile';
+import ConfigTabs from '../components/apps/config/ConfigTabs';
 
 
 const router = createBrowserRouter([
@@ -112,7 +113,7 @@ const router = createBrowserRouter([
                 path: 'config',
                 element: (
                     <ProtectedRoute allowedRoles={['ADMIN']}>
-                        <WorkingOn />
+                        <ConfigTabs />
                     </ProtectedRoute>
                 )
             }
