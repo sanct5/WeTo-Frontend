@@ -5,6 +5,6 @@ export const ComplexService = {
         DeleteComplex: '/deleteComplex',
         GetComplex: '/getComplex',
         AddComplex: '/addComplex',
-    
+        UpdateComplexColors: '/updateComplexColors',    
     },
 };

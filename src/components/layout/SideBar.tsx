@@ -15,10 +15,12 @@ import {
 import TopBar from './TopBar';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser, UserState, resetUser } from '../../hooks/users/userSlice';
+import { setUser, UserState, resetUser, setComplexColors } from '../../hooks/users/userSlice';
 import { toast } from 'react-toastify';
 import { userOptions } from './NavOptions';
 import { Role } from '../../hooks/users/userSlice';
+import axios from 'axios';
+import { ComplexService } from '../../api/ComplexService';
 
 const drawerWidth = 200;
 
@@ -49,6 +51,10 @@ export default function SideBar() {
         localStorage.clear();
         sessionStorage.clear();
         dispatch(resetUser());
+        dispatch(setComplexColors({
+            primaryColor: '#0097b2',
+            secondaryColor: '#ff914d',
+        }));
         navigate("/login");
     }
 
@@ -57,10 +63,25 @@ export default function SideBar() {
 
     const loggedUser = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') as string);
 
+    const fetchComplexColors = async () => {
+        try {
+            const response = await axios.get(`${ComplexService.baseUrl}${ComplexService.endpoints.ComplexColors}/${user.idComplex}`);
+            dispatch(setComplexColors({ primaryColor: response.data.config.primaryColor, secondaryColor: response.data.config.secondaryColor }));
+            if (user.stayLogged) {
+                localStorage.setItem('user', JSON.stringify({ ...user, config: response.data.config }));
+            } else {
+                sessionStorage.setItem('user', JSON.stringify({ ...user, config: response.data.config }));
+            }
+        } catch (error) {
+            return;
+        }
+    };
+
     //Si el usuario no está logueado y no marcó la casilla de "recuerdame", se redirige al login
     useEffect(() => {
         if (loggedUser) {
             dispatch(setUser(loggedUser));
+            fetchComplexColors();
         }
 
         if (!user.isLogged && !loggedUser) {

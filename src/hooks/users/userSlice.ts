@@ -57,8 +57,12 @@ export const userSlice = createSlice({
         setStayLogged: (state, action) => {
             state.stayLogged = action.payload;
         },
+        setComplexColors: (state, action) => {
+            state.config.primaryColor = action.payload.primaryColor;
+            state.config.secondaryColor = action.payload.secondaryColor;
+        }
     },
 });
 
-export const { setUser, setStayLogged, resetUser } = userSlice.actions;
+export const { setUser, setStayLogged, resetUser, setComplexColors } = userSlice.actions;
 export default userSlice.reducer;

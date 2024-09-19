@@ -37,7 +37,7 @@ export function useUserCustomTheme() {
         },
       },
     }));
-  }, [config]);
+  }, [config.primaryColor, config.secondaryColor]);
 
   return theme;
 }

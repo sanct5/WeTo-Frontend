@@ -12,7 +12,9 @@ import ListAll from '../components/apps/announcements/ListAll';
 import ProtectedRoute from './ProtectedRoute';
 import AdTabs from '../components/apps/ads/AdTabs';
 import ViewProfile from '../components/apps/profile/ViewProfile';
-
+import ConfigTabs from '../components/apps/config/ConfigTabs';
+import PQRSTabs from '../components/apps/pqrs/PqrsTabs';
+import ViewCases from '../components/apps/cases/ViewCases';
 
 const router = createBrowserRouter([
     {
@@ -35,6 +37,23 @@ const router = createBrowserRouter([
             {
                 path: 'dashboard',
                 element: <WorkingOn />,
+            },
+            // PQRS
+            {
+                path: 'cases',
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <ViewCases />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: 'pqrs',
+                element: (
+                    <ProtectedRoute allowedRoles={['RESIDENT']}>
+                        <PQRSTabs />
+                    </ProtectedRoute>
+                )
             },
             // Announcements
             {
@@ -84,6 +103,14 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 ),
             },
+            {
+                path: 'config',
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <ConfigTabs />
+                    </ProtectedRoute>
+                )
+            }
         ],
     },
 ]);

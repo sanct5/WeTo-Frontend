@@ -27,7 +27,7 @@ import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
 import { Announcements } from '../models'
 import parse from 'html-react-parser'
-import { CalendarMonth, DateRangeRounded, AddBox, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House, Announcement } from '@mui/icons-material';
+import { CalendarMonth, DateRangeRounded, AddBox, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House, Announcement, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
 const ListAll = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -37,6 +37,7 @@ const ListAll = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const [keyWord, setKeyWord] = useState<string>('');
+    const [orderMostRecent, setOrderMostRecent] = useState<boolean>(true);
     const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
 
     const [tabValue, setTabValue] = useState('one');
@@ -73,7 +74,7 @@ const ListAll = () => {
 
     const user = useSelector((state: { user: UserState }) => state.user);
     const theme = useTheme();
-    const isXs = useMediaQuery(theme.breakpoints.down('lg'));
+    const isXl = useMediaQuery(theme.breakpoints.down('xl'));
 
     useEffect(() => {
         const getAdminAnnouncements = async () => {
@@ -114,6 +115,7 @@ const ListAll = () => {
         setLoading(true);
         if (keyWord.trim() === '') {
             setReloadFlag(!reloadFlag);
+            setTabValue('one');
             return;
         }
 
@@ -134,8 +136,24 @@ const ListAll = () => {
             setLoading(false);
             return;
         }
+
+        setTabValue('one');
         setAdminAnnouncements(sortedAnnouncements);
         setFilteredAnnouncements(sortedAnnouncements);
+        setLoading(false);
+    }
+
+    const handleOrder = () => {
+        setLoading(true);
+        if (orderMostRecent) {
+            adminAnnouncements.sort((a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime());
+            filterAnnouncements(tabValue);
+            setOrderMostRecent(false);
+        } else {
+            adminAnnouncements.sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
+            filterAnnouncements(tabValue);
+            setOrderMostRecent(true);
+        }
         setLoading(false);
     }
 
@@ -152,13 +170,32 @@ const ListAll = () => {
                     indicatorColor="secondary"
                     aria-label="Tabs"
                 >
-                    <Tab icon={<Announcement />} iconPosition='start' value="one" label={isXs ? '' : 'Todos'} />
-                    <Tab icon={<House />} iconPosition='start' value="two" label={isXs ? '' : 'Servicios'} />
-                    <Tab icon={<Interests />} iconPosition='start' value="three" label={isXs ? '' : 'General'} />
-                    <Tab icon={<Groups />} iconPosition='start' value="four" label={isXs ? '' : 'Reuniones'} />
-                    <Tab icon={<Handyman />} iconPosition='start' value="five" label={isXs ? '' : 'Mantenimiento'} />
+                    <Tab icon={<Announcement />} iconPosition='start' value="one" label={isXl ? '' : 'Todos'} />
+                    <Tab icon={<House />} iconPosition='start' value="two" label={isXl ? '' : 'Servicios'} />
+                    <Tab icon={<Interests />} iconPosition='start' value="three" label={isXl ? '' : 'General'} />
+                    <Tab icon={<Groups />} iconPosition='start' value="four" label={isXl ? '' : 'Reuniones'} />
+                    <Tab icon={<Handyman />} iconPosition='start' value="five" label={isXl ? '' : 'Mantenimiento'} />
                 </Tabs>
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '80%' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '90%' }}>
+                    <>
+                        {isXl ? (
+                            <IconButton onClick={handleOrder}>
+                                {orderMostRecent ? (
+                                    <ArrowDownward color='secondary' fontSize='large' />
+                                ) : (
+                                    <ArrowUpward color='secondary' fontSize='large' />
+                                )}
+                            </IconButton>
+                        ) : (
+                            <Button
+                                variant="outlined"
+                                color={orderMostRecent ? 'secondary' : 'primary'}
+                                onClick={handleOrder}
+                            >
+                                {orderMostRecent ? 'Antiguos' : 'Recientes'}
+                            </Button>
+                        )}
+                    </>
                     <TextField
                         fullWidth
                         value={keyWord}
