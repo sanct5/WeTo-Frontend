@@ -86,7 +86,7 @@ const ViewCases = () => {
                                 </Typography>
                                 <Typography variant="body1" sx={{ mt: 1 }}>
                                     <Person color='primary' sx={{ mr: 1 }} />
-                                    {c.user}
+                                    {c.userName}
                                 </Typography>
                                 <Typography variant="body2" component="p">
                                     <CalendarMonth color='secondary' sx={{ mr: 1 }} />
@@ -126,7 +126,7 @@ const ViewCases = () => {
                                 </Typography>
                                 <Typography variant="body1" sx={{ mt: 1 }}>
                                     <Person color='primary' sx={{ mr: 1 }} />
-                                    {c.user}
+                                    {c.userName}
                                 </Typography>
                                 <Typography variant="body2" component="p">
                                     <CalendarMonth color='secondary' sx={{ mr: 1 }} />
@@ -166,7 +166,7 @@ const ViewCases = () => {
                                 </Typography>
                                 <Typography variant="body1" sx={{ mt: 1 }}>
                                     <Person color='primary' sx={{ mr: 1 }} />
-                                    {c.user}
+                                    {c.userName}
                                 </Typography>
                                 <Typography variant="body2" component="p">
                                     <CalendarMonth color='secondary' sx={{ mr: 1 }} />

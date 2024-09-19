@@ -15,6 +15,7 @@ export type AnnouncementCategory = "Mantenimiento" | "Servicios" | "General" | "
 export type Pqrs = {
     _id: string;
     user: string;
+    userName: string;
     case: string;
     description: string;
     category: PqrsCategory;
