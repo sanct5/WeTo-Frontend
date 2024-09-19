@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Button, Typography, Box, CircularProgress } from '@mui/material';
+import { Typography, Box, CircularProgress } from '@mui/material';
 import { MuiColorInput } from 'mui-color-input';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { ComplexService } from '../../../api/ComplexService';
 import { setComplexColors, UserState } from '../../../hooks/users/userSlice';
-
+import { LoadingButton } from '@mui/lab';
 
 interface ComplexColorsProps {
     primaryColor: string;
@@ -18,15 +18,14 @@ const defaultColors: ComplexColorsProps = {
     secondaryColor: '#ff914d',
 };
 
-
 const ComplexColors = () => {
     const [colors, setColors] = useState<ComplexColorsProps>({ primaryColor: '#FFFFFF', secondaryColor: '#000000' });
-    const [loading, setLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const user = useSelector((state: { user: UserState }) => state.user);
 
     const dispatch = useDispatch();
-
 
     const fetchComplexColors = async () => {
         try {
@@ -49,6 +48,8 @@ const ComplexColors = () => {
             secondaryColor: colors.secondaryColor,
         };
 
+        setIsLoading(true);
+
         try {
             await axios.put(`${ComplexService.baseUrl}${ComplexService.endpoints.UpdateComplexColors}/${user.idComplex}`, payload);
             toast.success('Colores actualizados exitosamente.');
@@ -60,6 +61,9 @@ const ComplexColors = () => {
             }
         } catch (error) {
             toast.error('Error al actualizar los colores.');
+        }
+        finally {
+            setIsLoading(false);
         }
     };
 
@@ -75,6 +79,9 @@ const ComplexColors = () => {
             primaryColor: defaultColors.primaryColor,
             secondaryColor: defaultColors.secondaryColor,
         };
+
+        setIsLoading(true);
+
         try {
             await axios.put(`${ComplexService.baseUrl}${ComplexService.endpoints.UpdateComplexColors}/${user.idComplex}`, payload);
             toast.success('Colores restablecidos a los valores predeterminados.');
@@ -88,8 +95,10 @@ const ComplexColors = () => {
         } catch (error) {
             toast.error('Error al restablecer los colores.');
         }
+        finally {
+            setIsLoading(false);
+        }
     };
-
 
     useEffect(() => {
         if (user.idComplex) {
@@ -106,40 +115,53 @@ const ComplexColors = () => {
     }
 
     return (
-        <Box maxWidth={800} padding={3} display={'flex'} flexDirection={'column'} >
-            <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} sx={{justifyContent: 'center', alignItems: 'center'}} gap={3}>
-                <Box flex={1}>
-                    <Typography variant="body1">Color Primario</Typography>
-                    <MuiColorInput
-                        value={colors.primaryColor}
-                        onChange={(newColor) => handleColorChange(newColor, 'primary')}
-                        fullWidth
-                        format='hex'
-                        sx={{ backgroundColor: 'white' }}
-                    />
+        <Box display="flex" justifyContent="center" height="100vh">
+            <Box maxWidth={800} padding={3} display={'flex'} flexDirection={'column'}>
+                <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} sx={{ justifyContent: 'center', alignItems: 'center' }} gap={3}>
+                    <Box flex={1}>
+                        <Typography variant="body1">Color Primario</Typography>
+                        <MuiColorInput
+                            value={colors.primaryColor}
+                            onChange={(newColor) => handleColorChange(newColor, 'primary')}
+                            fullWidth
+                            format='hex'
+                            sx={{ backgroundColor: 'white' }}
+                        />
+                    </Box>
+                    <Box flex={1}>
+                        <Typography variant="body1">Color Secundario</Typography>
+                        <MuiColorInput
+                            value={colors.secondaryColor}
+                            onChange={(newColor) => handleColorChange(newColor, 'secondary')}
+                            fullWidth
+                            format='hex'
+                            sx={{ backgroundColor: 'white' }}
+                        />
+                    </Box>
                 </Box>
-                <Box flex={1}>
-                    <Typography variant="body1">Color Secundario</Typography>
-                    <MuiColorInput
-                        value={colors.secondaryColor}
-                        onChange={(newColor) => handleColorChange(newColor, 'secondary')}
-                        fullWidth
-                        format='hex'
-                        sx={{ backgroundColor: 'white' }}
-                    />
-                </Box>
-            </Box>
 
-            <Box mt={4} display="flex" justifyContent="flex-end">
-                <Button variant="contained" color="secondary" sx={{mr: 2}} onClick={resetToDefaultColors}>
-                    Restablecer Valores
-                </Button>
-                <Button variant="contained" color="primary" onClick={updateComplexColors}>
-                    Guardar Cambios
-                </Button>
+                <Box mt={4} display="flex" justifyContent="flex-end">
+                    <LoadingButton
+                        loading={isLoading}
+                        variant="contained"
+                        color="secondary"
+                        onClick={resetToDefaultColors}
+                        sx={{ mr: 2 }}
+                    >
+                        Restablecer Valores
+                    </LoadingButton>
+                    <LoadingButton
+                        loading={isLoading}
+                        variant="contained"
+                        onClick={updateComplexColors}
+                        color="primary"
+                    >
+                        Guardar
+                    </LoadingButton>
+                </Box>
             </Box>
         </Box>
     );
 }
 
-    export default ComplexColors;
+export default ComplexColors;
