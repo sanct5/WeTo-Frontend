@@ -74,7 +74,7 @@ const ListAll = () => {
 
     const user = useSelector((state: { user: UserState }) => state.user);
     const theme = useTheme();
-    const isXs = useMediaQuery(theme.breakpoints.down('lg'));
+    const isXl = useMediaQuery(theme.breakpoints.down('xl'));
 
     useEffect(() => {
         const getAdminAnnouncements = async () => {
@@ -170,15 +170,15 @@ const ListAll = () => {
                     indicatorColor="secondary"
                     aria-label="Tabs"
                 >
-                    <Tab icon={<Announcement />} iconPosition='start' value="one" label={isXs ? '' : 'Todos'} />
-                    <Tab icon={<House />} iconPosition='start' value="two" label={isXs ? '' : 'Servicios'} />
-                    <Tab icon={<Interests />} iconPosition='start' value="three" label={isXs ? '' : 'General'} />
-                    <Tab icon={<Groups />} iconPosition='start' value="four" label={isXs ? '' : 'Reuniones'} />
-                    <Tab icon={<Handyman />} iconPosition='start' value="five" label={isXs ? '' : 'Mantenimiento'} />
+                    <Tab icon={<Announcement />} iconPosition='start' value="one" label={isXl ? '' : 'Todos'} />
+                    <Tab icon={<House />} iconPosition='start' value="two" label={isXl ? '' : 'Servicios'} />
+                    <Tab icon={<Interests />} iconPosition='start' value="three" label={isXl ? '' : 'General'} />
+                    <Tab icon={<Groups />} iconPosition='start' value="four" label={isXl ? '' : 'Reuniones'} />
+                    <Tab icon={<Handyman />} iconPosition='start' value="five" label={isXl ? '' : 'Mantenimiento'} />
                 </Tabs>
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '90%' }}>
                     <>
-                        {isXs ? (
+                        {isXl ? (
                             <IconButton onClick={handleOrder}>
                                 {orderMostRecent ? (
                                     <ArrowDownward color='secondary' fontSize='large' />
@@ -188,10 +188,9 @@ const ListAll = () => {
                             </IconButton>
                         ) : (
                             <Button
-                                variant="contained"
+                                variant="outlined"
                                 color={orderMostRecent ? 'secondary' : 'primary'}
                                 onClick={handleOrder}
-                                size='small'
                             >
                                 {orderMostRecent ? 'Antiguos' : 'Recientes'}
                             </Button>
