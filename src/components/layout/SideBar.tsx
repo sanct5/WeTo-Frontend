@@ -51,6 +51,10 @@ export default function SideBar() {
         localStorage.clear();
         sessionStorage.clear();
         dispatch(resetUser());
+        dispatch(setComplexColors({
+            primaryColor: '#0097b2',
+            secondaryColor: '#ff914d',
+        }));
         navigate("/login");
     }
 

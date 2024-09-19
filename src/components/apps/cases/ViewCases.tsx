@@ -60,16 +60,30 @@ const ViewCases = () => {
             <Grid item xs={12} sm={4}>
                 <Typography variant="h6" align="center" marginBottom={1}>Pendiente</Typography>
                 {cases.filter(c => c.state === 'pendiente').length === 0 ? (
-                    <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                    <Box display="flex" flexDirection="column" justifyContent="flex-start" alignItems="center" sx={{ height: '100%' }}>
                         <PriorityHigh fontSize="large" color="secondary" />
-                        <Typography variant="body2" color="textSecondary">No hay casos pendientes</Typography>
+                        <Typography variant="body2" color="textSecondary" align="center">No hay casos pendientes</Typography>
                     </Box>
                 ) : (
                     cases.filter(c => c.state === 'pendiente').map((c) => (
-                        <Card key={c._id} sx={{ marginBottom: 2, cursor: 'pointer' }} className="transform transition-transform duration-300 hover:scale-105">
+                        <Card
+                            key={c._id}
+                            sx={{
+                                marginBottom: 2,
+                                cursor: 'pointer',
+                                transition: 'background-color 0.3s',
+                                '&:hover': {
+                                    backgroundColor: '#f0f0f0'
+                                }
+                            }}
+                        >
                             <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-                                <Typography variant="h6">{c.case}</Typography>
-                                <Typography variant="body2">{c.description}</Typography>
+                                <Typography variant="h6" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                    {c.case}
+                                </Typography>
+                                <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                    {c.description}
+                                </Typography>
                                 <Typography variant="body1" sx={{ mt: 1 }}>
                                     <Person color='primary' sx={{ mr: 1 }} />
                                     {c.user}
@@ -86,18 +100,38 @@ const ViewCases = () => {
             <Grid item xs={12} sm={4}>
                 <Typography variant="h6" align="center" marginBottom={1}>Trámite</Typography>
                 {cases.filter(c => c.state === 'tramite').length === 0 ? (
-                    <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                    <Box display="flex" flexDirection="column" justifyContent="flex-start" alignItems="center" sx={{ height: '100%' }}>
                         <PriorityHigh fontSize="large" color="secondary" />
-                        <Typography variant="body2" color="textSecondary">No hay casos en trámite</Typography>
+                        <Typography variant="body2" color="textSecondary" align="center">No hay casos en trámite</Typography>
                     </Box>
                 ) : (
                     cases.filter(c => c.state === 'tramite').map((c) => (
-                        <Card key={c._id} sx={{ marginBottom: 2, cursor: 'pointer' }} className="transform transition-transform duration-300 hover:scale-105">
-                            <CardContent>
-                                <Typography variant="h6">{c.case}</Typography>
-                                <Typography variant="body2">{c.description}</Typography>
-                                <Typography variant="caption">{new Date(c.date).toLocaleDateString()}</Typography>
-                                <Typography variant="caption">{c.state}</Typography>
+                        <Card
+                            key={c._id}
+                            sx={{
+                                marginBottom: 2,
+                                cursor: 'pointer',
+                                transition: 'background-color 0.3s',
+                                '&:hover': {
+                                    backgroundColor: '#f0f0f0'
+                                }
+                            }}
+                        >
+                            <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <Typography variant="h6" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                    {c.case}
+                                </Typography>
+                                <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                    {c.description}
+                                </Typography>
+                                <Typography variant="body1" sx={{ mt: 1 }}>
+                                    <Person color='primary' sx={{ mr: 1 }} />
+                                    {c.user}
+                                </Typography>
+                                <Typography variant="body2" component="p">
+                                    <CalendarMonth color='secondary' sx={{ mr: 1 }} />
+                                    {format(c.date, { date: "long", time: "short" })}
+                                </Typography>
                             </CardContent>
                         </Card>
                     ))
@@ -106,18 +140,38 @@ const ViewCases = () => {
             <Grid item xs={12} sm={4}>
                 <Typography variant="h6" align="center" marginBottom={1}>Cerrado</Typography>
                 {cases.filter(c => c.state === 'cerrado').length === 0 ? (
-                    <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                    <Box display="flex" flexDirection="column" justifyContent="flex-start" alignItems="center" sx={{ height: '100%' }}>
                         <PriorityHigh fontSize="large" color="secondary" />
-                        <Typography variant="body2" color="textSecondary">No hay casos cerrados</Typography>
+                        <Typography variant="body2" color="textSecondary" align="center">No hay casos cerrados</Typography>
                     </Box>
                 ) : (
                     cases.filter(c => c.state === 'cerrado').map((c) => (
-                        <Card key={c._id} sx={{ marginBottom: 2, cursor: 'pointer' }} className="transform transition-transform duration-300 hover:scale-105">
-                            <CardContent>
-                                <Typography variant="h6">{c.case}</Typography>
-                                <Typography variant="body2">{c.description}</Typography>
-                                <Typography variant="caption">{new Date(c.date).toLocaleDateString()}</Typography>
-                                <Typography variant="caption">{c.state}</Typography>
+                        <Card
+                            key={c._id}
+                            sx={{
+                                marginBottom: 2,
+                                cursor: 'pointer',
+                                transition: 'background-color 0.3s',
+                                '&:hover': {
+                                    backgroundColor: '#f0f0f0'
+                                }
+                            }}
+                        >
+                            <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <Typography variant="h6" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                    {c.case}
+                                </Typography>
+                                <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                    {c.description}
+                                </Typography>
+                                <Typography variant="body1" sx={{ mt: 1 }}>
+                                    <Person color='primary' sx={{ mr: 1 }} />
+                                    {c.user}
+                                </Typography>
+                                <Typography variant="body2" component="p">
+                                    <CalendarMonth color='secondary' sx={{ mr: 1 }} />
+                                    {format(c.date, { date: "long", time: "short" })}
+                                </Typography>
                             </CardContent>
                         </Card>
                     ))
