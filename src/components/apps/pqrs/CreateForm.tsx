@@ -12,6 +12,7 @@ interface CreateFormProps {
 }
 
 const CreateForm: React.FC<CreateFormProps> = ({ setValue }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState<{
         category: string;
         subject: string;
@@ -22,10 +23,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ setValue }) => {
         message: '',
     });
 
-    const [isLoading, setIsLoading] = useState(false);
-
     const user = useSelector((state: { user: UserState }) => state.user);
-    const userId = user._id;
 
     const categories = [
         { value: 'P', label: 'Petición' },
@@ -55,7 +53,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ setValue }) => {
 
         try {
             const pqrsData = {
-                user: userId,
+                user: user._id,
                 case: subject,
                 description: message,
                 category,
