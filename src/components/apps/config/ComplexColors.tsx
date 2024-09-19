@@ -21,7 +21,7 @@ const defaultColors: ComplexColorsProps = {
 const ComplexColors = () => {
     const [colors, setColors] = useState<ComplexColorsProps>({ primaryColor: '#FFFFFF', secondaryColor: '#000000' });
     const [isLoading, setIsLoading] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const user = useSelector((state: { user: UserState }) => state.user);
 
@@ -42,11 +42,18 @@ const ComplexColors = () => {
         }
     };
 
+    const isValidHexColor = (color: string) => /^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(color);
+
     const updateComplexColors = async () => {
         const payload = {
             primaryColor: colors.primaryColor,
             secondaryColor: colors.secondaryColor,
         };
+
+        if (!isValidHexColor(payload.primaryColor) || !isValidHexColor(payload.secondaryColor)) {
+            toast.error('Los colores deben estar en formato hexadecimal.');
+            return;
+        }
 
         setIsLoading(true);
 
@@ -106,60 +113,59 @@ const ComplexColors = () => {
         }
     }, [user.idComplex]);
 
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-                <CircularProgress />
-            </Box>
-        );
-    }
-
     return (
         <Box display="flex" justifyContent="center" height="100vh">
-            <Box maxWidth={800} padding={3} display={'flex'} flexDirection={'column'}>
-                <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} sx={{ justifyContent: 'center', alignItems: 'center' }} gap={3}>
-                    <Box flex={1}>
-                        <Typography variant="body1">Color Primario</Typography>
-                        <MuiColorInput
-                            value={colors.primaryColor}
-                            onChange={(newColor) => handleColorChange(newColor, 'primary')}
-                            fullWidth
-                            format='hex'
-                            sx={{ backgroundColor: 'white' }}
-                        />
-                    </Box>
-                    <Box flex={1}>
-                        <Typography variant="body1">Color Secundario</Typography>
-                        <MuiColorInput
-                            value={colors.secondaryColor}
-                            onChange={(newColor) => handleColorChange(newColor, 'secondary')}
-                            fullWidth
-                            format='hex'
-                            sx={{ backgroundColor: 'white' }}
-                        />
-                    </Box>
+            {loading ? (
+                <Box display="flex" flexDirection={'column'} justifyContent="flex-start" alignItems="center" marginTop={5}>
+                    <CircularProgress />
+                    <Typography variant="body1" marginTop={2}>Cargando...</Typography>
                 </Box>
+            ) : (
+                <Box maxWidth={800} padding={3} display={'flex'} flexDirection={'column'}>
+                    <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} sx={{ justifyContent: 'center', alignItems: 'center' }} gap={3}>
+                        <Box flex={1}>
+                            <Typography variant="body1">Color Primario</Typography>
+                            <MuiColorInput
+                                value={colors.primaryColor}
+                                onChange={(newColor) => handleColorChange(newColor, 'primary')}
+                                fullWidth
+                                format='hex'
+                                sx={{ backgroundColor: 'white' }}
+                            />
+                        </Box>
+                        <Box flex={1}>
+                            <Typography variant="body1">Color Secundario</Typography>
+                            <MuiColorInput
+                                value={colors.secondaryColor}
+                                onChange={(newColor) => handleColorChange(newColor, 'secondary')}
+                                fullWidth
+                                format='hex'
+                                sx={{ backgroundColor: 'white' }}
+                            />
+                        </Box>
+                    </Box>
 
-                <Box mt={4} display="flex" justifyContent="flex-end">
-                    <LoadingButton
-                        loading={isLoading}
-                        variant="contained"
-                        color="secondary"
-                        onClick={resetToDefaultColors}
-                        sx={{ mr: 2 }}
-                    >
-                        Restablecer Valores
-                    </LoadingButton>
-                    <LoadingButton
-                        loading={isLoading}
-                        variant="contained"
-                        onClick={updateComplexColors}
-                        color="primary"
-                    >
-                        Guardar
-                    </LoadingButton>
+                    <Box mt={4} display="flex" justifyContent="flex-end">
+                        <LoadingButton
+                            loading={isLoading}
+                            variant="contained"
+                            color="secondary"
+                            onClick={resetToDefaultColors}
+                            sx={{ mr: 2 }}
+                        >
+                            Restablecer Valores
+                        </LoadingButton>
+                        <LoadingButton
+                            loading={isLoading}
+                            variant="contained"
+                            onClick={updateComplexColors}
+                            color="primary"
+                        >
+                            Guardar
+                        </LoadingButton>
+                    </Box>
                 </Box>
-            </Box>
+            )}
         </Box>
     );
 }
