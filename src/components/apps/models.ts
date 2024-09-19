@@ -11,3 +11,17 @@ export type Announcements = {
 }
 
 export type AnnouncementCategory = "Mantenimiento" | "Servicios" | "General" | "Reuniones";
+
+export type Pqrs = {
+    _id: string;
+    user: string;
+    case: string;
+    description: string;
+    category: PqrsCategory;
+    date: Date;
+    state: PqrsState;
+    answer: string[];
+}
+
+export type PqrsCategory = "P" | "Q" | "R" | "S";
+export type PqrsState = "pendiente" | "tramite" | "cerrado";

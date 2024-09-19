@@ -13,6 +13,7 @@ import ProtectedRoute from './ProtectedRoute';
 import AdTabs from '../components/apps/ads/AdTabs';
 import ViewProfile from '../components/apps/profile/ViewProfile';
 import ConfigTabs from '../components/apps/config/ConfigTabs';
+import ViewCases from '../components/apps/cases/ViewCases';
 
 
 const router = createBrowserRouter([
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
                 path: 'cases',
                 element: (
                     <ProtectedRoute allowedRoles={['ADMIN']}>
-                        <WorkingOn />
+                        <ViewCases />
                     </ProtectedRoute>
                 )
             },
