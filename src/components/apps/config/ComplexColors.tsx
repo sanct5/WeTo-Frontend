@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Button, Grid, Typography, Box, CircularProgress } from '@mui/material';
+import { Button, Typography, Box, CircularProgress } from '@mui/material';
 import { MuiColorInput } from 'mui-color-input';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { ComplexService } from '../../../api/ComplexService';
@@ -12,6 +12,12 @@ interface ComplexColorsProps {
     primaryColor: string;
     secondaryColor: string;
 }
+
+const defaultColors: ComplexColorsProps = {
+    primaryColor: '#0097b2',
+    secondaryColor: '#ff914d',
+};
+
 
 const ComplexColors = () => {
     const [colors, setColors] = useState<ComplexColorsProps>({ primaryColor: '#FFFFFF', secondaryColor: '#000000' });
@@ -64,6 +70,27 @@ const ComplexColors = () => {
         }));
     };
 
+    const resetToDefaultColors = async () => {
+        const payload = {
+            primaryColor: defaultColors.primaryColor,
+            secondaryColor: defaultColors.secondaryColor,
+        };
+        try {
+            await axios.put(`${ComplexService.baseUrl}${ComplexService.endpoints.UpdateComplexColors}/${user.idComplex}`, payload);
+            toast.success('Colores restablecidos a los valores predeterminados.');
+            dispatch(setComplexColors(payload));
+            if (user.stayLogged) {
+                localStorage.setItem('user', JSON.stringify({ ...user, config: payload }));
+            } else {
+                sessionStorage.setItem('user', JSON.stringify({ ...user, config: payload }));
+            }
+            setColors(defaultColors);
+        } catch (error) {
+            toast.error('Error al restablecer los colores.');
+        }
+    };
+
+
     useEffect(() => {
         if (user.idComplex) {
             fetchComplexColors();
@@ -79,13 +106,9 @@ const ComplexColors = () => {
     }
 
     return (
-        <Box p={3}>
-            <ToastContainer />
-            <Typography variant="h5" gutterBottom sx={{ mb: 4 }}>
-                Colores de la Unidad Residencial
-            </Typography>
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+        <Box maxWidth={800} padding={3} display={'flex'} flexDirection={'column'} >
+            <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} sx={{justifyContent: 'center', alignItems: 'center'}} gap={3}>
+                <Box flex={1}>
                     <Typography variant="body1">Color Primario</Typography>
                     <MuiColorInput
                         value={colors.primaryColor}
@@ -94,8 +117,8 @@ const ComplexColors = () => {
                         format='hex'
                         sx={{ backgroundColor: 'white' }}
                     />
-                </Grid>
-                <Grid item xs={12} md={6}>
+                </Box>
+                <Box flex={1}>
                     <Typography variant="body1">Color Secundario</Typography>
                     <MuiColorInput
                         value={colors.secondaryColor}
@@ -104,16 +127,19 @@ const ComplexColors = () => {
                         format='hex'
                         sx={{ backgroundColor: 'white' }}
                     />
-                </Grid>
-            </Grid>
+                </Box>
+            </Box>
 
             <Box mt={4} display="flex" justifyContent="flex-end">
+                <Button variant="contained" color="secondary" sx={{mr: 2}} onClick={resetToDefaultColors}>
+                    Restablecer Valores
+                </Button>
                 <Button variant="contained" color="primary" onClick={updateComplexColors}>
                     Guardar Cambios
                 </Button>
             </Box>
         </Box>
     );
-};
+}
 
-export default ComplexColors;
+    export default ComplexColors;
