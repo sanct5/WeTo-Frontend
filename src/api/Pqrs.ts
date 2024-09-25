@@ -3,5 +3,7 @@ export const pqrsService = {
     endpoints: {
         addPqrs: '/addPqrs',
         getPqrsByComplex: '/getPqrsByComplex',
+        replyPqrs: '/answerPqrs',
+        closePqrs: '/closePqrs',
     },
 };
