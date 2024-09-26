@@ -1,3 +1,6 @@
+// Definition of the types used in the application
+// Announcement
+
 export type Announcements = {
     _id: string;
     User: string;
@@ -12,6 +15,8 @@ export type Announcements = {
 
 export type AnnouncementCategory = "Mantenimiento" | "Servicios" | "General" | "Reuniones";
 
+// Pqrs
+
 export type Pqrs = {
     _id: string;
     user: string;
@@ -21,8 +26,17 @@ export type Pqrs = {
     category: PqrsCategory;
     date: Date;
     state: PqrsState;
-    answer: string[];
+    answer: PqrsAnswer[];
 }
 
 export type PqrsCategory = "P" | "Q" | "R" | "S";
 export type PqrsState = "pendiente" | "tramite" | "cerrado";
+
+export type PqrsAnswer = {
+    _id: string;
+    comment: string;
+    date: Date;
+} & (
+        | { admin: string; resident?: never }
+        | { resident: string; admin?: never }
+    );
