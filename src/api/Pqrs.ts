@@ -5,5 +5,6 @@ export const pqrsService = {
         getPqrsByComplex: '/getPqrsByComplex',
         replyPqrs: '/answerPqrs',
         closePqrs: '/closePqrs',
+        getPqrsAnswers: '/getPqrsAnswers',
     },
 };

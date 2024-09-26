@@ -19,7 +19,7 @@ import { Pqrs } from '../models';
 import { pqrsService } from '../../../api/Pqrs';
 import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
-import { PriorityHigh, CalendarMonth, Person, Close, Send, Info, Warning, Gavel } from '@mui/icons-material';
+import { PriorityHigh, CalendarMonth, Person, Close, Send, Info, Warning, Gavel, Refresh } from '@mui/icons-material';
 import { format } from '@formkit/tempo';
 import { ViewOneCase } from './ViewOneCase';
 import { toast } from 'react-toastify';
@@ -37,6 +37,7 @@ const ViewCases = () => {
     const [closePqrsModal, setClosePqrsModal] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
     const [isReplying, setIsReplying] = useState(false);
+    const [reloadAnswers, setReloadAnswers] = useState(false);
     const [selectedCase, setSelectedCase] = useState<Pqrs>(
         {
             _id: '',
@@ -98,17 +99,14 @@ const ViewCases = () => {
             if (response.status === 200) {
                 toast.success('Respuesta enviada');
 
-                // Temporal solution to update the answer in the selected case until the backend is updated
-                setSelectedCase({
-                    ...selectedCase, answer: [...selectedCase.answer, {
-                        _id: response.data._id,
-                        comment: answer,
-                        date: new Date(),
-                        admin: user._id,
-                    }],
-                    state: 'tramite',
-                });
+                if (selectedCase.state === 'pendiente') {
+                    setSelectedCase({
+                        ...selectedCase,
+                        state: 'tramite',
+                    });
+                }
 
+                setReloadAnswers(!reloadAnswers);
                 setAnswer('');
             }
         } catch (error) {
@@ -341,6 +339,9 @@ const ViewCases = () => {
                                 {selectedCase.state}
                             </Typography>
                         </Box>
+                        <IconButton color="primary" onClick={() => setReloadAnswers(!reloadAnswers)} sx={{ marginLeft: 'auto', marginRight: '5px' }}>
+                            <Refresh />
+                        </IconButton>
                     </Box>
                     <IconButton
                         aria-label="close"
@@ -354,7 +355,7 @@ const ViewCases = () => {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent sx={{ overflowY: 'auto', border: '1px solid #f0f0f0' }}>
-                    <ViewOneCase answers={selectedCase.answer} description={selectedCase.description} />
+                    <ViewOneCase id={selectedCase._id} description={selectedCase.description} reloadAnswers={reloadAnswers} />
                 </DialogContent>
                 {selectedCase.state != 'cerrado' && <DialogActions sx={{ padding: 3 }}>
                     {selectedCase.state != 'pendiente' && <Tooltip title="Cerrar caso"
@@ -398,7 +399,7 @@ const ViewCases = () => {
             <Dialog open={closePqrsModal} onClose={() => setClosePqrsModal(false)}>
                 <DialogContent>
                     {!isClosing ? (<Warning color="secondary" style={{ fontSize: 60, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />) : <CircularProgress style={{ fontSize: 50, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />}
-                    <DialogContentText align="center" fontSize={20} sx={{ marginTop: "25px" }}>
+                    <DialogContentText align="center" fontSize={20} sx={{ marginTop: "25px", wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
                         ¿Estás segur@ de que deseas cerrar el caso: <b>{selectedCase.case}</b>?
                     </DialogContentText>
                 </DialogContent>
