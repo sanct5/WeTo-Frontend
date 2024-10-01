@@ -19,7 +19,7 @@ import { Pqrs } from '../models';
 import { pqrsService } from '../../../api/Pqrs';
 import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
-import { PriorityHigh, CalendarMonth, Person, Close, Send, Info, Warning, Gavel, Refresh } from '@mui/icons-material';
+import { PriorityHigh, CalendarMonth, Person, Close, Send, Info, Warning, Gavel, Refresh, NotificationAdd } from '@mui/icons-material';
 import { format } from '@formkit/tempo';
 import { ViewOneCase } from './ViewOneCase';
 import { toast } from 'react-toastify';
@@ -134,6 +134,32 @@ const ViewCases = () => {
             toast.error('Error al cerrar el caso');
         } finally {
             setIsClosing(false);
+        }
+    }
+
+    const handleNotify = async () => {
+        if (isReplying) return;
+
+        setIsReplying(true);
+
+
+        try {
+            /* TODO: configure the notification service on the backend
+            const response = await axios.put(`${pqrsService.baseUrl}${pqrsService.endpoints.notify}/${selectedCase._id}`, {
+                userId: user._id,
+            });
+
+            if (response.status === 200) {
+                toast.success('Notificación enviada');
+                setAnswer('');
+                setOpen(false);
+                setClosePqrsModal(false);
+            }
+            */
+        } catch (error) {
+            toast.error('Error al enviar la notificación');
+        } finally {
+            setIsReplying(false);
         }
     }
 
@@ -358,7 +384,7 @@ const ViewCases = () => {
                     <ViewOneCase id={selectedCase._id} description={selectedCase.description} reloadAnswers={reloadAnswers} />
                 </DialogContent>
                 {selectedCase.state != 'cerrado' && <DialogActions sx={{ padding: 3 }}>
-                    {selectedCase.state != 'pendiente' && <Tooltip title="Cerrar caso"
+                    {selectedCase.state != 'pendiente' && user.role === 'ADMIN' && <Tooltip title="Cerrar caso"
                         placement="top"
                         arrow
                     >
@@ -366,6 +392,15 @@ const ViewCases = () => {
                             <Gavel />
                         </IconButton>
                     </Tooltip>}
+                    {new Date().getTime() - new Date(selectedCase.date).getTime() > 86400000 && selectedCase.state === 'pendiente' && user.role === 'RESIDENT' && (
+                        <Button variant="contained" fullWidth color="primary" onClick={handleNotify} startIcon={<NotificationAdd />}>
+                            Notificar al administrador
+                        </Button>
+                    )}
+                    {selectedCase.state === 'pendiente' && user.role === 'RESIDENT' &&
+                        <Typography variant="body1" color="MenuText" sx={{ mt: 1 }}>
+                            Espera a que el administrador responda para enviar un mensaje, si no lo hace en 48 horas podrás notificarlo
+                        </Typography>}
                     <TextField
                         id="answer"
                         label="Mensaje"
@@ -376,6 +411,8 @@ const ViewCases = () => {
                         value={answer}
                         onChange={(e) => setAnswer(e.target.value)}
                         inputProps={{ maxLength: 500 }}
+                        disabled={user.role === 'RESIDENT' && !selectedCase.answer[selectedCase.answer.length - 1]?.admin}
+                        placeholder={user.role === 'RESIDENT' && !selectedCase.answer[selectedCase.answer.length - 1]?.admin ? 'Espera una respuesta del administrador' : 'Escribe tu mensaje aquí...'}
                     />
                     <Button
                         variant="contained"
