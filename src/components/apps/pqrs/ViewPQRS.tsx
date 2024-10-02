@@ -13,9 +13,12 @@ import { Pqrs } from '../models';
 import { pqrsService } from '../../../api/Pqrs';
 import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
-import { PriorityHigh, CalendarMonth, Person } from '@mui/icons-material';
+import { CalendarMonth, NotificationAdd, Person } from '@mui/icons-material';
 import { format } from '@formkit/tempo';
-import CaseModal from '../cases/CaseModal';;
+import CaseModal from '../cases/CaseModal';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import { HelpOutline, ReportProblem, Feedback, QuestionAnswer } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
 const ViewPQRS = () => {
     const [loading, setLoading] = useState(false);
@@ -41,69 +44,56 @@ const ViewPQRS = () => {
             setLoading(true);
             try {
                 const response = await axios.get<Pqrs[]>(`${pqrsService.baseUrl}${pqrsService.endpoints.getByUser}/${user._id}`);
-                const sortedPqrs = response.data.sort((a, b) => (a.date > b.date ? -1 : 1)); // Ordenar por fecha de envío, más recientes primero
+                const sortedPqrs = response.data.sort((a, b) => (a.date > b.date ? -1 : 1));
                 setPqrList(sortedPqrs);
             } catch (error) {
-                console.error('Error fetching PQRS:', error);
+                toast.error('Error al cargar las PQRS.');
             }
             setLoading(false);
         };
 
         getPqrsByUser();
-    }, [user._id]);
+    }, [user._id, reloadFlag]);
 
     // Para notificar al administrador sobre PQRS pendientes sin respuesta en más de dos días
     const notifyAdmin = async () => {
         try {
-            await axios.post(`${pqrsService.baseUrl}${pqrsService.endpoints.notifyAll}`, { userId: user._id });
-            alert('Notificación enviada al administrador.');
+            await axios.put(`${pqrsService.baseUrl}${pqrsService.endpoints.notifyAll}/${user._id}`);
+            toast.success('Notificación enviada al administrador.');
         } catch (error) {
-            console.error('Error notifying admin:', error);
+            toast.error('Error al enviar la notificación.');
         }
     };
 
-    const renderPqrs = (pqrs: Pqrs[]) => (
-        <Grid container spacing={2}>
-            {pqrs.map((c) => (
-                <Grid item xs={12} key={c._id}>
-                    <Card
-                        sx={{
-                            marginBottom: 2,
-                            cursor: 'pointer',
-                            transition: 'background-color 0.3s',
-                            '&:hover': {
-                                backgroundColor: '#f0f0f0',
-                            },
-                        }}
-                        onClick={() => {
-                            setOpen(true);
-                            setSelectedCase(c);
-                        }}
-                    >
-                        <CardContent>
-                            <Typography variant="h6" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                                {c.case}
-                            </Typography>
-                            <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                                {c.description}
-                            </Typography>
-                            <Typography variant="body1" sx={{ mt: 1 }}>
-                                <Person color="primary" sx={{ mr: 1 }} />
-                                {c.userName}
-                            </Typography>
-                            <Typography variant="body2" component="p">
-                                <CalendarMonth color="secondary" sx={{ mr: 1 }} />
-                                {format(c.date, { date: 'long', time: 'short' })}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                                Estado: {c.state}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            ))}
-        </Grid>
-    );
+    // Definir color según el estado de la PQRS
+    const getStatusColor = (state: string) => {
+        switch (state) {
+            case 'pendiente':
+                return '#FFC107';
+            case 'tramite':
+                return '#4CAF50';
+            case 'cerrado':
+                return '#F44336';
+            default:
+                return 'gray';
+        }
+    };
+
+    const getCategoryIcon = (category: string) => {
+        switch (category) {
+            case 'P':
+                return <HelpOutline color="primary" sx={{ mr: 1 }} />;
+            case 'Q':
+                return <ReportProblem color="warning" sx={{ mr: 1 }} />;
+            case 'R':
+                return <Feedback color="success" sx={{ mr: 1 }} />;
+            case 'S':
+                return <QuestionAnswer color="secondary" sx={{ mr: 1 }} />;
+            default:
+                return null;
+        }
+    };
+
 
     return (
         <Box sx={{ backgroundColor: '#F0F0F0', height: 'max-content', minHeight: '100vh', p: 2 }}>
@@ -112,6 +102,7 @@ const ViewPQRS = () => {
                     variant="contained"
                     color="primary"
                     onClick={notifyAdmin}
+                    startIcon={<NotificationAdd />}
                 >
                     Notificar al administrador
                 </Button>
@@ -125,9 +116,56 @@ const ViewPQRS = () => {
                     </Typography>
                 </Box>
             ) : (
-                <Box>
-                    {renderPqrs(pqrList)}
-                </Box>
+                <Grid container spacing={2} alignItems="stretch">
+                    {pqrList.map((c) => (
+                        <Grid item xs={12} sm={6} key={c._id} style={{ display: 'flex' }}>
+                            <Card
+                                sx={{
+                                    marginBottom: 2,
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.3s',
+                                    '&:hover': {
+                                        backgroundColor: '#f0f0f0',
+                                    },
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    flexGrow: 1,
+                                }}
+                                onClick={() => {
+                                    setOpen(true);
+                                    setSelectedCase(c);
+                                }}
+                            >
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Box display="flex" alignItems="center">
+                                        <Typography variant="h6" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                            {c.case}
+                                        </Typography>
+                                    </Box>
+                                    <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                        {c.description}
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ mt: 1 }}>
+                                        <Person color="primary" sx={{ mr: 1 }} />
+                                        {c.userName}
+                                    </Typography>
+                                    <Typography variant='body1' sx={{ mt: 1 }}>
+                                        {getCategoryIcon(c.category)}
+                                        {c.category === 'P' ? 'Petición' : c.category === 'Q' ? 'Queja' : c.category === 'R' ? 'Reclamo' : 'Sugerencia'}
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ mt: 1, textTransform: 'capitalize' }}>
+                                        <RadioButtonCheckedIcon sx={{ color: getStatusColor(c.state), mr: 1 }} />
+                                        {c.state}
+                                    </Typography>
+                                    <Typography variant="body2" component="p" sx={{ mt: 1 }}>
+                                        <CalendarMonth color="secondary" sx={{ mr: 1 }} />
+                                        {format(c.date, { date: 'long', time: 'short' })}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
             )}
 
             <CaseModal
@@ -143,3 +181,4 @@ const ViewPQRS = () => {
 };
 
 export default ViewPQRS;
+
