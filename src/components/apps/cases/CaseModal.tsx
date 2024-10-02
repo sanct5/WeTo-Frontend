@@ -185,7 +185,11 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                     </Box>
                     <IconButton
                         aria-label="close"
-                        onClick={() => setOpen(false)}
+                        onClick={() => {
+                            setOpen(false);
+                            setAnswer('');
+                            setReloadFlag(!reloadFlag);
+                        }}
                         sx={{
                             alignSelf: 'flex-end',
                             color: (theme) => theme.palette.secondary.main,
@@ -197,7 +201,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                 <DialogContent sx={{ overflowY: 'auto', border: '1px solid #f0f0f0' }}>
                     <CaseMessages id={selectedCase._id} description={selectedCase.description} reloadAnswers={reloadAnswers} />
                 </DialogContent>
-                {selectedCase.state != 'cerrado' && <DialogActions sx={{ padding: 3 }}>
+                {selectedCase.state != 'cerrado' && <DialogActions sx={{ padding: 3, display: 'flex', justifyContent: 'center' }}>
                     {selectedCase.state != 'pendiente' && user.role === 'ADMIN' && <Tooltip title="Cerrar caso"
                         placement="top"
                         arrow
@@ -206,44 +210,47 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                             <Gavel />
                         </IconButton>
                     </Tooltip>}
-                    {new Date().getTime() - new Date(selectedCase.date).getTime() > 86400000 && selectedCase.state === 'pendiente' && user.role === 'ADMIN' && (
+                    {new Date().getTime() - new Date(selectedCase.date).getTime() > 86400000 && selectedCase.state === 'pendiente' && user.role === 'RESIDENT' && (
                         <Button variant="contained" fullWidth color="primary" onClick={handleNotify} startIcon={<NotificationAdd />}>
                             Notificar al administrador
                         </Button>
                     )}
                     {selectedCase.state === 'pendiente' && user.role === 'RESIDENT' &&
-                        <Typography variant="body1" color="MenuText" sx={{ mt: 1 }}>
+                        <Typography variant="body1" color="MenuText" textAlign="start">
                             Espera a que el administrador responda para enviar un mensaje, si no lo hace en 48 horas podrás notificarlo
                         </Typography>}
-                    <TextField
-                        id="answer"
-                        label="Mensaje"
-                        multiline
-                        rows={2}
-                        fullWidth
-                        variant="outlined"
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        inputProps={{ maxLength: 500 }}
-                        disabled={user.role === 'RESIDENT' && !selectedCase.answer[selectedCase.answer.length - 1]?.admin}
-                        placeholder={user.role === 'RESIDENT' && !selectedCase.answer[selectedCase.answer.length - 1]?.admin ? 'Espera una respuesta del administrador' : 'Escribe tu mensaje aquí...'}
-                    />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        sx={{ display: { xs: 'none', sm: 'flex' } }}
-                        onClick={handleSendAnswer}
-                    >
-                        Responder
-                    </Button>
-                    <IconButton
-                        color="primary"
-                        sx={{ display: { xs: 'flex', sm: 'none' } }}
-                        onClick={handleSendAnswer}
-                    >
-                        <Send />
-                    </IconButton>
+                    {!(selectedCase.state === 'pendiente' && user.role === 'RESIDENT') && (
+                        <>
+                            <TextField
+                                id="answer"
+                                label="Mensaje"
+                                multiline
+                                rows={2}
+                                fullWidth
+                                variant="outlined"
+                                value={answer}
+                                onChange={(e) => setAnswer(e.target.value)}
+                                inputProps={{ maxLength: 500 }}
+                                disabled={user.role === 'RESIDENT' && !selectedCase.answer[selectedCase.answer.length - 1]?.admin}
+                                placeholder={user.role === 'RESIDENT' && !selectedCase.answer[selectedCase.answer.length - 1]?.admin ? 'Espera una respuesta del administrador' : 'Escribe tu mensaje aquí...'}
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                sx={{ display: { xs: 'none', sm: 'flex' } }}
+                                onClick={handleSendAnswer}
+                            >
+                                Responder
+                            </Button>
+                            <IconButton
+                                color="primary"
+                                sx={{ display: { xs: 'flex', sm: 'none' } }}
+                                onClick={handleSendAnswer}
+                            >
+                                <Send />
+                            </IconButton>
+                        </>)}
                 </DialogActions>}
             </Dialog>
 
