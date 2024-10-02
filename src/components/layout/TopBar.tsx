@@ -5,6 +5,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle'
 import { useSelector } from 'react-redux'
 import { UserState } from '../../hooks/users/userSlice'
 import { Link } from 'react-router-dom'
+import { Notifications } from '@mui/icons-material'
 
 interface TopBarProps {
     handleDrawerToggle: () => void;
@@ -29,7 +30,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div" sx={{display: {xs: 'none', sm: 'block'}}}>
+                    <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
                         {title}
                     </Typography>
                 </Box>
@@ -37,6 +38,9 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                     <Typography color="inherit" noWrap sx={{ mr: 2, display: { xs: 'none', sm: 'block' } }}>
                         {user.userName}
                     </Typography>
+                    <IconButton color="inherit">
+                        <Notifications />
+                    </IconButton>
                     <IconButton color="inherit" component={Link} to={`/app/profile/${user._id}`}>
                         <AccountCircle />
                     </IconButton>

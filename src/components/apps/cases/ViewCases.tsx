@@ -8,21 +8,15 @@ import {
     CardContent,
     Typography,
     CircularProgress,
-    Dialog, DialogTitle, DialogContent, DialogActions, Button,
-    IconButton,
-    TextField,
-    Tooltip,
-    DialogContentText,
 } from '@mui/material';
 import axios from 'axios';
 import { Pqrs } from '../models';
 import { pqrsService } from '../../../api/Pqrs';
 import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
-import { PriorityHigh, CalendarMonth, Person, Close, Send, Info, Warning, Gavel, Refresh } from '@mui/icons-material';
+import { PriorityHigh, CalendarMonth, Person } from '@mui/icons-material';
 import { format } from '@formkit/tempo';
-import { ViewOneCase } from './ViewOneCase';
-import { toast } from 'react-toastify';
+import CaseModal from './CaseModal';
 
 const ViewCases = () => {
     const [tabValue, setTabValue] = useState('one');
@@ -32,12 +26,6 @@ const ViewCases = () => {
     const [complaints, setComplaints] = useState<Pqrs[]>([]);
     const [suggestions, setSuggestions] = useState<Pqrs[]>([]);
     const [claims, setClaims] = useState<Pqrs[]>([]);
-    const [open, setOpen] = useState(false);
-    const [answer, setAnswer] = useState<string>('');
-    const [closePqrsModal, setClosePqrsModal] = useState(false);
-    const [isClosing, setIsClosing] = useState(false);
-    const [isReplying, setIsReplying] = useState(false);
-    const [reloadAnswers, setReloadAnswers] = useState(false);
     const [selectedCase, setSelectedCase] = useState<Pqrs>(
         {
             _id: '',
@@ -51,6 +39,7 @@ const ViewCases = () => {
             answer: [],
         }
     );
+    const [open, setOpen] = useState(false);
 
     const user = useSelector((state: { user: UserState }) => state.user);
 
@@ -80,62 +69,6 @@ const ViewCases = () => {
         };
         getCases();
     }, [reloadFlag, user.idComplex]);
-
-    const handleSendAnswer = async () => {
-        if (isReplying) return;
-
-        if (answer.trim() === '') {
-            toast.error('El mensaje no puede estar vacío');
-            return;
-        }
-
-        setIsReplying(true);
-        try {
-            const response = await axios.put(`${pqrsService.baseUrl}${pqrsService.endpoints.replyPqrs}/${selectedCase._id}`, {
-                answer: answer.trim(),
-                userId: user._id,
-            });
-
-            if (response.status === 200) {
-                toast.success('Respuesta enviada');
-
-                if (selectedCase.state === 'pendiente') {
-                    setSelectedCase({
-                        ...selectedCase,
-                        state: 'tramite',
-                    });
-                }
-
-                setReloadAnswers(!reloadAnswers);
-                setAnswer('');
-            }
-        } catch (error) {
-            toast.error('Error al enviar la respuesta');
-        } finally {
-            setIsReplying(false);
-        }
-    }
-
-    const handleCaseClose = async () => {
-        setIsClosing(true);
-        try {
-            const response = await axios.put(`${pqrsService.baseUrl}${pqrsService.endpoints.closePqrs}/${selectedCase._id}`, {
-                userId: user._id,
-            });
-
-            if (response.status === 200) {
-                toast.success('Caso cerrado');
-                setReloadFlag(!reloadFlag);
-                setAnswer('');
-                setOpen(false);
-                setClosePqrsModal(false);
-            }
-        } catch (error) {
-            toast.error('Error al cerrar el caso');
-        } finally {
-            setIsClosing(false);
-        }
-    }
 
     const renderCasesByState = (cases: Pqrs[]) => (
         <Grid container spacing={2}>
@@ -305,114 +238,14 @@ const ViewCases = () => {
                 </Box>
             )}
 
-            <Dialog
+            <CaseModal
                 open={open}
-                onClose={() => {
-                    setOpen(false);
-                    setAnswer('');
-                    setReloadFlag(!reloadFlag);
-                }}
-                fullScreen
-                sx={{
-                    maxWidth: { xs: '95%', sm: '70%' },
-                    margin: 'auto',
-                    maxHeight: { xs: '95%', sm: '90%' },
-                }}
-            >
-                <DialogTitle sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pb: 0, pt: 0 }}>
-                    <Box display="flex" alignItems="center" justifyContent="flex-start" width="100%">
-                        <Box display="flex" alignItems="center">
-                            <Person color='primary' sx={{ mr: 1 }} />
-                            <Typography variant="body1" color="textSecondary" fontWeight="bold">
-                                {selectedCase.userName}
-                            </Typography>
-                        </Box>
-                        <Box display="flex" alignItems="center" marginLeft={2}>
-                            <CalendarMonth color='secondary' sx={{ mr: 1 }} />
-                            <Typography variant="body2" color="textSecondary">
-                                {format(selectedCase.date, { date: "short", time: "short" })}
-                            </Typography>
-                        </Box>
-                        <Box display="flex" alignItems="center" marginLeft={2}>
-                            <Info color='secondary' sx={{ mr: 1 }} />
-                            <Typography variant="body2" color="textSecondary" sx={{ textTransform: 'capitalize' }}>
-                                {selectedCase.state}
-                            </Typography>
-                        </Box>
-                        <IconButton color="primary" onClick={() => setReloadAnswers(!reloadAnswers)} sx={{ marginLeft: 'auto', marginRight: '5px' }}>
-                            <Refresh />
-                        </IconButton>
-                    </Box>
-                    <IconButton
-                        aria-label="close"
-                        onClick={() => setOpen(false)}
-                        sx={{
-                            alignSelf: 'flex-end',
-                            color: (theme) => theme.palette.secondary.main,
-                        }}
-                    >
-                        <Close fontSize='large' />
-                    </IconButton>
-                </DialogTitle>
-                <DialogContent sx={{ overflowY: 'auto', border: '1px solid #f0f0f0' }}>
-                    <ViewOneCase id={selectedCase._id} description={selectedCase.description} reloadAnswers={reloadAnswers} />
-                </DialogContent>
-                {selectedCase.state != 'cerrado' && <DialogActions sx={{ padding: 3 }}>
-                    {selectedCase.state != 'pendiente' && <Tooltip title="Cerrar caso"
-                        placement="top"
-                        arrow
-                    >
-                        <IconButton color="secondary" onClick={() => setClosePqrsModal(true)}>
-                            <Gavel />
-                        </IconButton>
-                    </Tooltip>}
-                    <TextField
-                        id="answer"
-                        label="Mensaje"
-                        multiline
-                        rows={2}
-                        fullWidth
-                        variant="outlined"
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        inputProps={{ maxLength: 500 }}
-                    />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        sx={{ display: { xs: 'none', sm: 'flex' } }}
-                        onClick={handleSendAnswer}
-                    >
-                        Responder
-                    </Button>
-                    <IconButton
-                        color="primary"
-                        sx={{ display: { xs: 'flex', sm: 'none' } }}
-                        onClick={handleSendAnswer}
-                    >
-                        <Send />
-                    </IconButton>
-                </DialogActions>}
-            </Dialog>
-
-            <Dialog open={closePqrsModal} onClose={() => setClosePqrsModal(false)}>
-                <DialogContent>
-                    {!isClosing ? (<Warning color="secondary" style={{ fontSize: 60, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />) : <CircularProgress style={{ fontSize: 50, display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />}
-                    <DialogContentText align="center" fontSize={20} sx={{ marginTop: "25px", wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                        ¿Estás segur@ de que deseas cerrar el caso: <b>{selectedCase.case}</b>?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setClosePqrsModal(false)} color="secondary">
-                        Cancelar
-                    </Button>
-                    <Button onClick={() => handleCaseClose()} color="primary">
-                        Cerrar caso
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
+                setOpen={setOpen}
+                selectedCase={selectedCase}
+                setSelectedCase={setSelectedCase}
+                reloadFlag={reloadFlag}
+                setReloadFlag={setReloadFlag}
+            />
         </Box>
     );
 };

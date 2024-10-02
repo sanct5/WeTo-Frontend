@@ -35,6 +35,7 @@ export type PqrsState = "pendiente" | "tramite" | "cerrado";
 export type PqrsAnswer = {
     _id: string;
     comment: string;
+    type?:  "Normal" | "System";
     date: Date;
 } & (
         | { admin: string; resident?: never }

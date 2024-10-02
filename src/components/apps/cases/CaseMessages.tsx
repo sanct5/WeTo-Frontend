@@ -8,13 +8,13 @@ import axios from 'axios';
 import { pqrsService } from '../../../api/Pqrs';
 import { toast } from 'react-toastify';
 
-interface ViewOneCaseProps {
+interface CaseMessagesProps {
     id: string;
     description: string;
     reloadAnswers: boolean;
 }
 
-export const ViewOneCase = ({ id, description, reloadAnswers }: ViewOneCaseProps) => {
+export const CaseMessages = ({ id, description, reloadAnswers }: CaseMessagesProps) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [answers, setAnswers] = useState<PqrsAnswer[]>([]);
 
@@ -66,14 +66,24 @@ export const ViewOneCase = ({ id, description, reloadAnswers }: ViewOneCaseProps
                         <Box
                             key={answer._id}
                             sx={{
-                                display: 'flex',
-                                justifyContent: (answer?.admin && user.role === 'ADMIN') || (answer?.resident && user.role === 'RESIDENT') ? 'flex-end' : 'flex-start',
+                                justifyContent: answer.type === "System"
+                                    ? user.role === 'ADMIN'
+                                        ? 'center'
+                                        : 'none'
+                                    : (answer?.admin && user.role === 'ADMIN') || (answer?.resident && user.role === 'RESIDENT')
+                                        ? 'flex-end'
+                                        : 'flex-start',
+                                display: answer.type === "System" && user.role !== 'ADMIN' ? 'none' : 'flex',
                             }}
                         >
                             <Paper
                                 sx={{
                                     padding: 2,
-                                    backgroundColor: (answer?.admin && user.role === 'ADMIN') || (answer?.resident && user.role === 'RESIDENT') ? 'primary.light' : 'grey.300',
+                                    backgroundColor: answer.type === "System"
+                                        ? 'secondary.light'
+                                        : (answer?.admin && user.role === 'ADMIN') || (answer?.resident && user.role === 'RESIDENT')
+                                            ? 'primary.light'
+                                            : 'grey.300',
                                     maxWidth: '70%',
                                     marginBottom: 2,
                                 }}

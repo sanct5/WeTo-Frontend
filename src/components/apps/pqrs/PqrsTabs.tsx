@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import WorkingOn from '../../../router/pages/WorkingOn';
 import CreateForm from './CreateForm';
+import ViewPQRS from './ViewPQRS';
 
 export default function PQRSTabs() {
     const [value, setValue] = useState('PQRS');
@@ -30,7 +30,7 @@ export default function PQRSTabs() {
                     <Tab value="PQRS" label="Mis PQRS" />
                     <Tab value="crearPQRS" label="Crear PQRS" />
                 </Tabs>
-                {value === 'PQRS' && <WorkingOn />}
+                {value === 'PQRS' && <ViewPQRS />}
                 {value === 'crearPQRS' && <CreateForm setValue={setValue} />}
             </Box>
         </Box>
