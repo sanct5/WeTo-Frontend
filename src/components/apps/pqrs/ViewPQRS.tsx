@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
     Box,
-    Grid,
+    Grid2,
     Card,
     CardContent,
     Typography,
@@ -13,7 +13,7 @@ import { Pqrs } from '../models';
 import { pqrsService } from '../../../api/Pqrs';
 import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
-import { CalendarMonth, NotificationAdd, Person } from '@mui/icons-material';
+import { CalendarMonth, NotificationAdd } from '@mui/icons-material';
 import { format } from '@formkit/tempo';
 import CaseModal from '../cases/CaseModal';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
@@ -22,7 +22,7 @@ import { toast } from 'react-toastify';
 
 const ViewPQRS = () => {
     const [loading, setLoading] = useState(false);
-    const [pqrList, setPqrList] = useState<Pqrs[]>([]);
+    const [pqrsList, setpqrsList] = useState<Pqrs[]>([]);
     const [reloadFlag, setReloadFlag] = useState(false);
     const [selectedCase, setSelectedCase] = useState<Pqrs>({
         _id: '',
@@ -45,7 +45,7 @@ const ViewPQRS = () => {
             try {
                 const response = await axios.get<Pqrs[]>(`${pqrsService.baseUrl}${pqrsService.endpoints.getByUser}/${user._id}`);
                 const sortedPqrs = response.data.sort((a, b) => (a.date > b.date ? -1 : 1));
-                setPqrList(sortedPqrs);
+                setpqrsList(sortedPqrs);
             } catch (error) {
                 toast.error('Error al cargar las PQRS.');
             }
@@ -84,20 +84,20 @@ const ViewPQRS = () => {
             case 'P':
                 return <HelpOutline color="primary" sx={{ mr: 1 }} />;
             case 'Q':
-                return <ReportProblem color="warning" sx={{ mr: 1 }} />;
+                return <ReportProblem color="primary" sx={{ mr: 1 }} />;
             case 'R':
-                return <Feedback color="success" sx={{ mr: 1 }} />;
+                return <Feedback color="primary" sx={{ mr: 1 }} />;
             case 'S':
-                return <QuestionAnswer color="secondary" sx={{ mr: 1 }} />;
+                return <QuestionAnswer color="primary" sx={{ mr: 1 }} />;
             default:
-                return null;
+                return 'Q';
         }
     };
 
 
     return (
         <Box sx={{ backgroundColor: '#F0F0F0', height: 'max-content', minHeight: '100vh', p: 2 }}>
-            <Box display="flex" justifyContent="flex-end" mb={2}>
+            <Box display="none" justifyContent="flex-end" mb={2}>
                 <Button
                     variant="contained"
                     color="primary"
@@ -116,56 +116,49 @@ const ViewPQRS = () => {
                     </Typography>
                 </Box>
             ) : (
-                <Grid container spacing={2} alignItems="stretch">
-                    {pqrList.map((c) => (
-                        <Grid item xs={12} sm={6} key={c._id} style={{ display: 'flex' }}>
-                            <Card
-                                sx={{
-                                    marginBottom: 2,
-                                    cursor: 'pointer',
-                                    transition: 'background-color 0.3s',
-                                    '&:hover': {
-                                        backgroundColor: '#f0f0f0',
-                                    },
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    flexGrow: 1,
-                                }}
-                                onClick={() => {
-                                    setOpen(true);
-                                    setSelectedCase(c);
-                                }}
-                            >
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Box display="flex" alignItems="center">
-                                        <Typography variant="h6" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                                            {c.case}
-                                        </Typography>
-                                    </Box>
-                                    <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                                        {c.description}
+                <Grid2 container columnSpacing={3} rowSpacing={2}>
+                    {pqrsList.map((c) => (
+                        <Card
+                            sx={{
+                                cursor: 'pointer',
+                                transition: 'background-color 0.3s',
+                                '&:hover': {
+                                    backgroundColor: '#f0f0f0',
+                                },
+                                display: 'flex',
+                                flexDirection: 'column',
+                                flexGrow: 1,
+                            }}
+                            onClick={() => {
+                                setOpen(true);
+                                setSelectedCase(c);
+                            }}
+                        >
+                            <CardContent sx={{ flexGrow: 1 }}>
+                                <Box display="flex" alignItems="center">
+                                    <Typography variant="h6" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                        {c.case}
                                     </Typography>
-                                    <Typography variant="body1" sx={{ mt: 1 }}>
-                                        <Person color="primary" sx={{ mr: 1 }} />
-                                        {c.userName}
-                                    </Typography>
-                                    <Typography variant='body1' sx={{ mt: 1 }}>
-                                        {getCategoryIcon(c.category)}
-                                        {c.category === 'P' ? 'Petición' : c.category === 'Q' ? 'Queja' : c.category === 'R' ? 'Reclamo' : 'Sugerencia'}
-                                    </Typography>
-                                    <Typography variant="body1" sx={{ mt: 1, textTransform: 'capitalize' }}>
-                                        <RadioButtonCheckedIcon sx={{ color: getStatusColor(c.state), mr: 1 }} />
-                                        {c.state}
-                                    </Typography>
-                                    <Typography variant="body2" component="p" sx={{ mt: 1 }}>
-                                        <CalendarMonth color="secondary" sx={{ mr: 1 }} />
-                                        {format(c.date, { date: 'long', time: 'short' })}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
+                                </Box>
+                                <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                    {c.description}
+                                </Typography>
+                                <Typography variant='body1' sx={{ mt: 1 }}>
+                                    {getCategoryIcon(c.category)}
+                                    {c.category === 'P' ? 'Petición' : c.category === 'Q' ? 'Queja' : c.category === 'R' ? 'Reclamo' : 'Sugerencia'}
+                                </Typography>
+                                <Typography variant="body1" sx={{ mt: 1, textTransform: 'capitalize' }}>
+                                    <RadioButtonCheckedIcon sx={{ color: getStatusColor(c.state), mr: 1 }} />
+                                    {c.state}
+                                </Typography>
+                                <Typography variant="body2" component="p" sx={{ mt: 1 }}>
+                                    <CalendarMonth color="secondary" sx={{ mr: 1 }} />
+                                    {format(c.date, { date: 'long', time: 'short' })}
+                                </Typography>
+                            </CardContent>
+                        </Card>
                     ))}
-                </Grid>
+                </Grid2>
             )}
 
             <CaseModal
