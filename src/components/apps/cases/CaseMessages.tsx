@@ -8,13 +8,13 @@ import axios from 'axios';
 import { pqrsService } from '../../../api/Pqrs';
 import { toast } from 'react-toastify';
 
-interface ViewOneCaseProps {
+interface CaseMessagesProps {
     id: string;
     description: string;
     reloadAnswers: boolean;
 }
 
-export const ViewOneCase = ({ id, description, reloadAnswers }: ViewOneCaseProps) => {
+export const CaseMessages = ({ id, description, reloadAnswers }: CaseMessagesProps) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [answers, setAnswers] = useState<PqrsAnswer[]>([]);
 
