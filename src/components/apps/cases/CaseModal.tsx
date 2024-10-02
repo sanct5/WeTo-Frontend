@@ -99,8 +99,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
         setIsReplying(true);
 
         try {
-            /* TODO: configure the notification service on the backend
-            const response = await axios.put(`${pqrsService.baseUrl}${pqrsService.endpoints.notify}/${selectedCase._id}`, {
+            const response = await axios.put(`${pqrsService.baseUrl}${pqrsService.endpoints.notifyOne}/${user._id}/${selectedCase._id}`, {
                 userId: user._id,
             });
 
@@ -110,7 +109,6 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                 setOpen(false);
                 setClosePqrsModal(false);
             }
-            */
         } catch (error) {
             toast.error('Error al enviar la notificación');
         } finally {
@@ -208,7 +206,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                             <Gavel />
                         </IconButton>
                     </Tooltip>}
-                    {new Date().getTime() - new Date(selectedCase.date).getTime() > 86400000 && selectedCase.state === 'pendiente' && user.role === 'RESIDENT' && (
+                    {new Date().getTime() - new Date(selectedCase.date).getTime() > 86400000 && selectedCase.state === 'pendiente' && user.role === 'ADMIN' && (
                         <Button variant="contained" fullWidth color="primary" onClick={handleNotify} startIcon={<NotificationAdd />}>
                             Notificar al administrador
                         </Button>
