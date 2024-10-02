@@ -42,13 +42,11 @@ const ViewPQRS = () => {
     useEffect(() => {
         const getPqrsByUser = async () => {
             setLoading(true);
-            try {
-                const response = await axios.get<Pqrs[]>(`${pqrsService.baseUrl}${pqrsService.endpoints.getByUser}/${user._id}`);
-                const sortedPqrs = response.data.sort((a, b) => (a.date > b.date ? -1 : 1));
-                setpqrsList(sortedPqrs);
-            } catch (error) {
-                toast.error('Error al cargar las PQRS.');
-            }
+
+            const response = await axios.get<Pqrs[]>(`${pqrsService.baseUrl}${pqrsService.endpoints.getByUser}/${user._id}`);
+            const sortedPqrs = response.data.sort((a, b) => (a.date > b.date ? -1 : 1));
+            setpqrsList(sortedPqrs);
+
             setLoading(false);
         };
 
