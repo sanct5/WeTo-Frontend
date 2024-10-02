@@ -9,5 +9,6 @@ export const pqrsService = {
         notify: '/notify',
         reopen: '/reopen',
         getByUser: '/getByUser',
+        notifyOne: '/notifyOne',
     },
 };
