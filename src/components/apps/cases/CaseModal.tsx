@@ -105,6 +105,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
 
             if (response.status === 200) {
                 toast.success('Notificación enviada');
+                setReloadFlag(!reloadFlag);
                 setAnswer('');
                 setOpen(false);
                 setClosePqrsModal(false);
@@ -210,15 +211,17 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                             <Gavel />
                         </IconButton>
                     </Tooltip>}
-                    {new Date().getTime() - new Date(selectedCase.date).getTime() > 86400000 && selectedCase.state === 'pendiente' && user.role === 'RESIDENT' && (
-                        <Button variant="contained" fullWidth color="primary" onClick={handleNotify} startIcon={<NotificationAdd />}>
-                            Notificar al administrador
-                        </Button>
+                    {selectedCase.state === 'pendiente' && user.role === 'RESIDENT' && (
+                        new Date().getTime() - new Date(selectedCase.date).getTime() > 86400000 && new Date().getTime() - new Date(selectedCase.answer[selectedCase.answer.length - 1]?.date).getTime() > 86400000 ? (
+                            <Button variant="contained" sx={{width: '80%'}} color="primary" onClick={handleNotify} startIcon={<NotificationAdd />}>
+                                Notificar al administrador
+                            </Button>
+                        ) : (
+                            <Typography variant="body1" color="MenuText" textAlign="start">
+                                Espera a que el administrador responda para enviar un mensaje, si no lo hace en 48 horas podrás notificarlo
+                            </Typography>
+                        )
                     )}
-                    {selectedCase.state === 'pendiente' && user.role === 'RESIDENT' &&
-                        <Typography variant="body1" color="MenuText" textAlign="start">
-                            Espera a que el administrador responda para enviar un mensaje, si no lo hace en 48 horas podrás notificarlo
-                        </Typography>}
                     {!(selectedCase.state === 'pendiente' && user.role === 'RESIDENT') && (
                         <>
                             <TextField
