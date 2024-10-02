@@ -212,7 +212,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                         </IconButton>
                     </Tooltip>}
                     {selectedCase.state === 'pendiente' && user.role === 'RESIDENT' && (
-                        new Date().getTime() - new Date(selectedCase.date).getTime() > 86400000 && new Date().getTime() - new Date(selectedCase.answer[selectedCase.answer.length - 1]?.date).getTime() > 86400000 ? (
+                        new Date().getTime() - new Date(selectedCase.date).getTime() > 86400000 && new Date().getTime() || new Date(selectedCase.answer[selectedCase.answer.length - 1]?.date).getTime() > 86400000 ? (
                             <Button variant="contained" sx={{width: '80%'}} color="primary" onClick={handleNotify} startIcon={<NotificationAdd />}>
                                 Notificar al administrador
                             </Button>
