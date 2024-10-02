@@ -6,7 +6,7 @@ export const pqrsService = {
         replyPqrs: '/answer',
         closePqrs: '/close',
         getPqrsAnswers: '/getAnswers',
-        notify: '/notify',
+        notifyAll: '/notify',
         reopen: '/reopen',
         getByUser: '/getByUser',
     },
