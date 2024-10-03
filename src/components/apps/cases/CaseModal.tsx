@@ -54,14 +54,14 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
 
             if (response.status === 200) {
                 toast.success('Respuesta enviada');
-
                 if (selectedCase.state === 'pendiente') {
-                    setSelectedCase({
-                        ...selectedCase,
-                        state: 'tramite',
-                    });
+                    setSelectedCase(
+                        (prevState) => ({
+                            ...prevState,
+                            state: 'tramite',
+                        })
+                    );
                 }
-
                 setReloadAnswers(!reloadAnswers);
                 setAnswer('');
             }
@@ -200,7 +200,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                     </IconButton>
                 </DialogTitle>
                 <DialogContent sx={{ overflowY: 'auto', border: '1px solid #f0f0f0' }}>
-                    <CaseMessages id={selectedCase._id} description={selectedCase.description} reloadAnswers={reloadAnswers} />
+                    <CaseMessages reloadAnswers={reloadAnswers} setSelectedCase={setSelectedCase} selectedCase={selectedCase} />
                 </DialogContent>
                 {selectedCase.state != 'cerrado' && <DialogActions sx={{ padding: 3, display: 'flex', justifyContent: 'center' }}>
                     {selectedCase.state != 'pendiente' && user.role === 'ADMIN' && <Tooltip title="Cerrar caso"
@@ -211,16 +211,18 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                             <Gavel />
                         </IconButton>
                     </Tooltip>}
-                    {selectedCase.state === 'pendiente' && user.role === 'RESIDENT' && (
+                    {user.role === 'RESIDENT' && (
                         (selectedCase.answer.length === 0 && new Date().getTime() - new Date(selectedCase.date).getTime() > 2 * 86400000) ||
                             (selectedCase.answer.length > 0 && new Date().getTime() - new Date(selectedCase.answer[selectedCase.answer.length - 1]?.date).getTime() > 2 * 86400000) ? (
                             <Button variant="contained" sx={{ width: '80%' }} color="primary" onClick={handleNotify} startIcon={<NotificationAdd />}>
                                 Notificar al administrador
                             </Button>
                         ) : (
-                            <Typography variant="body1" color="MenuText" textAlign="start">
-                                Espera a que el administrador responda para enviar un mensaje, si no lo hace en 48 horas podrás notificarlo
-                            </Typography>
+                            selectedCase.state === 'pendiente' && (
+                                <Typography variant="body1" color="MenuText" textAlign="start">
+                                    Espera a que el administrador responda para enviar un mensaje, si no lo hace en 48 horas podrás notificarlo
+                                </Typography>
+                            )
                         )
                     )}
                     {!(selectedCase.state === 'pendiente' && user.role === 'RESIDENT') && (
@@ -244,6 +246,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                                 size="large"
                                 sx={{ display: { xs: 'none', sm: 'flex' } }}
                                 onClick={handleSendAnswer}
+                                disabled={answer.trim() === ''}
                             >
                                 Responder
                             </Button>
@@ -251,6 +254,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                                 color="primary"
                                 sx={{ display: { xs: 'flex', sm: 'none' } }}
                                 onClick={handleSendAnswer}
+                                disabled={answer.trim() === ''}
                             >
                                 <Send />
                             </IconButton>
