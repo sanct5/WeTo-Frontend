@@ -3,20 +3,19 @@ import { Box, CircularProgress, Paper, Typography } from '@mui/material';
 import { UserState } from '../../../hooks/users/userSlice';
 import { format } from '@formkit/tempo';
 import { useEffect, useState } from 'react';
-import { PqrsAnswer } from '../models';
 import axios from 'axios';
 import { pqrsService } from '../../../api/Pqrs';
 import { toast } from 'react-toastify';
+import { Pqrs } from '../models';
 
 interface CaseMessagesProps {
-    id: string;
-    description: string;
     reloadAnswers: boolean;
+    selectedCase: Pqrs;
+    setSelectedCase: React.Dispatch<React.SetStateAction<Pqrs>>;
 }
 
-export const CaseMessages = ({ id, description, reloadAnswers }: CaseMessagesProps) => {
+export const CaseMessages = ({ reloadAnswers, setSelectedCase, selectedCase }: CaseMessagesProps) => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [answers, setAnswers] = useState<PqrsAnswer[]>([]);
 
     const user = useSelector((state: { user: UserState }) => state.user);
 
@@ -24,8 +23,16 @@ export const CaseMessages = ({ id, description, reloadAnswers }: CaseMessagesPro
         setLoading(true);
         const fetchAnswers = async () => {
             try {
-                const response = await axios.get(`${pqrsService.baseUrl}${pqrsService.endpoints.getPqrsAnswers}/${id}`);
-                setAnswers(response.data);
+                const response = await axios.get(`${pqrsService.baseUrl}${pqrsService.endpoints.getPqrsAnswers}/${selectedCase._id}`);
+                setSelectedCase(
+                    (prevState) => ({
+                        ...prevState,
+                        answer: response.data,
+                    })
+                );
+                if (selectedCase.state === 'pendiente') {
+                    selectedCase.state = 'tramite';
+                }
             } catch (error) {
                 toast.error('Error al cargar las respuestas');
             } finally {
@@ -34,7 +41,7 @@ export const CaseMessages = ({ id, description, reloadAnswers }: CaseMessagesPro
         };
 
         fetchAnswers();
-    }, [id, reloadAnswers]);
+    }, [selectedCase._id, reloadAnswers]);
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -50,7 +57,7 @@ export const CaseMessages = ({ id, description, reloadAnswers }: CaseMessagesPro
                 }}
             >
                 <Typography variant='body2' sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                    {description}
+                    {selectedCase.description}
                 </Typography>
             </Paper>
             <>
@@ -62,7 +69,7 @@ export const CaseMessages = ({ id, description, reloadAnswers }: CaseMessagesPro
                         </Typography>
                     </Box>
                 ) : (
-                    answers.map((answer) => (
+                    selectedCase.answer.map((answer) => (
                         <Box
                             key={answer._id}
                             sx={{
