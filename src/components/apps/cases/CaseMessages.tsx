@@ -30,9 +30,6 @@ export const CaseMessages = ({ reloadAnswers, setSelectedCase, selectedCase }: C
                         answer: response.data,
                     })
                 );
-                if (selectedCase.state === 'pendiente') {
-                    selectedCase.state = 'tramite';
-                }
             } catch (error) {
                 toast.error('Error al cargar las respuestas');
             } finally {

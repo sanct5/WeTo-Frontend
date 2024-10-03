@@ -54,7 +54,14 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
 
             if (response.status === 200) {
                 toast.success('Respuesta enviada');
-
+                if (selectedCase.state === 'pendiente') {
+                    setSelectedCase(
+                        (prevState) => ({
+                            ...prevState,
+                            state: 'tramite',
+                        })
+                    );
+                }
                 setReloadAnswers(!reloadAnswers);
                 setAnswer('');
             }
