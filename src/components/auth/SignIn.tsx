@@ -27,7 +27,7 @@ const SignIn = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     //Estados para almacenar si el usuario está autenticado y si se debe recordar
-    const { isLogged } = useSelector((state: { user: UserState }) => state.user);
+    const { isLogged, role } = useSelector((state: { user: UserState }) => state.user);
 
     //Verifica si el checkbox de recordar está marcado
     const handleChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +54,11 @@ const SignIn = () => {
         }
 
         if (isLogged) {
-            navigate('/app/announcements');
+            if (role === 'RESIDENT') {
+                navigate('/app/announcements');
+            } else {
+                navigate('/app/dashboard');
+            }
         }
     }, [isLogged]);
 
@@ -127,11 +131,6 @@ const SignIn = () => {
                             <Grid item xs>
                                 <Link href="#" variant="body2">
                                     ¿Olvidó su contraseña?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href="#" variant="body2">
-                                    {"¿No tienes una cuenta? Regístrate"}
                                 </Link>
                             </Grid>
                         </Grid> */}

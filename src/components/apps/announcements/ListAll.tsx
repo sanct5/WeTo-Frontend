@@ -28,6 +28,7 @@ import { UserState } from '../../../hooks/users/userSlice';
 import { Announcements } from '../models'
 import parse from 'html-react-parser'
 import { CalendarMonth, DateRangeRounded, AddBox, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House, Announcement, ArrowUpward, ArrowDownward } from '@mui/icons-material';
+import HighlightOne from './HighlightOne';
 
 const ListAll = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -39,6 +40,20 @@ const ListAll = () => {
     const [keyWord, setKeyWord] = useState<string>('');
     const [orderMostRecent, setOrderMostRecent] = useState<boolean>(true);
     const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
+
+    const [openHighlight, setOpenHighlight] = useState<boolean>(false);
+    const [randomAnnouncement, setRandomAnnouncement] = useState<Announcements>({
+        _id: '',
+        User: '',
+        Title: '',
+        Body: '',
+        category: 'General',
+        Date: new Date(),
+        LastModify: new Date(),
+        CreatedBy: '',
+        isAdmin: false
+    });
+
 
     const [tabValue, setTabValue] = useState('one');
 
@@ -80,6 +95,13 @@ const ListAll = () => {
         const getAdminAnnouncements = async () => {
             setLoading(true);
             const response = await axios.get<Announcements[]>(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByComplex}/${user.idComplex}`);
+            if (response.data.length != 0 && sessionStorage.getItem('highlightedAnnouncement') !== 'true' && user.role === 'RESIDENT') {
+                const randomIndex = Math.floor(Math.random() * response.data.length);
+                setRandomAnnouncement(response.data[randomIndex]);
+                const highlightedAnnouncement = 'true';
+                sessionStorage.setItem('highlightedAnnouncement', highlightedAnnouncement);
+                setOpenHighlight(true);
+            }
             const sortedAnnouncements = response.data
                 .filter(announcement => announcement.isAdmin)
                 .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
@@ -311,7 +333,12 @@ const ListAll = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-
+            
+            <HighlightOne
+                openHighlight={openHighlight}
+                setOpenHighlight={setOpenHighlight}
+                announcement={randomAnnouncement}
+            />
         </Box >
     );
 }
