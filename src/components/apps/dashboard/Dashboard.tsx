@@ -11,37 +11,28 @@ import { UserService } from '../../../api/UserService';
 import { pqrsService } from '../../../api/Pqrs';
 import { UserState } from '../../../hooks/users/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { Announcements, Pqrs } from '../models';
 
-interface PQR {
-    id: string;
-    state: 'pendiente' | 'cerrado' | 'tramite' | string;
-    date: Date;
-    case: string;
-    userName: string;
-}
-
-interface Announcement {
-    _id: string;
-    User: string;
-    CreatedBy: string;
-    Complex: string;
-    Title: string;
-    Body: string;
-    Date: Date;
-    LastModify: Date;
-    isAdmin: boolean;
-    category: 'Mantenimiento' | 'Servicios' | 'Reuniones' | 'General' | 'Publicidad';
-}
 
 const Dashboard = () => {
-    const [pqrsData, setPqrsData] = useState<PQR[]>([]);
+    const [pqrsData, setPqrsData] = useState<Pqrs[]>([]);
     const [residentesTotal, setResidentesTotal] = useState(0);
     const [publicidadTotal, setPublicidadTotal] = useState(0);
     const [serviciosTotal, setServiciosTotal] = useState(0);
     const [mantenimientoTotal, setMantenimientoTotal] = useState(0);
     const [reunionesTotal, setReunionesTotal] = useState(0);
     const [generalTotal, setGeneralTotal] = useState(0);
-    const [latestRelevantAnnouncement, setLatestRelevantAnnouncement] = useState<Announcement | null>(null);
+    const [latestRelevantAnnouncement, setLatestRelevantAnnouncement] = useState<Announcements>({
+        _id: '',
+        User: '',
+        Title: '',
+        Body: '',
+        category: 'General',
+        Date: new Date(),
+        LastModify: new Date(),
+        CreatedBy: '',
+        isAdmin: false
+    });
 
     const [isLoadingPqrs, setIsLoadingPqrs] = useState(false);
     const [isLoadingResidents, setIsLoadingResidents] = useState(false);
@@ -55,7 +46,7 @@ const Dashboard = () => {
         try {
             setIsLoadingPqrs(true);
             const pqrsResponse = await axios.get(`${pqrsService.baseUrl}${pqrsService.endpoints.getPqrsByComplex}/${user.idComplex}`);
-            const pqrs: PQR[] = pqrsResponse.data;
+            const pqrs: Pqrs[] = pqrsResponse.data;
             setPqrsData(pqrs);
             setIsLoadingPqrs(false);
 
@@ -68,7 +59,7 @@ const Dashboard = () => {
 
             setIsLoadingAnnouncements(true);
             const announcementsResponse = await axios.get(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByComplex}/${user.idComplex}`);
-            const announcements: Announcement[] = announcementsResponse.data;
+            const announcements: Announcements[] = announcementsResponse.data;
 
             setPublicidadTotal(announcements.filter(a => a.category === 'Publicidad').length);
             setServiciosTotal(announcements.filter(a => a.category === 'Servicios').length);
@@ -85,7 +76,6 @@ const Dashboard = () => {
             }
             setIsLoadingAnnouncements(false);
         } catch (error) {
-            console.error('Error fetching dashboard data:', error);
             setIsLoadingPqrs(false);
             setIsLoadingResidents(false);
             setIsLoadingAnnouncements(false);
@@ -201,7 +191,7 @@ const Dashboard = () => {
 
             <Grid2 container spacing={2} justifyContent="center" size={4}>
                 <Grid2 component="div" size="grow">
-                    <Card onClick={() => navigate('/app/announcements')}sx={{
+                    <Card onClick={() => navigate('/app/announcements')} sx={{
                         padding: '24px',
                         textAlign: 'center',
                         borderRadius: '12px',
@@ -306,7 +296,7 @@ const Dashboard = () => {
                                     </TableHead>
                                     <TableBody>
                                         {latestPqrs.map((pqr) => (
-                                            <TableRow key={pqr.id}>
+                                            <TableRow key={pqr._id}>
                                                 <TableCell>{pqr.case}</TableCell>
                                                 <TableCell>{pqr.userName}</TableCell>
                                                 <TableCell>{new Date(pqr.date).toLocaleDateString()}</TableCell>
