@@ -6,7 +6,7 @@ export type Announcements = {
     User: string;
     Title: string;
     Body: string;
-    category: string;
+    category: AnnouncementCategory
     Date: Date;
     LastModify: Date;
     CreatedBy: string;
