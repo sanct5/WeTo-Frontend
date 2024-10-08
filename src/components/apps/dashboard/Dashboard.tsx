@@ -1,7 +1,7 @@
 import { PieChart, Pie, LineChart, Line, XAxis, YAxis, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Typography, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, CardContent, Grid2, Alert, AlertTitle, CircularProgress } from '@mui/material';
+import { Card, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, CardContent, Grid2, Alert, AlertTitle, CircularProgress } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { People, Handyman, Interests, Groups, House, DateRangeRounded, CalendarMonth, PendingActions, Warning } from '@mui/icons-material';
 import { format } from '@formkit/tempo';
@@ -10,6 +10,7 @@ import { AnnouncementsService } from '../../../api/Anouncements';
 import { UserService } from '../../../api/UserService';
 import { pqrsService } from '../../../api/Pqrs';
 import { UserState } from '../../../hooks/users/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 interface PQR {
     id: string;
@@ -47,6 +48,8 @@ const Dashboard = () => {
     const [isLoadingAnnouncements, setIsLoadingAnnouncements] = useState(false);
 
     const user = useSelector((state: { user: UserState }) => state.user);
+
+    const navigate = useNavigate();
 
     const fetchDashboardData = async () => {
         try {
@@ -155,7 +158,7 @@ const Dashboard = () => {
             borderBottom: '2px'
         }}>
             <Grid2 container size="grow" spacing={2}>
-                <Card sx={{
+                <Card onClick={() => navigate('/app/residents')} sx={{
                     width: '100%',
                     padding: '24px',
                     textAlign: 'center',
@@ -175,7 +178,7 @@ const Dashboard = () => {
                         )}
                     </Typography>
                 </Card>
-                <Card sx={{
+                <Card onClick={() => navigate('/app/cases')} sx={{
                     width: '100%',
                     padding: '24px',
                     textAlign: 'center',
@@ -198,7 +201,7 @@ const Dashboard = () => {
 
             <Grid2 container spacing={2} justifyContent="center" size={4}>
                 <Grid2 component="div" size="grow">
-                    <Card sx={{
+                    <Card onClick={() => navigate('/app/announcements')}sx={{
                         padding: '24px',
                         textAlign: 'center',
                         borderRadius: '12px',
@@ -209,7 +212,7 @@ const Dashboard = () => {
                     }}>
                         {isLoadingAnnouncements ? <CircularProgress /> : pieData.every(data => data.value === 0) ? (
                             <Alert severity="warning" icon={<Warning />} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <AlertTitle>No hay datos de anuncios</AlertTitle>
+                                <AlertTitle>No hay anuncios</AlertTitle>
                             </Alert>
                         ) : (
                             <ResponsiveContainer width="100%">
@@ -224,7 +227,7 @@ const Dashboard = () => {
                                         fill="#8884d8"
                                         label={renderCustomizedLabel}
                                     >
-                                        {pieData.map((entry, index) => (
+                                        {pieData.map((_entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
@@ -239,7 +242,7 @@ const Dashboard = () => {
 
             <Grid2 container spacing={2} justifyContent="center" size={5}>
                 <Grid2 component="div" size="grow">
-                    <Card sx={{
+                    <Card onClick={() => navigate('/app/cases')} sx={{
                         padding: '24px',
                         textAlign: 'center',
                         borderRadius: '12px',
@@ -250,7 +253,7 @@ const Dashboard = () => {
                     }}>
                         {isLoadingPqrs ? <CircularProgress /> : lineChartData.length === 0 ? (
                             <Alert severity="warning" icon={<Warning />} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <AlertTitle>No hay datos de PQRS</AlertTitle>
+                                <AlertTitle>No hay PQRS</AlertTitle>
                             </Alert>
                         ) : (
                             <ResponsiveContainer width="100%">
@@ -277,7 +280,7 @@ const Dashboard = () => {
 
             <Grid2 container spacing={2} justifyContent="center" size={6}>
                 <Grid2 component="div" size="grow">
-                    <Card sx={{
+                    <Card onClick={() => navigate('/app/cases')} sx={{
                         padding: '24px',
                         textAlign: 'center',
                         borderRadius: '12px',
@@ -319,7 +322,7 @@ const Dashboard = () => {
 
             <Grid2 container spacing={2} justifyContent="center" size={6}>
                 <Grid2 component="div" size="grow">
-                    <Card sx={{
+                    <Card onClick={() => navigate('/app/announcements')} sx={{
                         padding: '24px',
                         textAlign: 'center',
                         borderRadius: '12px',
