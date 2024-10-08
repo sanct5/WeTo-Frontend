@@ -15,6 +15,7 @@ import ViewProfile from '../components/apps/profile/ViewProfile';
 import ConfigTabs from '../components/apps/config/ConfigTabs';
 import PQRSTabs from '../components/apps/pqrs/PqrsTabs';
 import ViewCases from '../components/apps/cases/ViewCases';
+import Dashboard from '../components/apps/dashboard/Dashboard';
 
 const router = createBrowserRouter([
     {
@@ -36,8 +37,13 @@ const router = createBrowserRouter([
         children: [
             {
                 path: 'dashboard',
-                element: <WorkingOn />,
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <Dashboard />
+                    </ProtectedRoute>
+                ),
             },
+
             // PQRS
             {
                 path: 'cases',
