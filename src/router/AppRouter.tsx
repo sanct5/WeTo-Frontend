@@ -15,6 +15,7 @@ import ViewProfile from '../components/apps/profile/ViewProfile';
 import ConfigTabs from '../components/apps/config/ConfigTabs';
 import PQRSTabs from '../components/apps/pqrs/PqrsTabs';
 import ViewCases from '../components/apps/cases/ViewCases';
+import AllNumbers from '../components/apps/numbers/AllNumbers';
 
 const router = createBrowserRouter([
     {
@@ -110,7 +111,12 @@ const router = createBrowserRouter([
                         <ConfigTabs />
                     </ProtectedRoute>
                 )
-            }
+            },
+            //Numbers
+            {
+                path: 'numbers',
+                element: < AllNumbers/>,
+            },
         ],
     },
 ]);
