@@ -18,7 +18,7 @@ const AllNumbers = () => {
         { name: 'Emergencias generales', number: '123', icon: <EmergencyIcon fontSize="large" /> },
         { name: 'Administración', number: '98765', icon: <AdminPanelSettingsIcon fontSize="large" /> },
         { name: 'Portería/Vigilancia', number: '55555', icon: <SecurityIcon fontSize="large" /> },
-        { name: 'Secretaría de Salud – Ambulancias', number: '125', icon: <HealthAndSafetyIcon fontSize="large" /> },
+        { name: 'Secretaría de Salud - Ambulancias', number: '125', icon: <HealthAndSafetyIcon fontSize="large" /> },
         { name: 'Policía de Carreteras', number: '126', icon: <DirectionsCarIcon fontSize="large" /> },
         { name: 'Tránsito', number: '127', icon: <TrafficIcon fontSize="large" /> },
         { name: 'Cruz Roja', number: '132', icon: <MedicalServicesIcon fontSize="large" /> },
