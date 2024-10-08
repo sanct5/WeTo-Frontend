@@ -13,7 +13,7 @@ export type Announcements = {
     isAdmin: boolean;
 }
 
-export type AnnouncementCategory = "Mantenimiento" | "Servicios" | "General" | "Reuniones";
+export type AnnouncementCategory = "Mantenimiento" | "Servicios" | "General" | "Reuniones" | "Publicidad";
 
 // Pqrs
 
