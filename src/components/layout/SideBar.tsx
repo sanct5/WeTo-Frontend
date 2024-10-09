@@ -38,140 +38,140 @@ export default function SideBar() {
         setDesktopOpen(false);
     }
 
-        const handleDrawerTransitionEnd = () => {
-            setIsClosing(false);
-        };
+    const handleDrawerTransitionEnd = () => {
+        setIsClosing(false);
+    };
 
-        const handleDrawerToggle = () => {
-            if (!isClosing) {
-                setMobileOpen(!mobileOpen);
-                setDesktopOpen(!desktopOpen);
+    const handleDrawerToggle = () => {
+        if (!isClosing) {
+            setMobileOpen(!mobileOpen);
+            setDesktopOpen(!desktopOpen);
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        dispatch(resetUser());
+        dispatch(setComplexColors({
+            primaryColor: '#0097b2',
+            secondaryColor: '#ff914d',
+        }));
+        navigate("/login");
+    }
+
+    const user = useSelector((state: { user: UserState }) => state.user);
+
+    const loggedUser = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') as string);
+
+    const fetchComplexColors = async () => {
+        try {
+            const response = await axios.get(`${ComplexService.baseUrl}${ComplexService.endpoints.ComplexColors}/${user.idComplex}`);
+            dispatch(setComplexColors({ primaryColor: response.data.config.primaryColor, secondaryColor: response.data.config.secondaryColor }));
+            if (user.stayLogged) {
+                localStorage.setItem('user', JSON.stringify({ ...user, config: response.data.config }));
+            } else {
+                sessionStorage.setItem('user', JSON.stringify({ ...user, config: response.data.config }));
             }
-        };
+        } catch (error) {
+            return;
+        }
+    };
 
-        const handleLogout = () => {
-            localStorage.clear();
-            sessionStorage.clear();
-            dispatch(resetUser());
-            dispatch(setComplexColors({
-                primaryColor: '#0097b2',
-                secondaryColor: '#ff914d',
-            }));
-            navigate("/login");
+    useEffect(() => {
+        if (loggedUser) {
+            dispatch(setUser(loggedUser));
+            fetchComplexColors();
         }
 
-        const user = useSelector((state: { user: UserState }) => state.user);
+        if (!user.isLogged && !loggedUser) {
+            localStorage.clear();
+            toast.error('Por favor inicia sesión nuevamente');
+            navigate('/login');
+        }
+    }, [user.isLogged])
 
-        const loggedUser = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') as string);
+    const drawer = (
+        <div>
+            <Toolbar />
+            <Divider />
+            <List>
+                {userOptions.map((item) => item.role.includes(user.role as Role) && (
+                    <ListItem key={item.text} disablePadding>
+                        <ListItemButton component={Link} to={item.link} onClick={handleDrawerClose}>
+                            <ListItemIcon>{item.icon}</ListItemIcon>
+                            <ListItemText primary={item.text} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+        </div>
+    );
 
-        const fetchComplexColors = async () => {
-            try {
-                const response = await axios.get(`${ComplexService.baseUrl}${ComplexService.endpoints.ComplexColors}/${user.idComplex}`);
-                dispatch(setComplexColors({ primaryColor: response.data.config.primaryColor, secondaryColor: response.data.config.secondaryColor }));
-                if (user.stayLogged) {
-                    localStorage.setItem('user', JSON.stringify({ ...user, config: response.data.config }));
-                } else {
-                    sessionStorage.setItem('user', JSON.stringify({ ...user, config: response.data.config }));
-                }
-            } catch (error) {
-                return;
-            }
-        };
-
-        useEffect(() => {
-            if (loggedUser) {
-                dispatch(setUser(loggedUser));
-                fetchComplexColors();
-            }
-
-            if (!user.isLogged && !loggedUser) {
-                localStorage.clear();
-                toast.error('Por favor inicia sesión nuevamente');
-                navigate('/login');
-            }
-        }, [user.isLogged])
-
-        const drawer = (
-            <div>
-                <Toolbar />
-                <Divider />
-                <List>
-                    {userOptions.map((item) => item.role.includes(user.role as Role) && (
-                        <ListItem key={item.text} disablePadding>
-                            <ListItemButton component={Link} to={item.link} onClick={handleDrawerClose}>
-                                <ListItemIcon>{item.icon}</ListItemIcon>
-                                <ListItemText primary={item.text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
-            </div>
-        );
-
-        return (
-            <Box sx={{ display: 'flex' }}>
-                <AppBar
-                    position="fixed"
+    return (
+        <Box sx={{ display: 'flex' }}>
+            <AppBar
+                position="fixed"
+                sx={{
+                    width: { sm: `calc(100% - ${desktopOpen ? drawerWidth : 0}px)` },
+                    ml: { sm: `${desktopOpen ? drawerWidth : 0}px` },
+                }}
+            >
+                <TopBar handleDrawerToggle={handleDrawerToggle} handleLogout={handleLogout} />
+            </AppBar>
+            <Box
+                component="nav"
+                sx={{ width: { sm: desktopOpen ? drawerWidth : 0 }, flexShrink: { sm: 0 } }}
+                aria-label="mailbox folders"
+            >
+                <Drawer
+                    variant="temporary"
+                    open={mobileOpen}
+                    onTransitionEnd={handleDrawerTransitionEnd}
+                    onClose={handleDrawerClose}
+                    ModalProps={{
+                        keepMounted: true,
+                    }}
                     sx={{
-                        width: { sm: `calc(100% - ${desktopOpen ? drawerWidth : 0}px)` },
-                        ml: { sm: `${desktopOpen ? drawerWidth : 0}px` },
+                        display: { xs: 'block', sm: 'none' },
+                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
                     }}
                 >
-                    <TopBar handleDrawerToggle={handleDrawerToggle} handleLogout={handleLogout} />
-                </AppBar>
-                <Box
-                    component="nav"
-                    sx={{ width: { sm: desktopOpen ? drawerWidth : 0 }, flexShrink: { sm: 0 } }}
-                    aria-label="mailbox folders"
-                >
-                    <Drawer
-                        variant="temporary"
-                        open={mobileOpen}
-                        onTransitionEnd={handleDrawerTransitionEnd}
-                        onClose={handleDrawerClose}
-                        ModalProps={{
-                            keepMounted: true,
-                        }}
-                        sx={{
-                            display: { xs: 'block', sm: 'none' },
-                            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                        }}
-                    >
-                        {drawer}
-                    </Drawer>
-                    <Drawer
-                        variant="persistent"
-                        onTransitionEnd={handleDrawerTransitionEnd}
-                        onClose={handleDrawerClose}
-                        ModalProps={{
-                            keepMounted: true,
-                        }}
-                        sx={{
-                            display: { xs: 'none', sm: 'block' },
-                            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                        }}
-                        open={desktopOpen}
-                    >
-                        {drawer}
-                    </Drawer>
-                </Box>
-                <Box
-                    component="main"
-                    sx={{
-                        flexGrow: 1,
-                        p: { xs: 0, md: 3 },
-                        width: { sm: `calc(100% - ${desktopOpen ? drawerWidth : 0}px)` },
-                        ".MuiToolbar-root": {
-                            display: 'flex',
-                        },
-                        backgroundColor: { sm: '#FFFFFF', md: '#F0F0F0' },
-                        height: 'max-content',
-                        minHeight: '100vh',
+                    {drawer}
+                </Drawer>
+                <Drawer
+                    variant="persistent"
+                    onTransitionEnd={handleDrawerTransitionEnd}
+                    onClose={handleDrawerClose}
+                    ModalProps={{
+                        keepMounted: true,
                     }}
+                    sx={{
+                        display: { xs: 'none', sm: 'block' },
+                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                    }}
+                    open={desktopOpen}
                 >
-                    <Toolbar sx={{ marginBottom: 2 }} />
-                    <Outlet />
-                </Box>
+                    {drawer}
+                </Drawer>
             </Box>
-        );
+            <Box
+                component="main"
+                sx={{
+                    flexGrow: 1,
+                    p: { xs: 0, md: 3 },
+                    width: { sm: `calc(100% - ${desktopOpen ? drawerWidth : 0}px)` },
+                    ".MuiToolbar-root": {
+                        display: 'flex',
+                    },
+                    backgroundColor: { sm: '#FFFFFF', md: '#F0F0F0' },
+                    height: 'max-content',
+                    minHeight: '100vh',
+                }}
+            >
+                <Toolbar sx={{ marginBottom: 2 }} />
+                <Outlet />
+            </Box>
+        </Box>
+    );
 }

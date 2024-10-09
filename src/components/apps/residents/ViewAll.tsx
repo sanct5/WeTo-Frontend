@@ -96,13 +96,13 @@ const viewAll = () => {
                 <Typography variant="body1" mb={2}>
                     Aquí puedes ver a todos los residentes de tu unidad. Para ver más detalles de un residente, haz clic en su nombre.
                 </Typography>
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} sx={{ maxWidth: '80vw' }}>
                     {loading ? (
                         <Box display="flex" justifyContent="center" alignItems="center" height="70vh">
                             <CircularProgress />
                         </Box>
                     ) : (
-                        <Table>
+                        <Table stickyHeader>
                             <TableHead>
                                 <TableRow>
                                     <TableCell align='center'>Nombre</TableCell>
