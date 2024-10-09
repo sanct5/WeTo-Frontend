@@ -38,6 +38,11 @@ const Dashboard = () => {
     const [isLoadingResidents, setIsLoadingResidents] = useState(false);
     const [isLoadingAnnouncements, setIsLoadingAnnouncements] = useState(false);
 
+    const [isMobile, setIsMobile] = useState(false); // Estado para detectar si es móvil
+    const [pieChartHeight, setPieChartHeight] = useState(400); // Altura por defecto para el PieChart
+    const [lineChartHeight, setLineChartHeight] = useState(400); // Altura por defecto para el LineChart
+
+
     const user = useSelector((state: { user: UserState }) => state.user);
 
     const navigate = useNavigate();
@@ -205,7 +210,7 @@ const Dashboard = () => {
                                 <AlertTitle>No hay anuncios</AlertTitle>
                             </Alert>
                         ) : (
-                            <ResponsiveContainer width="100%">
+                            <ResponsiveContainer minHeight="400px" width="100%">
                                 <PieChart>
                                     <Pie
                                         data={pieData}
@@ -246,7 +251,7 @@ const Dashboard = () => {
                                 <AlertTitle>No hay PQRS</AlertTitle>
                             </Alert>
                         ) : (
-                            <ResponsiveContainer width="100%">
+                            <ResponsiveContainer minHeight="400px" width="100%">
                                 <LineChart data={lineChartData}>
                                     <XAxis dataKey="date" tickFormatter={(date) => {
                                         const startDate = new Date(date);
@@ -285,8 +290,8 @@ const Dashboard = () => {
                                 <AlertTitle>No hay datos de PQRS recientes</AlertTitle>
                             </Alert>
                         ) : (
-                            <TableContainer component={Paper}>
-                                <Table>
+                            <TableContainer sx={{maxWidth:'85vw'}} component={Paper}>
+                                <Table stickyHeader>
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Asunto</TableCell>
@@ -313,7 +318,7 @@ const Dashboard = () => {
             <Grid2 container spacing={2} justifyContent="center" size={6}>
                 <Grid2 component="div" size="grow">
                     <Card onClick={() => navigate('/app/announcements')} sx={{
-                        padding: '24px',
+                        padding: '12px',
                         textAlign: 'center',
                         borderRadius: '12px',
                         boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
@@ -324,7 +329,7 @@ const Dashboard = () => {
                         <Typography variant="h6" color="textSecondary">Último Anuncio De Administración</Typography>
                         {isLoadingAnnouncements ? <CircularProgress /> : latestRelevantAnnouncement ? (
                             <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 275, width: '100%', position: 'relative' }}>
-                                <Typography variant="h5" component="div" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                                <Typography variant="h5" component="div" textAlign="center" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
                                     {latestRelevantAnnouncement.category === 'Mantenimiento' ? <Handyman color='primary' /> :
                                         latestRelevantAnnouncement.category === 'Servicios' ? <House color='primary' /> :
                                             latestRelevantAnnouncement.category === 'General' ? <Interests color='primary' /> :
@@ -333,13 +338,13 @@ const Dashboard = () => {
                                         {latestRelevantAnnouncement.Title}
                                     </Box>
                                 </Typography>
-                                <CardContent sx={{ textAlign: 'left', overflowY: 'auto', maxHeight: '200px' }}>
+                                <CardContent sx={{ textAlign: 'left', overflowY:{xs:'initial', sm:'auto'}, maxHeight: '200px' }}>
                                     <Typography variant="body2" component="p">
                                         {parse(latestRelevantAnnouncement.Body)}
                                     </Typography>
                                 </CardContent>
                                 <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginTop: 1, flexDirection: { xs: 'column', sm: 'row' }, padding: '16px' }}>
-                                    <Typography variant="body2" component="p" sx={{ mr: 2 }}>
+                                    <Typography variant="body2" component="p" sx={{ mr: 2, mt:15 }}>
                                         <DateRangeRounded color='primary' sx={{ mr: 1 }} />
                                         Publicado el: {format(latestRelevantAnnouncement.Date, { date: "long", time: "short" })}
                                     </Typography>
