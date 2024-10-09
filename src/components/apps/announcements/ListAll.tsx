@@ -192,6 +192,7 @@ const ListAll = () => {
                     allowScrollButtonsMobile
                     indicatorColor="secondary"
                     aria-label="Tabs"
+                    sx={{ maxWidth: '100vw' }}
                 >
                     <Tab icon={<Announcement />} iconPosition='start' value="one" label={isXl ? '' : 'Todos'} />
                     <Tab icon={<House />} iconPosition='start' value="two" label={isXl ? '' : 'Servicios'} />
@@ -199,7 +200,7 @@ const ListAll = () => {
                     <Tab icon={<Groups />} iconPosition='start' value="four" label={isXl ? '' : 'Reuniones'} />
                     <Tab icon={<Handyman />} iconPosition='start' value="five" label={isXl ? '' : 'Mantenimiento'} />
                 </Tabs>
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '90%' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '100%' }}>
                     <>
                         {isXl ? (
                             <IconButton onClick={handleOrder}>
@@ -334,7 +335,7 @@ const ListAll = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            
+
             <HighlightOne
                 openHighlight={openHighlight}
                 setOpenHighlight={setOpenHighlight}
