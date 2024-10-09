@@ -67,7 +67,6 @@ export const LoginUser = (data: FormData) => {
                 sessionStorage.setItem('user', JSON.stringify(user));
             }
 
-            toast.success(`Bienvenid@ ${user.userName}`);
         } catch (error) {
             const res = (error as AxiosError).response?.status;
             if (res === 400) {
