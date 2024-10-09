@@ -13,7 +13,7 @@ import { Pqrs } from '../models';
 import { pqrsService } from '../../../api/Pqrs';
 import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
-import { CalendarMonth, NotificationAdd } from '@mui/icons-material';
+import { Announcement, CalendarMonth, NotificationAdd } from '@mui/icons-material';
 import { format } from '@formkit/tempo';
 import CaseModal from '../cases/CaseModal';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
@@ -46,6 +46,7 @@ const ViewPQRS = () => {
             const response = await axios.get<Pqrs[]>(`${pqrsService.baseUrl}${pqrsService.endpoints.getByUser}/${user._id}`);
             const sortedPqrs = response.data.sort((a, b) => (a.date > b.date ? -1 : 1));
             setpqrsList(sortedPqrs);
+            setpqrsList([])
 
             setLoading(false);
         };
@@ -114,47 +115,56 @@ const ViewPQRS = () => {
                     </Typography>
                 </Box>
             ) : (
-                <Grid2 container spacing={2} columns={16} sx={{ display: 'flex', alignItems: 'stretch' }}>
-                    {pqrsList.map((c) => (
-                        <Grid2 size={{xs: 16, sm: 8 }} key={c._id} sx={{ display: 'flex' }}>
-                            <Card
-                                sx={{
-                                    cursor: 'pointer',
-                                    transition: 'background-color 0.3s',
-                                    '&:hover': { backgroundColor: '#f0f0f0' },
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    flexGrow: 1,
-                                    height: '100%',
-                                }}
-                                onClick={() => {
-                                    setOpen(true);
-                                    setSelectedCase(c);
-                                }}
-                            >
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Box display="flex" alignItems="center">
-                                        <Typography variant="h6" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                                            {c.case}
+                pqrsList.length === 0 ? (
+                    <Box display="flex" justifyContent="center" flexDirection="column" alignItems="center" height="50vh">
+                        <Announcement color='primary' style={{ fontSize: 70, marginBottom: 10 }} />
+                        <Typography variant="body1" color="textSecondary" textAlign="center">
+                            No tienes PQRS abiertos, puedes abrir uno en la parte superior
+                        </Typography>
+                    </Box>
+                ) : (
+                    <Grid2 container spacing={2} columns={16} sx={{ display: 'flex', alignItems: 'stretch' }}>
+                        {pqrsList.map((c) => (
+                            <Grid2 size={{ xs: 16, sm: 8 }} key={c._id} sx={{ display: 'flex' }}>
+                                <Card
+                                    sx={{
+                                        cursor: 'pointer',
+                                        transition: 'background-color 0.3s',
+                                        '&:hover': { backgroundColor: '#f0f0f0' },
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        flexGrow: 1,
+                                        height: '100%',
+                                    }}
+                                    onClick={() => {
+                                        setOpen(true);
+                                        setSelectedCase(c);
+                                    }}
+                                >
+                                    <CardContent sx={{ flexGrow: 1 }}>
+                                        <Box display="flex" alignItems="center">
+                                            <Typography variant="h6" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                                {c.case}
+                                            </Typography>
+                                        </Box>
+                                        <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                            {c.description}
                                         </Typography>
-                                    </Box>
-                                    <Typography variant="body2" sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                                        {c.description}
-                                    </Typography>
-                                    <Typography variant='body1' sx={{ mt: 1 }}>
-                                        {getCategoryIcon(c.category)} {c.category === 'P' ? 'Petición' : c.category === 'Q' ? 'Queja' : c.category === 'R' ? 'Reclamo' : 'Sugerencia'}
-                                    </Typography>
-                                    <Typography variant="body1" sx={{ mt: 1, textTransform: 'capitalize' }}>
-                                        <RadioButtonCheckedIcon sx={{ color: getStatusColor(c.state), mr: 1 }} /> {c.state}
-                                    </Typography>
-                                    <Typography variant="body2" component="p" sx={{ mt: 1 }}>
-                                        <CalendarMonth color="secondary" sx={{ mr: 1 }} /> {format(c.date, { date: 'long', time: 'short' })}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid2>
-                    ))}
-                </Grid2>
+                                        <Typography variant='body1' sx={{ mt: 1 }}>
+                                            {getCategoryIcon(c.category)} {c.category === 'P' ? 'Petición' : c.category === 'Q' ? 'Queja' : c.category === 'R' ? 'Reclamo' : 'Sugerencia'}
+                                        </Typography>
+                                        <Typography variant="body1" sx={{ mt: 1, textTransform: 'capitalize' }}>
+                                            <RadioButtonCheckedIcon sx={{ color: getStatusColor(c.state), mr: 1 }} /> {c.state}
+                                        </Typography>
+                                        <Typography variant="body2" component="p" sx={{ mt: 1 }}>
+                                            <CalendarMonth color="secondary" sx={{ mr: 1 }} /> {format(c.date, { date: 'long', time: 'short' })}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid2>
+                        ))}
+                    </Grid2>
+                )
             )}
 
             <CaseModal

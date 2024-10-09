@@ -14,7 +14,7 @@ export const userOptions: NavOptions[] = [
     { text: 'Anuncios', icon: <Announcement />, link: '/app/announcements', role: ['ADMIN', 'RESIDENT'] },
     { text: 'Publicidad', icon: <Sell />, link: '/app/ads', role: ['ADMIN', 'RESIDENT'] },
     { text: 'Residentes', icon: <Groups />, link: '/app/residents', role: ['ADMIN'] },
-    { text: 'Casos', icon: <QuestionAnswer />, link: '/app/cases', role: ['ADMIN'] },
+    { text: 'PQRS', icon: <QuestionAnswer />, link: '/app/cases', role: ['ADMIN'] },
     { text: 'PQRS', icon: <Help />, link: '/app/pqrs', role: ['RESIDENT'] },
     { text: 'Configuración', icon: <Apartment />, link: '/app/config', role: ['ADMIN'] },
     { text: 'Tel.Emergencia', icon: <NotificationImportant />, link: '/app/numbers', role: ['ADMIN', 'RESIDENT'] },
