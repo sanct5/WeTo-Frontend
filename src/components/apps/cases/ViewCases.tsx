@@ -218,6 +218,7 @@ const ViewCases = () => {
                 allowScrollButtonsMobile
                 indicatorColor="secondary"
                 aria-label="Tabs"
+                sx={{ maxWidth: '80vw' }}
             >
                 <Tab value="one" label={'Peticiones'} />
                 <Tab value="two" label={'Quejas'} />
