@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import NotFound404 from './pages/404';
 import SignIn from '../components/auth/SignIn';
 import SideBar from '../components/layout/SideBar';
-import WorkingOn from './pages/WorkingOn';
 import CreateForm from '../components/apps/residents/CreateForm';
 import EditForm from '../components/apps/residents/EditForm';
 import ViewAll from '../components/apps/residents/ViewAll';
@@ -15,6 +14,8 @@ import ViewProfile from '../components/apps/profile/ViewProfile';
 import ConfigTabs from '../components/apps/config/ConfigTabs';
 import PQRSTabs from '../components/apps/pqrs/PqrsTabs';
 import ViewCases from '../components/apps/cases/ViewCases';
+import Dashboard from '../components/apps/dashboard/Dashboard';
+import AllNumbers from '../components/apps/numbers/AllNumbers';
 
 const router = createBrowserRouter([
     {
@@ -36,8 +37,13 @@ const router = createBrowserRouter([
         children: [
             {
                 path: 'dashboard',
-                element: <WorkingOn />,
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <Dashboard />
+                    </ProtectedRoute>
+                ),
             },
+
             // PQRS
             {
                 path: 'cases',
@@ -110,7 +116,12 @@ const router = createBrowserRouter([
                         <ConfigTabs />
                     </ProtectedRoute>
                 )
-            }
+            },
+            //Numbers
+            {
+                path: 'numbers',
+                element: < AllNumbers/>,
+            },
         ],
     },
 ]);
