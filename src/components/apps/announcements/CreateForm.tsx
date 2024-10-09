@@ -11,7 +11,6 @@ import axios from 'axios';
 import { AnnouncementsService } from '../../../api/Anouncements';
 import { useNavigate } from 'react-router-dom';
 
-
 const CreateFormAnnouncements = () => {
     const [formData, setFormData] = useState<{
         Title: string;
@@ -24,11 +23,8 @@ const CreateFormAnnouncements = () => {
     });
 
     const [isLoading, setIsLoading] = useState(false);
-
     const [lastToastTime, setLastToastTime] = useState<number>(0);
-
     const navigate = useNavigate();
-
     const user = useSelector((state: { user: UserState }) => state.user);
     const User = user._id;
 
@@ -49,7 +45,8 @@ const CreateFormAnnouncements = () => {
     const handleEditorChange = (content: string) => {
         const MAX_LENGTH = 3500;
         const currentTime = Date.now();
-        if (content.length > MAX_LENGTH) {
+        const textContent = content.replace(/<img[^>]*>/g, ''); // Remove image tags from content
+        if (textContent.length > MAX_LENGTH) {
             if (currentTime - lastToastTime > 5000) {
                 toast.warning(`El contenido excede el límite de ${MAX_LENGTH} caracteres.`);
                 setLastToastTime(currentTime);
@@ -65,7 +62,6 @@ const CreateFormAnnouncements = () => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Validaciones
         const { Title, Body, category } = formData;
 
         if (!Title || !Body || !category) {
@@ -81,10 +77,8 @@ const CreateFormAnnouncements = () => {
                 User,
             };
 
-            // Llamada a la API
             await axios.post(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.AddAnnouncement}`, AnnouncementData);
             toast.success('Anuncio creado correctamente');
-            // Redirigir según el rol del usuario
             if (user.role === 'RESIDENT') {
                 navigate('/app/ads');
             } else {
@@ -139,10 +133,29 @@ const CreateFormAnnouncements = () => {
                         init={{
                             height: 500,
                             menubar: false,
-                            toolbar: 'undo redo | formatselect | bold italic backcolor | \
+                            plugins: 'image',
+                            toolbar: 'link image | undo redo | formatselect | bold italic backcolor | \
                           alignleft aligncenter alignright alignjustify | \
-                          bullist numlist outdent indent | removeformat | fontsize | styles',
+                          bullist numlist outdent indent | removeformat | fontsize | styles ',
                             Body_css: 'https://www.tiny.cloud/css/codepen.min.css',
+                            image_title: true,
+                            automatic_uploads: true,
+                            file_picker_types: 'image',
+                            file_picker_callback: (cb, value, meta) => {
+                                const input = document.createElement('input');
+                                input.setAttribute('type', 'file');
+                                input.setAttribute('accept', 'image/*');
+                                input.onchange = () => {
+                                    const file = input.files![0];
+                                    const reader = new FileReader();
+                                    reader.onload = () => {
+                                        const base64 = reader.result as string;
+                                        cb(base64, { title: file.name });
+                                    };
+                                    reader.readAsDataURL(file);
+                                };
+                                input.click();
+                            },
                         }}
                         onEditorChange={handleEditorChange}
                     />
@@ -203,4 +216,3 @@ const CreateFormAnnouncements = () => {
 };
 
 export default CreateFormAnnouncements;
-
