@@ -1,7 +1,7 @@
 import { PieChart, Pie, LineChart, Line, XAxis, YAxis, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, CardContent, Grid2, Alert, AlertTitle, CircularProgress } from '@mui/material';
+import { Card, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, CardContent, Grid2, Alert, AlertTitle, CircularProgress, CardActions } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { People, Handyman, Interests, Groups, House, DateRangeRounded, CalendarMonth, PendingActions, Warning } from '@mui/icons-material';
 import { format } from '@formkit/tempo';
@@ -290,7 +290,7 @@ const Dashboard = () => {
                                 <AlertTitle>No hay datos de PQRS recientes</AlertTitle>
                             </Alert>
                         ) : (
-                            <TableContainer sx={{maxWidth:'85vw'}} component={Paper}>
+                            <TableContainer sx={{ maxWidth: '85vw' }} component={Paper}>
                                 <Table stickyHeader>
                                     <TableHead>
                                         <TableRow>
@@ -324,6 +324,8 @@ const Dashboard = () => {
                         boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
                         transition: '0.3s',
                         height: '100%',
+                        maxHeight:{xs:'max-content', sm:'440px'},
+                        overflowY: { xs: 'initial', sm: 'auto' },
                         '&:hover': { transform: 'scale(1.05)', boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)' }
                     }}>
                         <Typography variant="h6" color="textSecondary">Último Anuncio De Administración</Typography>
@@ -338,13 +340,13 @@ const Dashboard = () => {
                                         {latestRelevantAnnouncement.Title}
                                     </Box>
                                 </Typography>
-                                <CardContent sx={{ textAlign: 'left', overflowY:{xs:'initial', sm:'auto'}, maxHeight: '200px' }}>
+                                <CardContent sx={{ textAlign: 'left' }}>
                                     <Typography variant="body2" component="p">
                                         {parse(latestRelevantAnnouncement.Body)}
                                     </Typography>
                                 </CardContent>
-                                <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginTop: 1, flexDirection: { xs: 'column', sm: 'row' }, padding: '16px' }}>
-                                    <Typography variant="body2" component="p" sx={{ mr: 2, mt:15 }}>
+                                <CardActions>
+                                    <Typography variant="body2" component="p" sx={{ mr: 2 }}>
                                         <DateRangeRounded color='primary' sx={{ mr: 1 }} />
                                         Publicado el: {format(latestRelevantAnnouncement.Date, { date: "long", time: "short" })}
                                     </Typography>
@@ -354,8 +356,9 @@ const Dashboard = () => {
                                             Ultima modificación: {format(latestRelevantAnnouncement.LastModify, { date: "long", time: "short" })}
                                         </Typography>
                                     )}
-                                </Box>
+                                </CardActions>
                             </Box>
+
                         ) : (
                             <Alert severity="warning" icon={<Warning />} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <AlertTitle>No hay anuncios relevantes</AlertTitle>
