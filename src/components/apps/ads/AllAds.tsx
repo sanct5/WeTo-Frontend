@@ -3,7 +3,6 @@ import {
     Box,
     IconButton,
     Button,
-    Grid,
     Card,
     CardContent,
     Typography,
@@ -12,7 +11,8 @@ import {
     DialogActions,
     CircularProgress,
     DialogContentText,
-    TextField
+    TextField,
+    Grid2
 } from '@mui/material';
 import { format } from '@formkit/tempo';
 import axios from 'axios';
@@ -114,24 +114,24 @@ const AllAds = () => {
                 </IconButton>
             </Box>}
             {loading ? (
-                <Grid container justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
+                <Grid2 container justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
                     <CircularProgress />
                     <Typography variant="h6" component="div" marginLeft={2}>
                         Cargando anuncios...
                     </Typography>
-                </Grid>
+                </Grid2>
             ) : (
                 residentAds.length === 0 ? (
-                    <Grid container direction="column" justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
-                        <Typography variant="h3" component="div" sx={{ mb: 4 }}>
+                    <Grid2 container direction="column" justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
+                        <Typography variant="h3" component="div" sx={{ mb: 4 }} textAlign="center">
                             Aún no hay publicidad
                         </Typography>
                         <Announcement color='primary' style={{ fontSize: 80 }} />
-                    </Grid>
+                    </Grid2>
                 ) : (
-                    <Grid container spacing={2} justifyContent="flex-start">
+                    <Grid2 container spacing={2} columns={16} sx={{ display: 'flex', alignItems: 'stretch' }}>
                         {residentAds.map((announcement) => (
-                            <Grid item key={announcement._id} xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <Grid2 size={{ xs: 16, md: 8 }} key={announcement._id} sx={{ display: 'flex' }}>
                                 <Card sx={{ display: 'flex', flexDirection: 'column', minWidth: 275, width: '100%', position: 'relative', pt: user.role === 'ADMIN' ? 1 : 0 }}>
                                     {user.role === 'ADMIN' &&
                                         <Box sx={{ position: 'absolute', top: 0, right: 0, display: 'flex', gap: 1 }}>
@@ -166,9 +166,9 @@ const AllAds = () => {
                                         </Box>
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Grid2>
                         ))}
-                    </Grid>
+                    </Grid2>
                 )
             )}
 

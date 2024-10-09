@@ -141,12 +141,30 @@ const EditFormAnnouncements = () => {
                     value={formData.Body}
                     init={{
                         height: 500,
-                        width: '100%',
                         menubar: false,
-                        toolbar: 'undo redo | formatselect | bold italic backcolor | \
-                        alignleft aligncenter alignright alignjustify | \
-                        bullist numlist outdent indent | removeformat | fontsize | styles',
+                        plugins: 'image',
+                        toolbar: 'link image | undo redo | formatselect | bold italic backcolor | \
+                          alignleft aligncenter alignright alignjustify | \
+                          bullist numlist outdent indent | removeformat | fontsize | styles ',
                         Body_css: 'https://www.tiny.cloud/css/codepen.min.css',
+                        image_title: true,
+                        automatic_uploads: true,
+                        file_picker_types: 'image',
+                        file_picker_callback: (cb) => {
+                            const input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+                            input.onchange = () => {
+                                const file = input.files![0];
+                                const reader = new FileReader();
+                                reader.onload = () => {
+                                    const base64 = reader.result as string;
+                                    cb(base64, { title: file.name });
+                                };
+                                reader.readAsDataURL(file);
+                            };
+                            input.click();
+                        },
                     }}
                     onEditorChange={handleEditorChange}
                 />

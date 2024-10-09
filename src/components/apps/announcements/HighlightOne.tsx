@@ -92,7 +92,7 @@ const HighlightOne = ({ openHighlight, setOpenHighlight, announcement }: Highlig
                     {announcement.category} |
                 </Typography>
                 <Typography variant="body1" color="textSecondary">
-                    {format(announcement.Date, { date: "long", time: "short" })}
+                    {format(announcement.Date, { date: "long" })}
                 </Typography>
             </DialogActions>
         </Dialog>

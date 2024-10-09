@@ -29,12 +29,14 @@ export default function SideBar() {
     const navigate = useNavigate();
 
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [desktopOpen, setDesktopOpen] = useState(true);
     const [isClosing, setIsClosing] = useState(false);
 
     const handleDrawerClose = () => {
         setIsClosing(true);
         setMobileOpen(false);
-    };
+        setDesktopOpen(false);
+    }
 
     const handleDrawerTransitionEnd = () => {
         setIsClosing(false);
@@ -43,10 +45,10 @@ export default function SideBar() {
     const handleDrawerToggle = () => {
         if (!isClosing) {
             setMobileOpen(!mobileOpen);
+            setDesktopOpen(!desktopOpen);
         }
     };
 
-    //Función para cerrar sesión
     const handleLogout = () => {
         localStorage.clear();
         sessionStorage.clear();
@@ -58,7 +60,6 @@ export default function SideBar() {
         navigate("/login");
     }
 
-    //Estado para almacenar los datos del usuario
     const user = useSelector((state: { user: UserState }) => state.user);
 
     const loggedUser = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') as string);
@@ -77,7 +78,6 @@ export default function SideBar() {
         }
     };
 
-    //Si el usuario no está logueado y no marcó la casilla de "recuerdame", se redirige al login
     useEffect(() => {
         if (loggedUser) {
             dispatch(setUser(loggedUser));
@@ -113,15 +113,15 @@ export default function SideBar() {
             <AppBar
                 position="fixed"
                 sx={{
-                    width: { sm: `calc(100% - ${drawerWidth}px)` },
-                    ml: { sm: `${drawerWidth}px` },
+                    width: { sm: `calc(100% - ${desktopOpen ? drawerWidth : 0}px)` },
+                    ml: { sm: `${desktopOpen ? drawerWidth : 0}px` },
                 }}
             >
                 <TopBar handleDrawerToggle={handleDrawerToggle} handleLogout={handleLogout} />
             </AppBar>
             <Box
                 component="nav"
-                sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+                sx={{ width: { sm: desktopOpen ? drawerWidth : 0 }, flexShrink: { sm: 0 } }}
                 aria-label="mailbox folders"
             >
                 <Drawer
@@ -130,7 +130,7 @@ export default function SideBar() {
                     onTransitionEnd={handleDrawerTransitionEnd}
                     onClose={handleDrawerClose}
                     ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
+                        keepMounted: true,
                     }}
                     sx={{
                         display: { xs: 'block', sm: 'none' },
@@ -140,12 +140,17 @@ export default function SideBar() {
                     {drawer}
                 </Drawer>
                 <Drawer
-                    variant="permanent"
+                    variant="persistent"
+                    onTransitionEnd={handleDrawerTransitionEnd}
+                    onClose={handleDrawerClose}
+                    ModalProps={{
+                        keepMounted: true,
+                    }}
                     sx={{
                         display: { xs: 'none', sm: 'block' },
                         '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
                     }}
-                    open
+                    open={desktopOpen}
                 >
                     {drawer}
                 </Drawer>
@@ -155,7 +160,7 @@ export default function SideBar() {
                 sx={{
                     flexGrow: 1,
                     p: { xs: 0, md: 3 },
-                    width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    width: { sm: `calc(100% - ${desktopOpen ? drawerWidth : 0}px)` },
                     ".MuiToolbar-root": {
                         display: 'flex',
                     },

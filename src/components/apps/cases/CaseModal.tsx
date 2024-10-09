@@ -166,7 +166,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                                 {format(selectedCase.date, { date: "short", time: "short" })}
                             </Typography>
                         </Box>
-                        <Box display="flex" alignItems="center" marginLeft={2}>
+                        <Box sx={{ display: { xs: 'none', sm: 'flex' } }} alignItems="center" marginLeft={2}>
                             <Info color='secondary' sx={{ mr: 1 }} />
                             <Typography variant="body2" color="textSecondary" sx={{ textTransform: 'capitalize' }}>
                                 {selectedCase.state}

@@ -4,7 +4,6 @@ import {
     Box,
     IconButton,
     Button,
-    Grid,
     Card,
     CardContent,
     Typography,
@@ -17,7 +16,8 @@ import {
     Tabs,
     Tab,
     useTheme,
-    useMediaQuery
+    useMediaQuery,
+    Grid2
 } from '@mui/material';
 import { format } from '@formkit/tempo';
 import axios from 'axios';
@@ -180,7 +180,7 @@ const ListAll = () => {
     }
 
     return (
-        <Box sx={{ backgroundColor: '#F0F0F0', height: 'max-content', minHeight: '100vh' }}>
+        <Box sx={{ backgroundColor: '#F0F0F0', height: 'max-content', minHeight: '100vh', width: '100%' }}>
             {!loading && <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-evenly', alignItems: 'center', margin: 'auto' }}>
                 <Tabs
                     value={tabValue}
@@ -191,6 +191,7 @@ const ListAll = () => {
                     allowScrollButtonsMobile
                     indicatorColor="secondary"
                     aria-label="Tabs"
+                    sx={{ maxWidth: '100vw' }}
                 >
                     <Tab icon={<Announcement />} iconPosition='start' value="one" label={isXl ? '' : 'Todos'} />
                     <Tab icon={<House />} iconPosition='start' value="two" label={isXl ? '' : 'Servicios'} />
@@ -198,7 +199,7 @@ const ListAll = () => {
                     <Tab icon={<Groups />} iconPosition='start' value="four" label={isXl ? '' : 'Reuniones'} />
                     <Tab icon={<Handyman />} iconPosition='start' value="five" label={isXl ? '' : 'Mantenimiento'} />
                 </Tabs>
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '90%' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '100%' }}>
                     <>
                         {isXl ? (
                             <IconButton onClick={handleOrder}>
@@ -252,24 +253,24 @@ const ListAll = () => {
             </Box>}
             {
                 loading ? (
-                    <Grid container justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
+                    <Grid2 container justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
                         <CircularProgress />
                         <Typography variant="h6" component="div" marginLeft={2}>
                             Cargando anuncios...
                         </Typography>
-                    </Grid>
+                    </Grid2>
                 ) : (
                     filteredAnnouncements.length === 0 ? (
-                        <Grid container direction="column" justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
-                            <Typography variant="h3" component="div" sx={{ mb: 4 }}>
+                        <Grid2 container direction="column" justifyContent="center" alignItems="center" style={{ height: '50vh' }}>
+                            <Typography variant="h3" component="div" sx={{ mb: 4 }} textAlign="center">
                                 Aún no hay anuncios
                             </Typography>
                             <Announcement color='primary' style={{ fontSize: 80 }} />
-                        </Grid>
+                        </Grid2>
                     ) : (
-                        <Grid container spacing={2} justifyContent="flex-start">
+                        <Grid2 container spacing={2} columns={16} sx={{ display: 'flex', alignItems: 'stretch' }}>
                             {filteredAnnouncements.map((announcement) => (
-                                <Grid item key={announcement._id} xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <Grid2 size={{ xs: 16, md: 8 }} key={announcement._id} sx={{ display: 'flex' }}>
                                     <Card sx={{ display: 'flex', flexDirection: 'column', minWidth: 275, width: '100%', position: 'relative', pt: user.role === 'ADMIN' ? 1 : 0 }}>
                                         {user.role === 'ADMIN' &&
                                             <Box sx={{ position: 'absolute', top: 0, right: 0, display: 'flex', gap: 1 }}>
@@ -310,9 +311,9 @@ const ListAll = () => {
                                             </Box>
                                         </CardContent>
                                     </Card>
-                                </Grid>
+                                </Grid2>
                             ))}
-                        </Grid>
+                        </Grid2>
                     )
                 )
             }
@@ -333,7 +334,7 @@ const ListAll = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            
+
             <HighlightOne
                 openHighlight={openHighlight}
                 setOpenHighlight={setOpenHighlight}

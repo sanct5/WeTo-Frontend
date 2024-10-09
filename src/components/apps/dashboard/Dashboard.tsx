@@ -1,7 +1,7 @@
 import { PieChart, Pie, LineChart, Line, XAxis, YAxis, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, CardContent, Grid2, Alert, AlertTitle, CircularProgress } from '@mui/material';
+import { Card, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, CardContent, Grid2, Alert, AlertTitle, CircularProgress, CardActions } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { People, Handyman, Interests, Groups, House, DateRangeRounded, CalendarMonth, PendingActions, Warning } from '@mui/icons-material';
 import { format } from '@formkit/tempo';
@@ -12,7 +12,6 @@ import { pqrsService } from '../../../api/Pqrs';
 import { UserState } from '../../../hooks/users/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { Announcements, Pqrs } from '../models';
-
 
 const Dashboard = () => {
     const [pqrsData, setPqrsData] = useState<Pqrs[]>([]);
@@ -205,7 +204,7 @@ const Dashboard = () => {
                                 <AlertTitle>No hay anuncios</AlertTitle>
                             </Alert>
                         ) : (
-                            <ResponsiveContainer width="100%">
+                            <ResponsiveContainer minHeight="400px" width="100%">
                                 <PieChart>
                                     <Pie
                                         data={pieData}
@@ -246,7 +245,7 @@ const Dashboard = () => {
                                 <AlertTitle>No hay PQRS</AlertTitle>
                             </Alert>
                         ) : (
-                            <ResponsiveContainer width="100%">
+                            <ResponsiveContainer minHeight="400px" width="100%">
                                 <LineChart data={lineChartData}>
                                     <XAxis dataKey="date" tickFormatter={(date) => {
                                         const startDate = new Date(date);
@@ -285,8 +284,8 @@ const Dashboard = () => {
                                 <AlertTitle>No hay datos de PQRS recientes</AlertTitle>
                             </Alert>
                         ) : (
-                            <TableContainer component={Paper}>
-                                <Table>
+                            <TableContainer sx={{ maxWidth: '85vw' }} component={Paper}>
+                                <Table stickyHeader>
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Asunto</TableCell>
@@ -313,18 +312,20 @@ const Dashboard = () => {
             <Grid2 container spacing={2} justifyContent="center" size={6}>
                 <Grid2 component="div" size="grow">
                     <Card onClick={() => navigate('/app/announcements')} sx={{
-                        padding: '24px',
+                        padding: '12px',
                         textAlign: 'center',
                         borderRadius: '12px',
                         boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
                         transition: '0.3s',
                         height: '100%',
+                        maxHeight:{xs:'max-content', sm:'440px'},
+                        overflowY: { xs: 'initial', sm: 'auto' },
                         '&:hover': { transform: 'scale(1.05)', boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)' }
                     }}>
                         <Typography variant="h6" color="textSecondary">Último Anuncio De Administración</Typography>
                         {isLoadingAnnouncements ? <CircularProgress /> : latestRelevantAnnouncement ? (
                             <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 275, width: '100%', position: 'relative' }}>
-                                <Typography variant="h5" component="div" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                                <Typography variant="h5" component="div" textAlign="center" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
                                     {latestRelevantAnnouncement.category === 'Mantenimiento' ? <Handyman color='primary' /> :
                                         latestRelevantAnnouncement.category === 'Servicios' ? <House color='primary' /> :
                                             latestRelevantAnnouncement.category === 'General' ? <Interests color='primary' /> :
@@ -333,12 +334,12 @@ const Dashboard = () => {
                                         {latestRelevantAnnouncement.Title}
                                     </Box>
                                 </Typography>
-                                <CardContent sx={{ textAlign: 'left', overflowY: 'auto', maxHeight: '200px' }}>
+                                <CardContent sx={{ textAlign: 'left' }}>
                                     <Typography variant="body2" component="p">
                                         {parse(latestRelevantAnnouncement.Body)}
                                     </Typography>
                                 </CardContent>
-                                <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginTop: 1, flexDirection: { xs: 'column', sm: 'row' }, padding: '16px' }}>
+                                <CardActions>
                                     <Typography variant="body2" component="p" sx={{ mr: 2 }}>
                                         <DateRangeRounded color='primary' sx={{ mr: 1 }} />
                                         Publicado el: {format(latestRelevantAnnouncement.Date, { date: "long", time: "short" })}
@@ -349,8 +350,9 @@ const Dashboard = () => {
                                             Ultima modificación: {format(latestRelevantAnnouncement.LastModify, { date: "long", time: "short" })}
                                         </Typography>
                                     )}
-                                </Box>
+                                </CardActions>
                             </Box>
+
                         ) : (
                             <Alert severity="warning" icon={<Warning />} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <AlertTitle>No hay anuncios relevantes</AlertTitle>
