@@ -13,7 +13,6 @@ import { UserState } from '../../../hooks/users/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { Announcements, Pqrs } from '../models';
 
-
 const Dashboard = () => {
     const [pqrsData, setPqrsData] = useState<Pqrs[]>([]);
     const [residentesTotal, setResidentesTotal] = useState(0);
@@ -37,11 +36,6 @@ const Dashboard = () => {
     const [isLoadingPqrs, setIsLoadingPqrs] = useState(false);
     const [isLoadingResidents, setIsLoadingResidents] = useState(false);
     const [isLoadingAnnouncements, setIsLoadingAnnouncements] = useState(false);
-
-    const [isMobile, setIsMobile] = useState(false); // Estado para detectar si es móvil
-    const [pieChartHeight, setPieChartHeight] = useState(400); // Altura por defecto para el PieChart
-    const [lineChartHeight, setLineChartHeight] = useState(400); // Altura por defecto para el LineChart
-
 
     const user = useSelector((state: { user: UserState }) => state.user);
 

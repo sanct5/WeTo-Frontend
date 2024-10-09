@@ -150,7 +150,7 @@ const EditFormAnnouncements = () => {
                         image_title: true,
                         automatic_uploads: true,
                         file_picker_types: 'image',
-                        file_picker_callback: (cb, value, meta) => {
+                        file_picker_callback: (cb) => {
                             const input = document.createElement('input');
                             input.setAttribute('type', 'file');
                             input.setAttribute('accept', 'image/*');
