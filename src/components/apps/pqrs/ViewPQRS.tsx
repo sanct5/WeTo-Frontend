@@ -46,7 +46,6 @@ const ViewPQRS = () => {
             const response = await axios.get<Pqrs[]>(`${pqrsService.baseUrl}${pqrsService.endpoints.getByUser}/${user._id}`);
             const sortedPqrs = response.data.sort((a, b) => (a.date > b.date ? -1 : 1));
             setpqrsList(sortedPqrs);
-            setpqrsList([])
 
             setLoading(false);
         };
