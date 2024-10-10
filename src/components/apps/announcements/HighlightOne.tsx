@@ -6,6 +6,7 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
+    IconButton,
 } from '@mui/material';
 import { Announcements } from '../models';
 import React, { useEffect, useState } from 'react';
@@ -19,22 +20,17 @@ interface HighlightOneProps {
 }
 
 const HighlightOne = ({ openHighlight, setOpenHighlight, announcement }: HighlightOneProps) => {
-    const seconds: number = 5;
+    const seconds: number = 3;
 
     const [timeLeft, setTimeLeft] = useState<number>(seconds);
 
     useEffect(() => {
         if (openHighlight) {
-            const timer = setTimeout(() => {
-                setOpenHighlight(false);
-            }, seconds * 1000);
-
             const interval = setInterval(() => {
                 setTimeLeft((prev: number) => prev - 1);
             }, 1000);
 
             return () => {
-                clearTimeout(timer);
                 clearInterval(interval);
             };
         }
@@ -58,7 +54,7 @@ const HighlightOne = ({ openHighlight, setOpenHighlight, announcement }: Highlig
                         {announcement.isAdmin ? "ADMINISTRACIÓN: " : ""}
                         {announcement.Title}
                     </Typography>
-                    <Box position="relative" display="inline-flex">
+                    {progress > 0 && <Box position="relative" display="inline-flex">
                         <CircularProgress variant="determinate" value={progress} thickness={3} />
                         <Box
                             top={0}
@@ -74,7 +70,15 @@ const HighlightOne = ({ openHighlight, setOpenHighlight, announcement }: Highlig
                                 {timeLeft}
                             </Typography>
                         </Box>
-                    </Box>
+                    </Box>}
+                    {progress <= 0 && (
+                        <IconButton onClick={() => setOpenHighlight(false)}>
+                            <Typography variant="body1" component="div" color="textSecondary">
+                                Cerrar
+                            </Typography>
+                        </IconButton>
+                    )
+                    }
                 </Box>
             </DialogTitle>
             <DialogContent>
