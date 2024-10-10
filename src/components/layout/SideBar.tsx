@@ -35,7 +35,6 @@ export default function SideBar() {
     const handleDrawerClose = () => {
         setIsClosing(true);
         setMobileOpen(false);
-        setDesktopOpen(false);
     }
 
     const handleDrawerTransitionEnd = () => {
