@@ -17,6 +17,7 @@ const CreateForm = () => {
         password: '',
         phone: '',
         apartment: '',
+        building: '',
         role: 'RESIDENT',
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -29,9 +30,8 @@ const CreateForm = () => {
     const handleSubmit = async () => {
         const { idDocument, userName, email, password, phone, apartment, role } = formData;
 
-        // Validaciones
         if (!idDocument || !userName || !email || !password || !phone || !apartment || !role) {
-            toast.error('Todos los campos son obligatorios');
+            toast.error('Debe completar los campos obligatorios');
             return;
         }
 
@@ -43,14 +43,13 @@ const CreateForm = () => {
 
         setIsLoading(true);
 
-        setFormData({ ...formData });
         try {
             const userData = {
                 ...formData,
                 idComplex,
+                apartment: `${formData.apartment}-${formData.building}`
             };
 
-            // Llamada a la API
             await axios.post(`${UserService.baseUrl}${UserService.endpoints.AddUser}`, userData);
             toast.success('Residente creado correctamente');
             navigate('/app/residents');
@@ -64,11 +63,6 @@ const CreateForm = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-    };
-
-    const handleCancel = () => {
-        toast.info('Los cambios no se guardaron');
-        navigate('/app/residents');
     };
 
     return (
@@ -88,7 +82,7 @@ const CreateForm = () => {
             <Box
                 component="form"
                 sx={{
-                    '& .MuiTextField-root': { m: 1, width: '100%' },
+                    gap: 2,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center'
@@ -103,7 +97,8 @@ const CreateForm = () => {
                     onChange={handleChange}
                     size="medium"
                     fullWidth
-                    inputProps={{ maxLength: 15 }}
+                    required
+                    slotProps={{ htmlInput: { maxLength: 20 } }}
                 />
                 <TextField
                     label="Nombre"
@@ -112,12 +107,13 @@ const CreateForm = () => {
                     onChange={handleChange}
                     size="medium"
                     fullWidth
-                    inputProps={{ maxLength: 80 }}
+                    slotProps={{ htmlInput: { maxLength: 80 } }}
                 />
                 <TextField
                     label="Email"
                     type="email"
                     name="email"
+                    required
                     value={formData.email}
                     onChange={handleChange}
                     size="medium"
@@ -131,7 +127,8 @@ const CreateForm = () => {
                     onChange={handleChange}
                     size="medium"
                     fullWidth
-                    inputProps={{ minLength: 8, maxLength: 15 }}
+                    required
+                    slotProps={{ htmlInput: { maxLength: 20 } }}
                 />
                 <TextField
                     label="Número de teléfono"
@@ -140,21 +137,44 @@ const CreateForm = () => {
                     onChange={handleChange}
                     size="medium"
                     fullWidth
-                    inputProps={{ maxLength: 15 }}
+                    required
+                    slotProps={{ htmlInput: { maxLength: 15 } }}
                 />
-                <TextField
-                    label="Apartamento"
-                    name="apartment"
-                    value={formData.apartment}
-                    onChange={handleChange}
-                    size="medium"
-                    fullWidth
-                    inputProps={{ maxLength: 50 }}
-                />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        width: '100%',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}
+                >
+                    <TextField
+                        label="Apartamento"
+                        name="apartment"
+                        value={formData.apartment}
+                        onChange={handleChange}
+                        size="medium"
+                        fullWidth
+                        required
+                        slotProps={{ htmlInput: { maxLength: 10 } }}
+                    />
+                    <Typography variant="h6" sx={{ mx: 2 }}>-</Typography>
+                    <TextField
+                        label="Edificio"
+                        name="building"
+                        value={formData.building}
+                        onChange={handleChange}
+                        size="medium"
+                        fullWidth
+                        slotProps={{ htmlInput: { maxLength: 10 } }}
+                    />
+                </Box>
                 <TextField
                     select
                     label="rol"
                     name="role"
+                    required
                     value={formData.role}
                     onChange={handleChange}
                     size="medium"
@@ -166,7 +186,7 @@ const CreateForm = () => {
                     <Button
                         color='secondary'
                         variant="outlined"
-                        onClick={handleCancel}
+                        onClick={() => navigate('/app/residents')}
                         sx={{ mr: 2, height: '50px' }}
                     >
                         Cancelar

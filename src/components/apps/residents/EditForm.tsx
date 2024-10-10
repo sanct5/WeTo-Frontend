@@ -15,19 +15,24 @@ const EditForm = () => {
         idDocument: '',
         userName: '',
         email: '',
-        password: '',
         phone: '',
         apartment: '',
-        role: 'RESIDENT',
+        building: '',
     });
     const [isLoading, setIsLoading] = useState(false);
-
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUserById}/${id}`);
-                setFormData(response.data);
+
+                const [apartmentNumber, building] = response.data.apartment.split('-');
+
+                setFormData({
+                    ...response.data,
+                    apartment: apartmentNumber,
+                    building: building
+                });
             } catch (error) {
                 toast.error('Error al cargar los datos del residente');
             }
@@ -39,9 +44,8 @@ const EditForm = () => {
     const handleSubmit = async () => {
         const { idDocument, userName, email, phone, apartment } = formData;
 
-        // Validaciones
         if (!idDocument || !userName || !email || !phone || !apartment) {
-            toast.error('Todos los campos son obligatorios');
+            toast.error('Debe completar los campos obligatorios');
             return;
         }
 
@@ -51,9 +55,14 @@ const EditForm = () => {
             return;
         }
 
+        const userData = {
+            ...formData,
+            apartment: `${formData.apartment}-${formData.building}`
+        };
+
         setIsLoading(true);
         try {
-            await axios.put(`${UserService.baseUrl}${UserService.endpoints.UpdateUser}`, formData);
+            await axios.put(`${UserService.baseUrl}${UserService.endpoints.UpdateUser}`, userData);
             toast.success('Residente actualizado correctamente');
             navigate('/app/residents');
         } catch (error) {
@@ -90,7 +99,7 @@ const EditForm = () => {
             <Box
                 component="form"
                 sx={{
-                    '& .MuiTextField-root': { m: 1, width: '100%' },
+                    gap: 2,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center'
@@ -105,7 +114,8 @@ const EditForm = () => {
                     onChange={handleChange}
                     size="medium"
                     fullWidth
-                    inputProps={{ maxLength: 15 }}
+                    required
+                    slotProps={{ htmlInput: { maxLength: 15 } }}
                 />
                 <TextField
                     label="Nombre"
@@ -114,7 +124,8 @@ const EditForm = () => {
                     onChange={handleChange}
                     size="medium"
                     fullWidth
-                    inputProps={{ maxLength: 80 }}
+                    required
+                    slotProps={{ htmlInput: { maxLength: 80 } }}
                 />
                 <TextField
                     label="Email"
@@ -123,6 +134,7 @@ const EditForm = () => {
                     value={formData.email}
                     onChange={handleChange}
                     size="medium"
+                    required
                     fullWidth
                 />
                 <TextField
@@ -132,17 +144,39 @@ const EditForm = () => {
                     onChange={handleChange}
                     size="medium"
                     fullWidth
-                    inputProps={{ maxLength: 15 }}
+                    required
+                    slotProps={{ htmlInput: { maxLength: 15 } }}
                 />
-                <TextField
-                    label="Apartamento"
-                    name="apartment"
-                    value={formData.apartment}
-                    onChange={handleChange}
-                    size="medium"
-                    fullWidth
-                    inputProps={{ maxLength: 50 }}
-                />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        width: '100%',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}
+                >
+                    <TextField
+                        label="Apartamento"
+                        name="apartment"
+                        value={formData.apartment}
+                        onChange={handleChange}
+                        size="medium"
+                        fullWidth
+                        required
+                        slotProps={{ htmlInput: { maxLength: 10 } }}
+                    />
+                    <Typography variant="h6" sx={{ mx: 2 }}>-</Typography>
+                    <TextField
+                        label="Edificio"
+                        name="building"
+                        value={formData.building}
+                        onChange={handleChange}
+                        size="medium"
+                        fullWidth
+                        slotProps={{ htmlInput: { maxLength: 10 } }}
+                    />
+                </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', mt: 2 }}>
                     <Button
                         color='secondary'
