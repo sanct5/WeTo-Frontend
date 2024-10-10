@@ -94,7 +94,7 @@ const viewAll = () => {
                     </IconButton>
                 </Box>
                 <Typography variant="body1" mb={2}>
-                    Aquí puedes ver a todos los residentes de tu unidad. Para ver más detalles de un residente, haz clic en su nombre.
+                    Aquí puedes ver a todos los residentes de tu unidad. Para ver más detalles de un residente, has click en su nombre.
                 </Typography>
                 <TableContainer component={Paper} sx={{ maxWidth: '80vw' }}>
                     {loading ? (

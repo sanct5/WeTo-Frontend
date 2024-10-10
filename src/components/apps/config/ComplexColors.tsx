@@ -124,7 +124,7 @@ const ComplexColors = () => {
                 <Box maxWidth={800} padding={3} display={'flex'} flexDirection={'column'}>
                     <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} sx={{ justifyContent: 'center', alignItems: 'center' }} gap={3}>
                         <Box flex={1}>
-                            <Typography variant="body1">Color Primario</Typography>
+                            <Typography variant="body1">Color primario</Typography>
                             <MuiColorInput
                                 value={colors.primaryColor}
                                 onChange={(newColor) => handleColorChange(newColor, 'primary')}
@@ -134,7 +134,7 @@ const ComplexColors = () => {
                             />
                         </Box>
                         <Box flex={1}>
-                            <Typography variant="body1">Color Secundario</Typography>
+                            <Typography variant="body1">Color secundario</Typography>
                             <MuiColorInput
                                 value={colors.secondaryColor}
                                 onChange={(newColor) => handleColorChange(newColor, 'secondary')}
@@ -153,7 +153,7 @@ const ComplexColors = () => {
                             onClick={resetToDefaultColors}
                             sx={{ mr: 2 }}
                         >
-                            Restablecer Valores
+                            Restablecer valores
                         </LoadingButton>
                         <LoadingButton
                             loading={isLoading}

@@ -169,7 +169,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                         <Box sx={{ display: { xs: 'none', sm: 'flex' } }} alignItems="center" marginLeft={2}>
                             <Info color='secondary' sx={{ mr: 1 }} />
                             <Typography variant="body2" color="textSecondary" sx={{ textTransform: 'capitalize' }}>
-                                {selectedCase.state}
+                                {selectedCase.state === 'tramite' ? 'trámite' : selectedCase.state}
                             </Typography>
                         </Box>
                         {selectedCase.state != 'cerrado' && <IconButton color="primary" onClick={() => setReloadAnswers(!reloadAnswers)} sx={{ marginLeft: 'auto', marginRight: '5px' }}>
