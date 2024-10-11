@@ -31,8 +31,8 @@ export default function AnnouncementTabs() {
                             aria-label="Tabs"
                             sx={{ backgroundColor: { xs: 'white', sm: 'transparent' } }}
                         >
-                            <Tab value="all" label="Tablero de Anuncios" />
-                            <Tab value="create" label="Crear anuncios" />
+                            <Tab value="all" label="Tablero de anuncios" />
+                            <Tab value="create" label="Crear" />
                         </Tabs>
                         {value === 'all' && <ListAll />}
                         {value === 'create' && <CreateFormAnnouncements setValue={setValue} />}

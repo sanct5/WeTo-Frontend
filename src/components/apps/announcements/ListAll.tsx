@@ -28,7 +28,7 @@ import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
 import { Announcements } from '../models'
 import parse from 'html-react-parser'
-import { CalendarMonth, DateRangeRounded, AddBox, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House, Announcement, ArrowUpward, ArrowDownward } from '@mui/icons-material';
+import { CalendarMonth, DateRangeRounded, Delete, Warning, Edit, Search, Handyman, Interests, Groups, House, Announcement, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import HighlightOne from './HighlightOne';
 
 const ListAll = () => {
@@ -246,24 +246,6 @@ const ListAll = () => {
                     <IconButton sx={{ mr: 2 }} onClick={handleSearch}>
                         <Search color='secondary' fontSize='large' />
                     </IconButton>
-                    {user.role === 'ADMIN' &&
-                        <>
-                            <Box display={{ xs: 'block', sm: 'none' }} marginRight={2}>
-                                <Link to="/app/announcements/create">
-                                    <IconButton color="primary">
-                                        <AddBox fontSize="large" />
-                                    </IconButton>
-                                </Link>
-                            </Box>
-                            <Box display={{ xs: 'none', sm: 'block' }} marginRight={2}>
-                                <Link to="/app/announcements/create">
-                                    <Button variant="contained" color="primary">
-                                        Agregar
-                                    </Button>
-                                </Link>
-                            </Box>
-                        </>
-                    }
                 </Box>
             </Box>}
             {
