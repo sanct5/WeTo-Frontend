@@ -17,7 +17,8 @@ import {
     Tab,
     useTheme,
     useMediaQuery,
-    Grid2
+    Grid2,
+    Tooltip
 } from '@mui/material';
 import { format } from '@formkit/tempo';
 import axios from 'axios';
@@ -40,6 +41,7 @@ const ListAll = () => {
     const [keyWord, setKeyWord] = useState<string>('');
     const [orderMostRecent, setOrderMostRecent] = useState<boolean>(true);
     const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
+    const [hasSearch, setHasSearch] = useState<boolean>(false);
 
     const [openHighlight, setOpenHighlight] = useState<boolean>(false);
     const [randomAnnouncement, setRandomAnnouncement] = useState<Announcements>({
@@ -108,9 +110,20 @@ const ListAll = () => {
             setAdminAnnouncements(sortedAnnouncements);
             setFilteredAnnouncements(sortedAnnouncements);
             setLoading(false);
+
+            if(hasSearch){
+                setHasSearch(false)
+            }
         };
         getAdminAnnouncements();
     }, [reloadFlag, user.idComplex]);
+
+    useEffect(() => {
+        if(keyWord === '' && hasSearch){
+            setReloadFlag(!reloadFlag);
+            setTabValue('one');
+        }
+    }, [keyWord]);
 
     const openDeleteDialog = (AnnouncementId: string, AnnouncementUser: string) => {
         setselectedAnnouncement({ AnnouncementId, AnnouncementUser });
@@ -162,6 +175,7 @@ const ListAll = () => {
         setTabValue('one');
         setAdminAnnouncements(sortedAnnouncements);
         setFilteredAnnouncements(sortedAnnouncements);
+        setHasSearch(true);
         setLoading(false);
     }
 
@@ -181,7 +195,7 @@ const ListAll = () => {
 
     return (
         <Box sx={{ backgroundColor: '#F0F0F0', height: 'max-content', minHeight: '100vh', width: '100%' }}>
-            {!loading && <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-evenly', alignItems: 'center', margin: 'auto' }}>
+            {!loading && <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: 'center' }}>
                 <Tabs
                     value={tabValue}
                     onChange={handleChange}
@@ -193,15 +207,15 @@ const ListAll = () => {
                     aria-label="Tabs"
                     sx={{ maxWidth: '100vw' }}
                 >
-                    <Tab icon={<Announcement />} iconPosition='start' value="one" label={isXl ? '' : 'Todos'} />
-                    <Tab icon={<House />} iconPosition='start' value="two" label={isXl ? '' : 'Servicios'} />
-                    <Tab icon={<Interests />} iconPosition='start' value="three" label={isXl ? '' : 'General'} />
-                    <Tab icon={<Groups />} iconPosition='start' value="four" label={isXl ? '' : 'Reuniones'} />
-                    <Tab icon={<Handyman />} iconPosition='start' value="five" label={isXl ? '' : 'Mantenimiento'} />
+                    <Tab icon={<Tooltip title="Todas las categorías" placement="bottom" arrow><Announcement /></Tooltip>} iconPosition='start' value="one" label={isXl ? '' : 'Todos'} />
+                    <Tab icon={<Tooltip title="Servicios" placement="bottom" arrow><House /></Tooltip>} iconPosition='start' value="two" label={isXl ? '' : 'Servicios'} />
+                    <Tab icon={<Tooltip title="General" placement="bottom" arrow><Interests /></Tooltip>} iconPosition='start' value="three" label={isXl ? '' : 'General'} />
+                    <Tab icon={<Tooltip title="Reuniones" placement="bottom" arrow><Groups /></Tooltip>} iconPosition='start' value="four" label={isXl ? '' : 'Reuniones'} />
+                    <Tab icon={<Tooltip title="Mantenimiento" placement="bottom" arrow><Handyman /></Tooltip>} iconPosition='start' value="five" label={isXl ? '' : 'Mantenimiento'} />
                 </Tabs>
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: 'auto', width: '100%' }}>
-                    <>
-                        {isXl ? (
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '50%' }}>
+                    {isXl ? (
+                        <Tooltip title={orderMostRecent ? 'Ordenar por más antiguos' : 'Ordenar por más recientes'} placement="bottom" arrow>
                             <IconButton onClick={handleOrder}>
                                 {orderMostRecent ? (
                                     <ArrowDownward color='secondary' fontSize='large' />
@@ -209,24 +223,25 @@ const ListAll = () => {
                                     <ArrowUpward color='secondary' fontSize='large' />
                                 )}
                             </IconButton>
-                        ) : (
-                            <Button
-                                variant="outlined"
-                                color={orderMostRecent ? 'secondary' : 'primary'}
-                                onClick={handleOrder}
-                            >
-                                {orderMostRecent ? 'Antiguos' : 'Recientes'}
-                            </Button>
-                        )}
-                    </>
+                        </Tooltip>
+                    ) : (
+                        <Button
+                            variant="outlined"
+                            color={orderMostRecent ? 'secondary' : 'primary'}
+                            onClick={handleOrder}
+                        >
+                            {orderMostRecent ? 'Antiguos' : 'Recientes'}
+                        </Button>
+                    )}
                     <TextField
                         fullWidth
                         value={keyWord}
                         onChange={(e) => setKeyWord(e.target.value)}
                         label="Buscar anuncio"
                         variant="outlined"
-                        sx={{ backgroundColor: 'white', margin: 2, maxWidth: 600 }}
+                        sx={{ backgroundColor: 'white', margin: 2, maxWidth: 400, minWidth: 200 }}
                         placeholder='Buscar un anuncio'
+                        onKeyUp={(e) => e.key === 'Enter' && handleSearch()}
                     />
                     <IconButton sx={{ mr: 2 }} onClick={handleSearch}>
                         <Search color='secondary' fontSize='large' />

@@ -11,6 +11,8 @@ import {
     ListItemIcon,
     ListItemText,
     Toolbar,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import TopBar from './TopBar';
 import { useNavigate, Link } from 'react-router-dom';
@@ -27,6 +29,8 @@ const drawerWidth = 200;
 export default function SideBar() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [desktopOpen, setDesktopOpen] = useState(true);
@@ -123,36 +127,37 @@ export default function SideBar() {
                 sx={{ width: { sm: desktopOpen ? drawerWidth : 0 }, flexShrink: { sm: 0 } }}
                 aria-label="mailbox folders"
             >
-                <Drawer
-                    variant="temporary"
-                    open={mobileOpen}
-                    onTransitionEnd={handleDrawerTransitionEnd}
-                    onClose={handleDrawerClose}
-                    ModalProps={{
-                        keepMounted: true,
-                    }}
-                    sx={{
-                        display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-                <Drawer
-                    variant="persistent"
-                    onTransitionEnd={handleDrawerTransitionEnd}
-                    onClose={handleDrawerClose}
-                    ModalProps={{
-                        keepMounted: true,
-                    }}
-                    sx={{
-                        display: { xs: 'none', sm: 'block' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                    }}
-                    open={desktopOpen}
-                >
-                    {drawer}
-                </Drawer>
+                {isMobile ? (
+                    <Drawer
+                        variant="temporary"
+                        open={mobileOpen}
+                        onTransitionEnd={handleDrawerTransitionEnd}
+                        onClose={handleDrawerClose}
+                        ModalProps={{
+                            keepMounted: true,
+                        }}
+                        sx={{
+                            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        }}
+                    >
+                        {drawer}
+                    </Drawer>
+                ) : (
+                    <Drawer
+                        variant="persistent"
+                        onTransitionEnd={handleDrawerTransitionEnd}
+                        onClose={handleDrawerClose}
+                        ModalProps={{
+                            keepMounted: true,
+                        }}
+                        sx={{
+                            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        }}
+                        open={desktopOpen}
+                    >
+                        {drawer}
+                    </Drawer>
+                )}
             </Box>
             <Box
                 component="main"

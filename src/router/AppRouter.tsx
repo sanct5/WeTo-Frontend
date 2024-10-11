@@ -7,7 +7,6 @@ import EditForm from '../components/apps/residents/EditForm';
 import ViewAll from '../components/apps/residents/ViewAll';
 import CreateFormAnnouncements from '../components/apps/announcements/CreateForm';
 import EditFormAnnouncements from '../components/apps/announcements/EditForm';
-import ListAll from '../components/apps/announcements/ListAll';
 import ProtectedRoute from './ProtectedRoute';
 import AdTabs from '../components/apps/ads/AdTabs';
 import ViewProfile from '../components/apps/profile/ViewProfile';
@@ -16,6 +15,7 @@ import PQRSTabs from '../components/apps/pqrs/PqrsTabs';
 import ViewCases from '../components/apps/cases/ViewCases';
 import Dashboard from '../components/apps/dashboard/Dashboard';
 import AllNumbers from '../components/apps/numbers/AllNumbers';
+import AnnouncementTabs from '../components/apps/announcements/AnnouncementsTabs';
 
 const router = createBrowserRouter([
     {
@@ -64,11 +64,11 @@ const router = createBrowserRouter([
             // Announcements
             {
                 path: 'announcements',
-                element: <ListAll />,
+                element: <AnnouncementTabs />,
             },
             {
                 path: 'announcements/create',
-                element: <CreateFormAnnouncements />,
+                element: <CreateFormAnnouncements setValue={() => { }} />,
             },
             {
                 path: 'announcements/edit/:id',

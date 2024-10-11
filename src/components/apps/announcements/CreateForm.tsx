@@ -11,7 +11,11 @@ import { AnnouncementsService } from '../../../api/Anouncements';
 import { useNavigate } from 'react-router-dom';
 import TinyEditor from '../../common/TinyEditor';
 
-const CreateFormAnnouncements = () => {
+interface CreateFormProps {
+    setValue: (value: string) => void;
+}
+
+const CreateFormAnnouncements = ({ setValue }: CreateFormProps) => {
     const [formData, setFormData] = useState<{
         Title: string;
         Body: string;
@@ -92,11 +96,10 @@ const CreateFormAnnouncements = () => {
     };
 
     const handleCancel = () => {
-        toast.info('Los cambios no se guardaron');
         if (user.role === 'RESIDENT') {
             navigate('/app/ads');
         } else {
-            navigate('/app/announcements');
+            setValue('all');
         }
     };
 
@@ -106,7 +109,7 @@ const CreateFormAnnouncements = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <IconButton
                         color="secondary"
-                        onClick={() => navigate(user.role === 'RESIDENT' ? '/app/ads' : '/app/announcements')}
+                        onClick={() => handleCancel()}
                         sx={{ mr: 2 }}
                     >
                         <ArrowBackIosIcon />
