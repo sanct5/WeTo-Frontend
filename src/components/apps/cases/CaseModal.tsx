@@ -61,6 +61,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                             state: 'tramite',
                         })
                     );
+                    toast.info("El caso ha cambiado a estado 'Trámite'");
                 }
                 setReloadAnswers(!reloadAnswers);
                 setAnswer('');
@@ -123,7 +124,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
             const response = await axios.put(`${pqrsService.baseUrl}${pqrsService.endpoints.reopen}/${selectedCase._id}`);
 
             if (response.status === 200) {
-                toast.success('Caso reabierto');
+                toast.info("El caso ha cambiado a estado 'Trámite'");
                 setSelectedCase({
                     ...selectedCase,
                     state: 'tramite',
@@ -172,15 +173,29 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                                 {selectedCase.state === 'tramite' ? 'trámite' : selectedCase.state}
                             </Typography>
                         </Box>
-                        {selectedCase.state != 'cerrado' && <IconButton color="primary" onClick={() => setReloadAnswers(!reloadAnswers)} sx={{ marginLeft: 'auto', marginRight: '5px' }}>
-                            <Refresh />
-                        </IconButton>}
+                        {selectedCase.state != 'cerrado' &&
+                            <IconButton color="primary" onClick={() => setReloadAnswers(!reloadAnswers)}
+                                sx={{
+                                    marginLeft: selectedCase.state === 'tramite' ? '5px' : 'auto',
+                                    marginRight: selectedCase.state === 'tramite' ? '0px' : '5px',
+                                }}>
+                                <Refresh />
+                            </IconButton>
+                        }
                         {selectedCase.state === 'cerrado' && user.role === 'ADMIN' && <Tooltip title="Reabrir caso"
                             placement="bottom"
                             arrow
                         >
                             <IconButton color="primary" onClick={handleReopenCase} sx={{ marginLeft: 'auto', marginRight: '5px' }}>
                                 <MeetingRoom />
+                            </IconButton>
+                        </Tooltip>}
+                        {selectedCase.state === 'tramite' && user.role === 'ADMIN' && <Tooltip title="Cerrar caso"
+                            placement="bottom"
+                            arrow
+                        >
+                            <IconButton color="primary" onClick={() => setClosePqrsModal(true)} sx={{ marginLeft: 'auto', marginRight: '5px' }}>
+                                <Gavel />
                             </IconButton>
                         </Tooltip>}
                     </Box>
@@ -203,14 +218,6 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                     <CaseMessages reloadAnswers={reloadAnswers} setSelectedCase={setSelectedCase} selectedCase={selectedCase} />
                 </DialogContent>
                 {selectedCase.state != 'cerrado' && <DialogActions sx={{ padding: 3, display: 'flex', justifyContent: 'center' }}>
-                    {selectedCase.state != 'pendiente' && user.role === 'ADMIN' && <Tooltip title="Cerrar caso"
-                        placement="top"
-                        arrow
-                    >
-                        <IconButton color="secondary" onClick={() => setClosePqrsModal(true)}>
-                            <Gavel />
-                        </IconButton>
-                    </Tooltip>}
                     {user.role === 'RESIDENT' && (
                         (selectedCase.answer.length === 0 && new Date().getTime() - new Date(selectedCase.date).getTime() > 2 * 86400000) ||
                             (selectedCase.answer.length > 0 && new Date().getTime() - new Date(selectedCase.answer[selectedCase.answer.length - 1]?.date).getTime() > 2 * 86400000) ? (
@@ -236,7 +243,7 @@ const CaseModal: React.FC<CaseModalProps> = ({ selectedCase, setSelectedCase, re
                                 variant="outlined"
                                 value={answer}
                                 onChange={(e) => setAnswer(e.target.value)}
-                                inputProps={{ maxLength: 500 }}
+                                slotProps={{ htmlInput: { maxLength: 500 } }}
                                 disabled={user.role === 'RESIDENT' && !selectedCase.answer[selectedCase.answer.length - 1]?.admin}
                                 placeholder={user.role === 'RESIDENT' && !selectedCase.answer[selectedCase.answer.length - 1]?.admin ? 'Espera una respuesta del administrador' : 'Escribe tu mensaje aquí...'}
                             />

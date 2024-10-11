@@ -87,7 +87,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ setValue }) => {
                             label="Asunto"
                             name="subject"
                             value={formData.subject}
-                            inputProps={{ maxLength: 150 }}
+                            slotProps={{ htmlInput: { maxLength: 150 } }}
                             onChange={handleChange}
                             sx={{ mb: 2 }}
                         />
@@ -120,7 +120,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ setValue }) => {
                         value={formData.message}
                         multiline
                         rows={6}
-                        inputProps={{ maxLength: 1000 }}
+                        slotProps={{ htmlInput: { maxLength: 1000 } }}
                         onChange={handleChange}
                     />
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', mt: 2 }}>
