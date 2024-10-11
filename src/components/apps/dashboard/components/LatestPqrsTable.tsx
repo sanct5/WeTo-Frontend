@@ -34,6 +34,7 @@ const LatestPqrsTable = () => {
             borderRadius: '12px',
             boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
             height: '100%',
+            cursor: 'pointer',
         }}>
             <Typography variant="h6" color="textSecondary" mb={2}>Últimas 5 PQRS</Typography>
             {isLoadingPqrs ? <CircularProgress /> : latestPqrs.length === 0 ? (

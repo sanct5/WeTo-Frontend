@@ -54,6 +54,7 @@ const LatestAnnouncementCard = () => {
             borderRadius: '12px',
             boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
             height: '100%',
+            cursor: 'pointer',
         }}>
             <Typography variant="h6" color="textSecondary" mb={2}>Último anuncio de administración</Typography>
             {isLoadingAnnouncements ? <CircularProgress /> : latestRelevantAnnouncement ? (

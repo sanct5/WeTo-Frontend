@@ -34,6 +34,7 @@ const ResidentsCard = () => {
             borderRadius: '12px',
             marginBottom: '16px',
             boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
+            cursor: 'pointer',
         }}>
             <People color="success" style={{ fontSize: '50px' }} />
             <Typography variant="h6" color="textSecondary">Residentes Totales</Typography>

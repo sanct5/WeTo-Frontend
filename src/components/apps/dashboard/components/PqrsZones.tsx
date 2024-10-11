@@ -84,7 +84,7 @@ const PqrsZones = () => {
     };
 
     return (
-        <Card onClick={() => navigate('/app/cases')} sx={{
+        <Card sx={{
             padding: '24px',
             textAlign: 'center',
             borderRadius: '12px',
@@ -105,7 +105,7 @@ const PqrsZones = () => {
                             const totalPqrs = pqrsData[building].Complaints + pqrsData[building].Claims + pqrsData[building].Requests + pqrsData[building].Suggestions;
                             return (
                                 <Grid2 size={{ xs: 12, sm: 6 }} key={building}>
-                                    <Card sx={{
+                                    <Card onClick={() => navigate('/app/cases')} sx={{
                                         bgcolor: getBackgroundColor(totalPqrs),
                                         borderRadius: '8px',
                                         boxShadow: 3,
@@ -113,6 +113,7 @@ const PqrsZones = () => {
                                         '&:hover': {
                                             transform: 'scale(1.05)',
                                         },
+                                        cursor: 'pointer',
                                     }}>
                                         <CardContent >
                                             <Box display="flex" alignItems="center" mb={3}>

@@ -67,6 +67,7 @@ const AnnouncementPieChart = () => {
             borderRadius: '12px',
             boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
             height: '100%',
+            cursor: 'pointer',
         }}>
             {isLoading ? <CircularProgress /> : pieData.every(data => data.value === 0) ? (
                 <Alert severity="warning" icon={<Warning />} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -99,7 +100,7 @@ const AnnouncementPieChart = () => {
                             {pieData.map((item, index) => (
                                 <Box key={index} sx={{ mb: 1 }}>
                                     <Typography variant="body2" color="textSecondary">
-                                        {item.label} ({((item.value / totalAnnouncements) * 100).toFixed(2)}%)
+                                        {item.label}: {item.value} ({((item.value / totalAnnouncements) * 100).toFixed(2)}%)
                                     </Typography>
                                     <LinearProgress
                                         variant="determinate"
