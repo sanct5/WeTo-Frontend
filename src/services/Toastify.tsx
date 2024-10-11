@@ -1,11 +1,11 @@
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Toastify = () => {
     return (
         <ToastContainer
-            position="top-right"
-            autoClose={3000}
+            position="bottom-right"
+            autoClose={4500}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
@@ -15,6 +15,9 @@ const Toastify = () => {
             pauseOnHover
             theme="colored"
             stacked
+            closeButton={true}
+            limit={1}
+            transition={Zoom}
         />
     )
 }
