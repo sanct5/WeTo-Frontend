@@ -4,12 +4,12 @@ import { LoadingButton } from '@mui/lab';
 import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
 import { toast } from 'react-toastify';
-import { Editor } from '@tinymce/tinymce-react';
 import { AnnouncementCategory } from '../models';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import axios from 'axios';
 import { AnnouncementsService } from '../../../api/Anouncements';
 import { useNavigate } from 'react-router-dom';
+import TinyEditor from '../../common/TinyEditor';
 
 const CreateFormAnnouncements = () => {
     const [formData, setFormData] = useState<{
@@ -115,7 +115,15 @@ const CreateFormAnnouncements = () => {
                         Agregar nuevo anuncio
                     </Typography>
                 </Box>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit}
+                    noValidate
+                    sx={{
+                        gap: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}>
                     <TextField
                         margin="normal"
                         required
@@ -124,41 +132,10 @@ const CreateFormAnnouncements = () => {
                         label="Título"
                         name="Title"
                         value={formData.Title}
-                        inputProps={{ maxLength: 100 }}
+                        slotProps={{ htmlInput: { maxLength: 100 } }}
                         onChange={handleChange}
                     />
-                    <Editor
-                        apiKey='bfqew20400z8yzz2jqkg6yp4p7f6ur54kqikor53k2betw6u'
-                        value={formData.Body}
-                        init={{
-                            height: 500,
-                            menubar: false,
-                            plugins: 'image',
-                            toolbar: 'link image | undo redo | formatselect | bold italic backcolor | \
-                          alignleft aligncenter alignright alignjustify | \
-                          bullist numlist outdent indent | removeformat | fontsize | styles ',
-                            Body_css: 'https://www.tiny.cloud/css/codepen.min.css',
-                            image_title: true,
-                            automatic_uploads: true,
-                            file_picker_types: 'image',
-                            file_picker_callback: (cb) => {
-                                const input = document.createElement('input');
-                                input.setAttribute('type', 'file');
-                                input.setAttribute('accept', 'image/*');
-                                input.onchange = () => {
-                                    const file = input.files![0];
-                                    const reader = new FileReader();
-                                    reader.onload = () => {
-                                        const base64 = reader.result as string;
-                                        cb(base64, { title: file.name });
-                                    };
-                                    reader.readAsDataURL(file);
-                                };
-                                input.click();
-                            },
-                        }}
-                        onEditorChange={handleEditorChange}
-                    />
+                    <TinyEditor value={formData.Body} onEditorChange={handleEditorChange} />
                     {user.role === 'RESIDENT' ? (
                         <TextField
                             margin="normal"
@@ -168,9 +145,7 @@ const CreateFormAnnouncements = () => {
                             label="Categoría"
                             name="category"
                             value="Publicidad"
-                            InputProps={{
-                                readOnly: true,
-                            }}
+                            slotProps={{ htmlInput: { readOnly: true } }}
                         />
                     ) : (
                         <TextField
