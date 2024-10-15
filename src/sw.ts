@@ -4,6 +4,7 @@ import { NetworkFirst, NetworkOnly, Strategy } from 'workbox-strategies'
 import type { StrategyHandler } from 'workbox-strategies'
 import type { ManifestEntry } from 'workbox-build'
 
+// @ts-ignore
 declare let self: ServiceWorkerGlobalScope
 declare type ExtendableEvent = any
 
@@ -34,6 +35,7 @@ function buildStrategy(): Strategy {
           // Reject if both network and cache error or find no response.
           Promise.allSettled([fetchAndCachePutDone, cacheMatchDone]).then((results) => {
             const [fetchAndCachePutResult, cacheMatchResult] = results
+            // @ts-ignore
             if (fetchAndCachePutResult.status === 'rejected' && !cacheMatchResult.value)
               reject(fetchAndCachePutResult.reason)
           })
@@ -114,6 +116,7 @@ self.skipWaiting()
 clientsClaim()
 
 // Push notification event listener
+// @ts-ignore
 self.addEventListener('push', (event: PushEvent) => {
   const data = event.data ? event.data.json() : {}
   const title = data.title || 'New Notification'
@@ -130,16 +133,20 @@ self.addEventListener('push', (event: PushEvent) => {
 })
 
 // Notification click event listener
+// @ts-ignore
 self.addEventListener('notificationclick', (event: NotificationEvent) => {
   event.notification.close()
   event.waitUntil(
+    // @ts-ignore
     clients.matchAll({ type: 'window' }).then((clientList) => {
       for (const client of clientList) {
         if (client.url === event.notification.data && 'focus' in client) {
           return client.focus()
         }
       }
+      // @ts-ignore
       if (clients.openWindow) {
+        // @ts-ignore
         return clients.openWindow(event.notification.data)
       }
     })
