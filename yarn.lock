@@ -4845,7 +4845,7 @@ workbox-broadcast-update@7.1.0:
   dependencies:
     workbox-core "7.1.0"
 
-workbox-build@^7.1.0:
+workbox-build@^7.1.0, workbox-build@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/workbox-build/-/workbox-build-7.1.1.tgz#bfbd4c44848c175b7773f921be3597cbfaaef827"
   integrity sha512-WdkVdC70VMpf5NBCtNbiwdSZeKVuhTEd5PV3mAwpTQCGAB5XbOny1P9egEgNdetv4srAMmMKjvBk4RD58LpooA==
@@ -4895,7 +4895,7 @@ workbox-cacheable-response@7.1.0:
   dependencies:
     workbox-core "7.1.0"
 
-workbox-core@7.1.0:
+workbox-core@7.1.0, workbox-core@^7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/workbox-core/-/workbox-core-7.1.0.tgz#1867576f994f20d9991b71a7d0b2581af22db170"
   integrity sha512-5KB4KOY8rtL31nEF7BfvU7FMzKT4B5TkbYa2tzkS+Peqj0gayMT9SytSFtNzlrvMaWgv6y/yvP9C0IbpFjV30Q==
@@ -4953,14 +4953,14 @@ workbox-recipes@7.1.0:
     workbox-routing "7.1.0"
     workbox-strategies "7.1.0"
 
-workbox-routing@7.1.0:
+workbox-routing@7.1.0, workbox-routing@^7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/workbox-routing/-/workbox-routing-7.1.0.tgz#c44bda350d1c5eb633ee97a660e64ce5473250c4"
   integrity sha512-oOYk+kLriUY2QyHkIilxUlVcFqwduLJB7oRZIENbqPGeBP/3TWHYNNdmGNhz1dvKuw7aqvJ7CQxn27/jprlTdg==
   dependencies:
     workbox-core "7.1.0"
 
-workbox-strategies@7.1.0:
+workbox-strategies@7.1.0, workbox-strategies@^7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/workbox-strategies/-/workbox-strategies-7.1.0.tgz#a589f2adc0df8f33049c7f4d4cdf4c9556715918"
   integrity sha512-/UracPiGhUNehGjRm/tLUQ+9PtWmCbRufWtV0tNrALuf+HZ4F7cmObSEK+E4/Bx1p8Syx2tM+pkIrvtyetdlew==

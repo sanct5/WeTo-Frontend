@@ -14,6 +14,7 @@ const ResidentsCard = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!user.idComplex) return;
         const fetchResidents = async () => {
             setIsLoadingResidents(true);
             const residentsResponse = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUsersByComplex}/${user.idComplex}`);

@@ -23,6 +23,7 @@ import { userOptions } from './NavOptions';
 import { Role } from '../../hooks/users/userSlice';
 import axios from 'axios';
 import { ComplexService } from '../../api/ComplexService';
+import { PushNotificationsService } from '../../api/PushNotifications';
 
 const drawerWidth = 200;
 
@@ -81,10 +82,45 @@ export default function SideBar() {
         }
     };
 
+    const urlBase64ToUint8Array = (base64String: string) => {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    };
+
+    const subscribeUserToPush = async () => {
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            const covertedVapidKey = urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY);
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: covertedVapidKey
+                });
+
+                console.log('User is subscribed:', subscription);
+
+                const response = await axios.post(`${PushNotificationsService.baseUrl}${PushNotificationsService.endpoints.subscribe}`, JSON.stringify(subscription));
+                
+                console.log('User is subscribed:', response);
+
+            } catch (error) {
+                console.error('Failed to subscribe the user: ', error);
+            }
+        }
+    };
+
     useEffect(() => {
         if (loggedUser) {
             dispatch(setUser(loggedUser));
             fetchComplexColors();
+            subscribeUserToPush();
         }
 
         if (!user.isLogged && !loggedUser) {
