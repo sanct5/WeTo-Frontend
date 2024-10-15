@@ -5,6 +5,11 @@ export const ComplexService = {
         DeleteComplex: '/delete',
         GetComplex: '/get',
         AddComplex: '/add',
-        UpdateComplexColors: '/updateColors',    
+        UpdateComplexColors: '/updateColors',
+        Addzone: '/addZone',
+        GetZoneById: '/zone',
+        UpdateZone: '/zone',
+        DeleteZone: '/zone',
+        GetZones: '/getAllZones',
     },
 };
