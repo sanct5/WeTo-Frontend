@@ -4,7 +4,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import WorkingOn from '../../../router/pages/WorkingOn';
 import ComplexColors from './ComplexColors';
-
+import ViewAll from './zones/ViewAll';
 
 export default function ConfigTabs() {
     const [value, setValue] = useState('complex');
@@ -30,9 +30,11 @@ export default function ConfigTabs() {
                 >
                     <Tab value="complex" label="Informacion de la unidad" />
                     <Tab value="colors" label="Colores" />
+                    <Tab value="viewall" label="Zonas Comunes" /> 
                 </Tabs>
                 {value === 'complex' && <WorkingOn />}
                 {value === 'colors' && <ComplexColors />}
+                {value === 'viewall' && <ViewAll />} 
             </Box>
         </Box>
     );

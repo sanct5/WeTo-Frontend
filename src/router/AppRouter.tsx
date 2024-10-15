@@ -16,6 +16,10 @@ import ViewCases from '../components/apps/cases/ViewCases';
 import Dashboard from '../components/apps/dashboard/Dashboard';
 import AllNumbers from '../components/apps/numbers/AllNumbers';
 import AnnouncementTabs from '../components/apps/announcements/AnnouncementsTabs';
+import CreateZoneForm from '../components/apps/config/zones/components/CreateForm';
+
+import ViewZones from '../components/apps/config/zones/components/ViewZones';
+import EditZoneForm from '../components/apps/config/zones/components/EditForm';
 
 const router = createBrowserRouter([
     {
@@ -117,6 +121,27 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 )
             },
+            {
+                path: 'config/createzone',
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <CreateZoneForm />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'config/editzone/:id',
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <EditZoneForm/>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'zones/:id',
+                element: <ViewZones />,
+            },
+
             //Numbers
             {
                 path: 'numbers',
