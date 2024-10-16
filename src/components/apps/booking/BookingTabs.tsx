@@ -3,11 +3,10 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import WorkingOn from '../../../router/pages/WorkingOn';
-import ComplexColors from './ComplexColors';
-import ViewAll from './zones/ViewAll';
+import ViewZones from './ViewZones';
 
-export default function ConfigTabs() {
-    const [value, setValue] = useState('complex');
+export default function BookingTabs() {
+    const [value, setValue] = useState('viewzones');
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         event.preventDefault();
@@ -28,13 +27,11 @@ export default function ConfigTabs() {
                     allowScrollButtonsMobile
                     sx={{ backgroundColor: { xs: 'white', sm: 'transparent' } }}
                 >
-                    <Tab value="complex" label="Informacion de la unidad" />
-                    <Tab value="colors" label="Colores" />
-                    <Tab value="viewall" label="Zonas Comunes" /> 
+                    <Tab value="viewzones" label="Zonas comunes" />
+                    <Tab value="workingon" label="Reservar" />
                 </Tabs>
-                {value === 'complex' && <WorkingOn />}
-                {value === 'colors' && <ComplexColors />}
-                {value === 'viewall' && <ViewAll />} 
+                {value === 'viewzones' && <ViewZones />}
+                {value === 'workingon' && <WorkingOn />}
             </Box>
         </Box>
     );

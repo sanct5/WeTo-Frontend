@@ -16,6 +16,10 @@ import ViewCases from '../components/apps/cases/ViewCases';
 import Dashboard from '../components/apps/dashboard/Dashboard';
 import AllNumbers from '../components/apps/numbers/AllNumbers';
 import AnnouncementTabs from '../components/apps/announcements/AnnouncementsTabs';
+import CreateZoneForm from '../components/apps/config/zones/components/CreateForm';
+import EditZoneForm from '../components/apps/config/zones/components/EditForm';
+import ViewZone from '../components/apps/config/zones/components/ViewZone';
+import BookingTabs from '../components/apps/booking/BookingTabs';
 
 const router = createBrowserRouter([
     {
@@ -117,10 +121,37 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 )
             },
+
+            //Zones
+            {
+                path: 'config/createzone',
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <CreateZoneForm />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'config/editzone/:id',
+                element: (
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                        <EditZoneForm />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'zone',
+                element: <BookingTabs />,
+            },
+            {
+                path: 'zone/:idcomplex/:id',
+                element: <ViewZone />,
+            },
+
             //Numbers
             {
                 path: 'numbers',
-                element: < AllNumbers/>,
+                element: < AllNumbers />,
             },
         ],
     },

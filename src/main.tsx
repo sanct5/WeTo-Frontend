@@ -11,6 +11,8 @@ import '@fontsource/roboto/700.css';
 import Toastify from './services/Toastify.tsx'
 import { Provider } from 'react-redux'
 import store from './hooks/store.ts'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { registerSW } from 'virtual:pwa-register'
 registerSW({ immediate: true })
@@ -19,8 +21,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
       <AppTheme>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Toastify />
         <RouterProvider router={router} />
+        </LocalizationProvider>
       </AppTheme>
     </Provider>
   </React.StrictMode>,

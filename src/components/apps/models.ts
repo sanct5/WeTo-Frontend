@@ -41,3 +41,19 @@ export type PqrsAnswer = {
         | { admin: string; resident?: never }
         | { resident: string; admin?: never }
     );
+
+
+
+export type AvailableHours = {
+    start: Date;
+    end: Date;
+};
+
+export type Zone = {
+    _id: string;
+    name: string;
+    complex: string;
+    description?: string;
+    availableDays: ('Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday')[];
+    availableHours: AvailableHours;
+};
