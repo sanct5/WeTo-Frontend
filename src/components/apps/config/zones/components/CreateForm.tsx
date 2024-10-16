@@ -138,6 +138,7 @@ const CreateZoneForm = () => {
                     size="medium"
                     fullWidth
                     required
+                    slotProps={{ htmlInput: { maxLength: 50 } }}
                 />
                 <TextField
                     label="Descripción"
@@ -148,6 +149,7 @@ const CreateZoneForm = () => {
                     fullWidth
                     multiline
                     rows={4}
+                    slotProps={{ htmlInput: { maxLength: 200 } }}
                 />
 
                 <Typography variant="h6">Días disponibles</Typography>
