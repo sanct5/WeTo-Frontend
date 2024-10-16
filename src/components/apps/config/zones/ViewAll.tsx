@@ -51,6 +51,7 @@ const ViewAll = () => {
     const user = useSelector((state: { user: UserState }) => state.user);
 
     useEffect(() => {
+        if (!user.idComplex) return;
         const fetchData = async () => {
             setLoading(true);
             try {
@@ -118,8 +119,8 @@ const ViewAll = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell align='center'>Zona</TableCell>
-                                    <TableCell align='center'>Franja Horaria</TableCell>
-                                    <TableCell align='center'>Días Disponibles</TableCell>
+                                    <TableCell align='center'>Franja horaria</TableCell>
+                                    <TableCell align='center'>Días disponibles</TableCell>
                                     <TableCell align="right"></TableCell>
                                 </TableRow>
                             </TableHead>
@@ -130,7 +131,7 @@ const ViewAll = () => {
                                             component="th"
                                             scope="row"
                                             align="center"
-                                            onClick={() => navigate(`/app/zone/${zone._id}`)}
+                                            onClick={() => navigate(`/app/zone/${user.idComplex}/${zone._id}`)}
                                             sx={{ cursor: 'pointer' }}
                                             className="transform transition-transform duration-300 hover:scale-125 hover:font-bold"
                                         >

@@ -27,20 +27,27 @@ const ComplexColors = () => {
 
     const dispatch = useDispatch();
 
-    const fetchComplexColors = async () => {
-        try {
-            const response = await axios.get(`${ComplexService.baseUrl}${ComplexService.endpoints.ComplexColors}/${user.idComplex}`);
+    useEffect(() => {
+        if (!user.idComplex) return;
+        const fetchComplexColors = async () => {
+            try {
+                const response = await axios.get(`${ComplexService.baseUrl}${ComplexService.endpoints.ComplexColors}/${user.idComplex}`);
 
-            setColors({
-                primaryColor: response.data.config.primaryColor,
-                secondaryColor: response.data.config.secondaryColor,
-            });
-        } catch (error) {
-            toast.error('Error al obtener los colores del complex.');
-        } finally {
-            setLoading(false);
+                setColors({
+                    primaryColor: response.data.config.primaryColor,
+                    secondaryColor: response.data.config.secondaryColor,
+                });
+            } catch (error) {
+                toast.error('Error al obtener los colores de la unidad.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (user.idComplex) {
+            fetchComplexColors();
         }
-    };
+    }, [user.idComplex]);
 
     const isValidHexColor = (color: string) => /^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(color);
 
@@ -107,11 +114,6 @@ const ComplexColors = () => {
         }
     };
 
-    useEffect(() => {
-        if (user.idComplex) {
-            fetchComplexColors();
-        }
-    }, [user.idComplex]);
 
     return (
         <Box display="flex" justifyContent="center" height="100vh">
