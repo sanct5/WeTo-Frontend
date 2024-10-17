@@ -21,6 +21,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
     const user = useSelector((state: { user: UserState }) => state.user);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [openNotifications, setOpenNotifications] = useState(false);
+    const [changeSubscription, setChangeSubscription] = useState(false);
 
     const title = 'WeTo';
 
@@ -34,6 +35,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
         }
         return outputArray;
     };
+
 
     useEffect(() => {
         const checkNotificationPermission = async () => {
@@ -50,7 +52,8 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
         };
 
         checkNotificationPermission();
-    }, [user._id]);
+    }, [user._id, changeSubscription]);
+
 
     const subscribeUserToPush = async () => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -73,27 +76,47 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                     return;
                 }
 
+                const alreadySubscribed = await registration.pushManager.getSubscription();
+
+                if (alreadySubscribed) {
+                    toast.info('Ya estás suscrito a las notificaciones');
+                    setIsSubscribed(true);
+                    return;
+                }
+
                 const subscription = await registration.pushManager.subscribe({
                     userVisibleOnly: true,
                     applicationServerKey: covertedVapidKey
                 });
 
-                console.log('User is subscribed:', subscription);
+                const subscriptionObject = subscription.toJSON();
 
-                const response = await axios.post(
-                    `${PushNotificationsService.baseUrl}${PushNotificationsService.endpoints.subscribe}`,
-                    JSON.stringify(subscription)
-                );
+                const subscriptionWithUserData = {
+                    ...subscriptionObject,
+                    userId: user._id,
+                    userComplex: user.idComplex,
+                };
 
-                toast.success('Notificaciones activadas correctamente');
-                console.log('User subscription response from server:', response);
-
+                if (!subscriptionObject) {
+                    toast.info('Ya estás suscrito a las notificaciones');
+                } else {
+                    const response = await axios.post(
+                        `${PushNotificationsService.baseUrl}${PushNotificationsService.endpoints.subscribe}`,
+                        subscriptionWithUserData
+                    );
+                    console.log(response.data);
+                    toast.success('Notificaciones activadas correctamente');
+                    setIsSubscribed(true);
+                    setChangeSubscription(!changeSubscription);
+                }
             } catch (error) {
-                console.error('Failed to subscribe the user:', (error as any).message);
-                console.error('Error details:', error);
                 setIsSubscribed(false);
                 setOpenNotifications(false);
-                toast.error('No se pudo activar las notificaciones, por favor intenta nuevamente');
+                toast.error('No se pudo activar las notificaciones debido a un error');
+                toast.info('Por favor intenta instalando la aplicación en otro navegador');
+            } finally {
+                setIsSubscribed(false);
+                setOpenNotifications(false);
             }
         } else {
             toast.error('Tu navegador no soporta notificaciones push');
