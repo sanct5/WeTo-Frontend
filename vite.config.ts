@@ -9,8 +9,13 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       strategies: 'injectManifest',
+      injectManifest: {
+        swSrc: 'src/sw.ts',
+        swDest: 'dist/sw.js',
+      },
       srcDir: 'src',
       filename: 'sw.ts',
+      scope: '/',
       includeAssets: [
         'favicon.ico',
         'favicon-16x16.png',
