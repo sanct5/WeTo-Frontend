@@ -119,6 +119,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                 if (subscription) {
                     const isUnsubscribed = await subscription.unsubscribe();
                     if (isUnsubscribed) {
+                        await axios.post(`${PushNotificationsService.baseUrl}${PushNotificationsService.endpoints.unsubscribe}`, { userId: user._id });
                         console.info('Usuario desuscrito correctamente');
                     } else {
                         console.warn('No se pudo desuscribir al usuario');
