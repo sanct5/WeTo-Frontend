@@ -122,8 +122,8 @@ self.addEventListener('push', (event: PushEvent) => {
   const title = data.title || 'Nueva notificación'
   const options = {
     body: data.body || 'Esta notificación no tiene contenido',
-    icon: data.icon || './assets/images/IsologoSinFondo.png',
-    badge: data.badge || '../public/favicon-32x32.png',
+    icon: data.icon || '/LogoPush.png',
+    badge: data.badge || '/LogoPushBadge.png',
     vibration: data.vibration || [200, 100, 200],
     data: data.url || 'https://weto-frontend.onrender.com/login'
   }

@@ -93,6 +93,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
 
                 const subscriptionWithUserData = {
                     ...subscriptionObject,
+                    userName: user.userName,
                     userId: user._id,
                     userComplex: user.idComplex,
                 };
@@ -104,7 +105,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                         `${PushNotificationsService.baseUrl}${PushNotificationsService.endpoints.subscribe}`,
                         subscriptionWithUserData
                     );
-                    console.log(response.data);
+                    console.info(response.data);
                     toast.success('Notificaciones activadas correctamente');
                     setIsSubscribed(true);
                     setChangeSubscription(!changeSubscription);
@@ -163,7 +164,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                     <Typography color="inherit" noWrap sx={{ mr: 2, display: { xs: 'none', sm: 'block' } }}>
                         {user.userName}
                     </Typography>
-                    <Tooltip title={isSubscribed ? "Notificaciones activas" : "Notificaciones pausadas, toca el icono para activarlas"} arrow>
+                    <Tooltip title={isSubscribed ? "Notificaciones activas en este dispositivo" : "Notificaciones pausadas, toca el icono para activarlas"} arrow>
                         <IconButton color="inherit" onClick={handleActiveNotifications}>
                             {isSubscribed ? <NotificationsActive /> : <NotificationsPaused />}
                         </IconButton>
@@ -191,6 +192,9 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={NotifyExample} alt="Ejemplo de notificación" style={{ width: '80%', marginTop: '5px' }} />
                     </Box>
+                    <Typography>
+                        <b>Nota:</b> Solo puedes activar las notificaciones en un dispositivo a la vez.
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button variant="outlined" color="secondary" onClick={() => setOpenNotifications(false)}>
