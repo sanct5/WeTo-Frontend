@@ -119,12 +119,13 @@ clientsClaim()
 // @ts-ignore
 self.addEventListener('push', (event: PushEvent) => {
   const data = event.data ? event.data.json() : {}
-  const title = data.title || 'New Notification'
+  const title = data.title || 'Nueva notificación'
   const options = {
-    body: data.body || 'You have a new notification',
-    icon: data.icon || '/path/to/icon.png',
-    badge: data.badge || '/path/to/badge.png',
-    data: data.url || '/'
+    body: data.body || 'Esta notificación no tiene contenido',
+    icon: data.icon || './assets/images/IsologoSinFondo.png',
+    badge: data.badge || '../public/favicon-32x32.png',
+    vibration: data.vibration || [200, 100, 200],
+    data: data.url || 'https://weto-frontend.onrender.com/login'
   }
 
   event.waitUntil(

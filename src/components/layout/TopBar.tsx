@@ -112,8 +112,20 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
             } catch (error) {
                 setIsSubscribed(false);
                 setOpenNotifications(false);
+
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager.getSubscription();
+    
+                if (subscription) {
+                    const isUnsubscribed = await subscription.unsubscribe();
+                    if (isUnsubscribed) {
+                        console.info('Usuario desuscrito correctamente');
+                    } else {
+                        console.warn('No se pudo desuscribir al usuario');
+                    }
+                }
+
                 toast.error('No se pudo activar las notificaciones debido a un error');
-                toast.info('Por favor intenta instalando la aplicación en otro navegador');
             } finally {
                 setIsSubscribed(false);
                 setOpenNotifications(false);
