@@ -11,6 +11,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import NotifyExample from '../../assets/images/NotifyRequestExample.jpg'
 import { toast } from 'react-toastify'
+import { LoadingButton } from '@mui/lab'
 
 interface TopBarProps {
     handleDrawerToggle: () => void;
@@ -22,6 +23,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [openNotifications, setOpenNotifications] = useState(false);
     const [changeSubscription, setChangeSubscription] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const title = 'WeTo';
 
@@ -57,6 +59,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
 
     const subscribeUserToPush = async () => {
         if ('serviceWorker' in navigator && 'PushManager' in window) {
+            setIsLoading(true);
             if (Notification.permission !== 'granted') {
                 const permission = await Notification.requestPermission();
                 if (permission !== 'granted') {
@@ -116,7 +119,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
 
                 const registration = await navigator.serviceWorker.ready;
                 const subscription = await registration.pushManager.getSubscription();
-    
+
                 if (subscription) {
                     const isUnsubscribed = await subscription.unsubscribe();
                     if (isUnsubscribed) {
@@ -128,9 +131,11 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                 }
 
                 toast.error('No se pudo activar las notificaciones debido a un error');
+                toast.info('Por favor intenta instalar la aplicación en otro navegador');
             } finally {
                 setIsSubscribed(false);
                 setOpenNotifications(false);
+                setIsLoading(false);
             }
         } else {
             toast.error('Tu navegador no soporta notificaciones push');
@@ -188,21 +193,28 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                         Activar las notificaciones te permitirá recibir alertas sobre los anuncios de administración, actualización de tus casos y más.
                         <br /><br />
                         Deberás <b>aceptar</b> las notificaciones en tu navegador.
+                        <br />
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={NotifyExample} alt="Ejemplo de notificación" style={{ width: '80%', marginTop: '5px' }} />
                     </Box>
                     <Typography>
                         <b>Nota:</b> Solo puedes activar las notificaciones en un dispositivo a la vez.
+                        <br />
                     </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button variant="outlined" color="secondary" onClick={() => setOpenNotifications(false)}>
-                        No
+                        Cancelar
                     </Button>
-                    <Button variant="contained" color="primary" onClick={subscribeUserToPush}>
-                        Sí
-                    </Button>
+                    <LoadingButton
+                        variant="contained"
+                        color="primary"
+                        loading={isLoading}
+                        onClick={subscribeUserToPush}
+                    >
+                        Activar
+                    </LoadingButton>
                 </DialogActions>
             </Dialog>
         </Toolbar>
