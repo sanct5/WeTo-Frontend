@@ -94,6 +94,7 @@ const ListAll = () => {
     const isXl = useMediaQuery(theme.breakpoints.down('xl'));
 
     useEffect(() => {
+        if (!user.idComplex) return;
         const getAdminAnnouncements = async () => {
             setLoading(true);
             const response = await axios.get<Announcements[]>(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByComplex}/${user.idComplex}`);

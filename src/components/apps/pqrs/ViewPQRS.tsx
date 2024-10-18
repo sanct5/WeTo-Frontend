@@ -40,6 +40,7 @@ const ViewPQRS = () => {
 
     // Para obtener las PQRS del usuario
     useEffect(() => {
+        if (!user._id) return;
         const getPqrsByUser = async () => {
             setLoading(true);
 

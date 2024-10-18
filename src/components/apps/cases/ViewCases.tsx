@@ -50,6 +50,7 @@ const ViewCases = () => {
     };
 
     useEffect(() => {
+        if (!user.idComplex) return;
         const getCases = async () => {
             setLoading(true);
             const response = await axios.get<Pqrs[]>(`${pqrsService.baseUrl}${pqrsService.endpoints.getPqrsByComplex}/${user.idComplex}`);

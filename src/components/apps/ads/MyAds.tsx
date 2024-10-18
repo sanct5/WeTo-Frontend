@@ -41,6 +41,7 @@ const MyAds = () => {
     const user = useSelector((state: { user: UserState }) => state.user);
 
     useEffect(() => {
+        if (!user._id) return;
         const fetchData = async () => {
             setLoading(true);
             try {

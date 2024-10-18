@@ -30,18 +30,18 @@ const ViewProfile = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
 
-    const fetchUserById = async (id: string) => {
-        try {
-            const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUserById}/${id}`);
-            setProfile(response.data);
-        } catch (error) {
-            return;
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchUserById = async (id: string) => {
+            try {
+                const response = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUserById}/${id}`);
+                setProfile(response.data);
+            } catch (error) {
+                return;
+            } finally {
+                setLoading(false);
+            }
+        };
+
         if (id) {
             if (user.role === 'ADMIN' || user._id === id) {
                 fetchUserById(id);
@@ -53,7 +53,6 @@ const ViewProfile = () => {
                 }
             }
         }
-
     }, [user._id, id]);
 
     return (
