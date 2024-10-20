@@ -214,20 +214,6 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                         <b>Nota:</b> Solo puedes activar las notificaciones en un dispositivo a la vez.
                         <br />
                     </Typography>
-                    <Typography variant="body1" mt={2}>
-                        <b>Navegadores recomendados:</b>
-                        <List>
-                            <ListItem>
-                                <ListItemText primary="Google Chrome" secondary="Sugerido por WeTo" />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="Microsoft Edge" />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="Safari" />
-                            </ListItem>
-                        </List>
-                    </Typography>
                     <Typography variant="body2" sx={{ marginTop: 2 }}>
                         <b>ATENCIÓN SI USAS BRAVE:</b> para este navegador debes copiar y pegar el siguiente enlace en tu barra de búsqueda <b>brave://settings/privacy</b> y activar la opción <b>Usar servicios de Google para mensajes de inserción </b> para poder recibir notificaciones.
                     </Typography>
