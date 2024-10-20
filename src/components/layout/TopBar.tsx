@@ -1,4 +1,4 @@
-import { Toolbar, IconButton, Typography, Box, Dialog, Tooltip, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material'
+import { Toolbar, IconButton, Typography, Box, Dialog, Tooltip, DialogTitle, DialogContent, DialogActions, Button, List, ListItem, ListItemText } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import Logout from '@mui/icons-material/Logout'
 import AccountCircle from '@mui/icons-material/AccountCircle'
@@ -65,6 +65,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                 if (permission !== 'granted') {
                     setIsSubscribed(false);
                     setOpenNotifications(false);
+                    setIsLoading(false);
                     toast.error('El usuario ha bloqueado las notificaciones');
                     return;
                 }
@@ -97,6 +98,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                 const subscriptionWithUserData = {
                     ...subscriptionObject,
                     userName: user.userName,
+                    userRole: user.role,
                     userId: user._id,
                     userComplex: user.idComplex,
                 };
@@ -117,18 +119,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                 setIsSubscribed(false);
                 setOpenNotifications(false);
 
-                const registration = await navigator.serviceWorker.ready;
-                const subscription = await registration.pushManager.getSubscription();
-
-                if (subscription) {
-                    const isUnsubscribed = await subscription.unsubscribe();
-                    if (isUnsubscribed) {
-                        await axios.post(`${PushNotificationsService.baseUrl}${PushNotificationsService.endpoints.unsubscribe}/${user._id}`);
-                        console.info('Usuario desuscrito correctamente');
-                    } else {
-                        console.warn('No se pudo desuscribir al usuario');
-                    }
-                }
+                handleDeactiveNotifications();
 
                 toast.error('No se pudo activar las notificaciones debido a un error');
                 toast.info('Por favor intenta instalar la aplicación en otro navegador');
@@ -146,6 +137,24 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
     const handleActiveNotifications = async () => {
         if (isSubscribed) return;
         setOpenNotifications(true);
+    }
+
+    const handleDeactiveNotifications = async () => {
+        if (!isSubscribed) return;
+
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (subscription) {
+            const isUnsubscribed = await subscription.unsubscribe();
+            if (isUnsubscribed) {
+                await axios.post(`${PushNotificationsService.baseUrl}${PushNotificationsService.endpoints.unsubscribe}/${user._id}`);
+                setIsSubscribed(false);
+                toast.info('Notificaciones desactivadas correctamente');
+            } else {
+                toast.error('No se pudo desactivar las suscripción a las notificaciones');
+            }
+        }
     }
 
     return (
@@ -170,7 +179,10 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                         {user.userName}
                     </Typography>
                     <Tooltip title={isSubscribed ? "Notificaciones activas en este dispositivo" : "Notificaciones pausadas, toca el icono para activarlas"} arrow>
-                        <IconButton color="inherit" onClick={handleActiveNotifications}>
+                        <IconButton
+                            color="inherit"
+                            onClick={isSubscribed ? handleDeactiveNotifications : handleActiveNotifications}
+                        >
                             {isSubscribed ? <NotificationsActive /> : <NotificationsPaused />}
                         </IconButton>
                     </Tooltip>
@@ -189,7 +201,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                     ¿Deseas activar las notificaciones?
                 </DialogTitle>
                 <DialogContent>
-                    <Typography>
+                    <Typography mb={2}>
                         Activar las notificaciones te permitirá recibir alertas sobre los anuncios de administración, actualización de tus casos y más.
                         <br /><br />
                         Deberás <b>aceptar</b> las notificaciones en tu navegador.
@@ -198,9 +210,26 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={NotifyExample} alt="Ejemplo de notificación" style={{ width: '80%', marginTop: '5px' }} />
                     </Box>
-                    <Typography>
+                    <Typography mt={2}>
                         <b>Nota:</b> Solo puedes activar las notificaciones en un dispositivo a la vez.
                         <br />
+                    </Typography>
+                    <Typography variant="body1" mt={2}>
+                        <b>Navegadores recomendados:</b>
+                        <List>
+                            <ListItem>
+                                <ListItemText primary="Google Chrome" secondary="Sugerido por WeTo" />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText primary="Microsoft Edge" />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText primary="Safari" />
+                            </ListItem>
+                        </List>
+                    </Typography>
+                    <Typography variant="body2" sx={{ marginTop: 2 }}>
+                        <b>ATENCIÓN SI USAS BRAVE:</b> para este navegador debes copiar y pegar el siguiente enlace en tu barra de búsqueda <b>brave://settings/privacy</b> y activar la opción <b>Usar servicios de Google para mensajes de inserción </b> para poder recibir notificaciones.
                     </Typography>
                 </DialogContent>
                 <DialogActions>
