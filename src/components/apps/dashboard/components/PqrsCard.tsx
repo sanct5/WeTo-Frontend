@@ -15,6 +15,7 @@ const PqrsCard = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!user.idComplex) return;
         const fetchPqrs = async () => {
             setIsLoadingPqrs(true);
             const pqrsResponse = await axios.get(`${pqrsService.baseUrl}${pqrsService.endpoints.getPqrsByComplex}/${user.idComplex}`);

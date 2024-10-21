@@ -42,6 +42,7 @@ const viewAll = () => {
     const user = useSelector((state: { user: UserState }) => state.user);
 
     useEffect(() => {
+        if (!user.idComplex) return;
         const fetchData = async () => {
             setLoading(true);
             let idComplex = user.idComplex;

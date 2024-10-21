@@ -86,7 +86,7 @@ const CreateFormAnnouncements = ({ setValue }: CreateFormProps) => {
             if (user.role === 'RESIDENT') {
                 navigate('/app/ads');
             } else {
-                navigate('/app/announcements');
+                setValue('all');
             }
         } catch (error) {
             toast.error('No se pudo crear el anuncio');

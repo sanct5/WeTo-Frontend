@@ -25,6 +25,7 @@ const PqrsZones = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!user.idComplex) return;
         const getCases = async () => {
             setLoading(true);
             try {

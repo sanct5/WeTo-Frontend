@@ -81,6 +81,7 @@ export default function SideBar() {
         }
     };
 
+
     useEffect(() => {
         if (loggedUser) {
             dispatch(setUser(loggedUser));

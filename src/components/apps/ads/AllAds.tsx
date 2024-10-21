@@ -36,6 +36,7 @@ const AllAds = () => {
     const user = useSelector((state: { user: UserState }) => state.user);
 
     useEffect(() => {
+        if (!user.idComplex) return;
         const getResidentAds = async () => {
             setLoading(true);
             let idComplex = user.idComplex;

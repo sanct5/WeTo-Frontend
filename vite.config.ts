@@ -2,14 +2,20 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      strategies: 'generateSW',
+      strategies: 'injectManifest',
+      injectManifest: {
+        swSrc: 'src/sw.ts',
+        swDest: 'dist/sw.js',
+      },
+      srcDir: 'src',
+      filename: 'sw.ts',
+      scope: '/',
       includeAssets: [
         'favicon.ico',
         'favicon-16x16.png',
@@ -72,6 +78,10 @@ export default defineConfig({
             type: 'image/x-icon'
           }
         ],
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module',
       },
     }),
   ],

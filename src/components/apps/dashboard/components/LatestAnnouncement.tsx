@@ -29,6 +29,7 @@ const LatestAnnouncementCard = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!user.idComplex) return;
         const fetchAnnouncements = async () => {
             setIsLoadingAnnouncements(true);
             const announcementsResponse = await axios.get(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.GetAnnouncementsByComplex}/${user.idComplex}`);

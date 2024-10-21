@@ -15,6 +15,12 @@ import { setStayLogged, setUser, UserState } from '../../hooks/users/userSlice';
 import { LoginUser } from '../../hooks/users/userThunks';
 import { useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
+import { Button, Collapse, List, ListItem, ListItemText } from '@mui/material';
+
+interface BeforeInstallPromptEvent extends Event {
+    prompt: () => void;
+    userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
 
 const SignIn = () => {
     const dispatch = useDispatch();
@@ -25,6 +31,9 @@ const SignIn = () => {
     const [passwordInput, setPasswordInput] = useState('');
     const [checkedRemember, setCheckedRemember] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+    const [showRecommendedBrowsers, setShowRecommendedBrowsers] = useState(false);
+
 
     //Estados para almacenar si el usuario está autenticado y si se debe recordar
     const { isLogged, role } = useSelector((state: { user: UserState }) => state.user);
@@ -44,6 +53,37 @@ const SignIn = () => {
         await dispatch(LoginUser(data));
         setIsLoading(false);
     }
+
+    // Manejador del evento beforeinstallprompt
+    useEffect(() => {
+        const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+        };
+
+        // @ts-ignore
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+        return () => {
+            // @ts-ignore
+            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        };
+    }, []);
+
+    // Función para mostrar el prompt de instalación
+    const handleInstallClick = () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.info('User accepted the PWA prompt');
+                } else {
+                    console.info('User dismissed the PWA prompt');
+                }
+                setDeferredPrompt(null);
+            });
+        }
+    };
 
     //Si el usuario ya está logueado y marcó la casilla de recordar previamente, se redirige al dashboard
     useEffect(() => {
@@ -79,6 +119,9 @@ const SignIn = () => {
                     </Avatar>
                     <Typography component="h2" variant="h5" sx={{ fontWeight: 'bold' }}>
                         ¡Bienvenid@!
+                    </Typography>
+                    <Typography variant="body2" sx={{ mt: 2 }}>
+                        Si tu navegadador te lo permite, abajo podrás instalar la aplicación de WeTo en tu dispositivo.
                     </Typography>
                     <Typography variant="body1" sx={{ mt: 3, maxWidth: { xs: '90%', sm: '70%' }, textAlign: 'justify' }}>
                         Inicia sesión con tu cuenta de correo electrónico y contraseña
@@ -127,6 +170,46 @@ const SignIn = () => {
                         >
                             Iniciar sesión
                         </LoadingButton>
+                        {deferredPrompt && (
+                            <>
+                                <Typography variant="body2">
+                                    Puedes instalar la aplicación de WeTo en cualquier dispositivo Windows, Mac, Linux, Android o iOS ¡No importa!
+                                    debes tener en cuenta que la aplicación se instalará en tu navegador.
+                                    Esto quiere decir que no ocupará espacio en tu dispositivo y podrás acceder a ella desde tu escritorio o menú de aplicaciones.
+                                    nativo ¡Es muy fácil!
+                                </Typography>
+                                <Button
+                                    fullWidth
+                                    variant="outlined"
+                                    sx={{ mt: 2 }}
+                                    onClick={handleInstallClick}
+                                    disabled={!deferredPrompt}
+                                >
+                                    Instalar aplicación
+                                </Button>
+                                <Button
+                                    fullWidth
+                                    variant="text"
+                                    sx={{ mt: 2 }}
+                                    onClick={() => setShowRecommendedBrowsers(!showRecommendedBrowsers)}
+                                >
+                                    Ver navegadores recomendados
+                                </Button>
+                                <Collapse in={showRecommendedBrowsers}>
+                                    <List>
+                                        <ListItem>
+                                            <ListItemText primary="Google Chrome" secondary="Sugerido por WeTo" />
+                                        </ListItem>
+                                        <ListItem>
+                                            <ListItemText primary="Microsoft Edge" />
+                                        </ListItem>
+                                        <ListItem>
+                                            <ListItemText primary="Safari" />
+                                        </ListItem>
+                                    </List>
+                                </Collapse>
+                            </>
+                        )}
                         {/* <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">
