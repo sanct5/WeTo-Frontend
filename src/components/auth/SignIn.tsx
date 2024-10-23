@@ -15,7 +15,8 @@ import { setStayLogged, setUser, UserState } from '../../hooks/users/userSlice';
 import { LoginUser } from '../../hooks/users/userThunks';
 import { useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
-import { Button, Collapse, List, ListItem, ListItemText } from '@mui/material';
+import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemText } from '@mui/material';
+import { toast } from 'react-toastify';
 
 interface BeforeInstallPromptEvent extends Event {
     prompt: () => void;
@@ -33,6 +34,7 @@ const SignIn = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
     const [showRecommendedBrowsers, setShowRecommendedBrowsers] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
 
 
     //Estados para almacenar si el usuario está autenticado y si se debe recordar
@@ -76,9 +78,9 @@ const SignIn = () => {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-                    console.info('User accepted the PWA prompt');
+                    setOpenModal(true);
                 } else {
-                    console.info('User dismissed the PWA prompt');
+                    toast.info('Has cancelado la instalación de la aplicación, seguirás utilizando la versión web');
                 }
                 setDeferredPrompt(null);
             });
@@ -173,10 +175,12 @@ const SignIn = () => {
                         {deferredPrompt && (
                             <>
                                 <Typography variant="body2">
-                                    Puedes instalar la aplicación de WeTo en cualquier dispositivo Windows, Mac, Linux, Android o iOS ¡No importa!
-                                    debes tener en cuenta que la aplicación se instalará en tu navegador.
-                                    Esto quiere decir que no ocupará espacio en tu dispositivo y podrás acceder a ella desde tu escritorio o menú de aplicaciones.
-                                    nativo ¡Es muy fácil!
+                                    ¡Buenas noticias!
+                                    Puedes instalar la aplicación de WeTo en tu dispositivo.
+                                    Solo debes tener en cuenta que tu navegador la alojará.
+                                    Esto quiere decir no ocupará espacio en tu dispositivo,
+                                    y podrás acceder a ella desde tu escritorio o menú de aplicaciones nativo.
+                                    Si borras el navegador, la aplicación se eliminará.
                                 </Typography>
                                 <Button
                                     fullWidth
@@ -187,29 +191,28 @@ const SignIn = () => {
                                 >
                                     Instalar aplicación
                                 </Button>
-                                <Button
-                                    fullWidth
-                                    variant="text"
-                                    sx={{ mt: 2 }}
-                                    onClick={() => setShowRecommendedBrowsers(!showRecommendedBrowsers)}
-                                >
-                                    Ver navegadores recomendados
-                                </Button>
-                                <Collapse in={showRecommendedBrowsers}>
-                                    <List>
-                                        <ListItem>
-                                            <ListItemText primary="Google Chrome" secondary="Sugerido por WeTo" />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText primary="Microsoft Edge" />
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText primary="Safari" />
-                                        </ListItem>
-                                    </List>
-                                </Collapse>
                             </>
                         )}
+                        <Collapse in={showRecommendedBrowsers}>
+                            <List>
+                                <ListItem>
+                                    <ListItemText primary="Google Chrome" secondary="Sugerido por WeTo" />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary="Microsoft Edge" />
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary="Safari" />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                        {!showRecommendedBrowsers && <Button
+                            fullWidth
+                            variant="text"
+                            onClick={() => setShowRecommendedBrowsers(!showRecommendedBrowsers)}
+                        >
+                            Ver navegadores recomendados
+                        </Button>}
                         {/* <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">
@@ -233,6 +236,24 @@ const SignIn = () => {
                     backgroundPosition: 'center',
                 }}
             />
+
+            <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+                <DialogTitle>
+                    Instalación exitosa
+                </DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        La aplicación de WeTo se ha instalado correctamente en tu dispositivo.
+                        Ahora podrás acceder a ella desde tu escritorio o menú de aplicaciones nativo.
+                        No te preocupes por actualizarla, siempre tendrás la última versión disponible.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" color="primary" onClick={() => setOpenModal(false)}>
+                        ¡Listo!
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Grid>
     )
 }
