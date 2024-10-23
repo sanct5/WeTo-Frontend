@@ -12,7 +12,9 @@ import {
     CircularProgress,
     DialogContentText,
     TextField,
-    Grid2
+    Grid2,
+    Tooltip,
+    Popover
 } from '@mui/material';
 import { format } from '@formkit/tempo';
 import axios from 'axios';
@@ -22,7 +24,22 @@ import { useSelector } from 'react-redux';
 import { UserState } from '../../../hooks/users/userSlice';
 import { Announcements } from '../models'
 import parse from 'html-react-parser'
-import { CalendarMonth, DateRangeRounded, Delete, Warning, Search, Announcement, SellOutlined } from '@mui/icons-material';
+import {
+    CalendarMonth,
+    DateRangeRounded,
+    Delete, Warning,
+    Search,
+    Announcement,
+    TipsAndUpdates,
+    Favorite,
+    Handshake,
+    Celebration,
+    Recommend,
+    AddReaction,
+    SellOutlined
+} from '@mui/icons-material';
+import { getReactionIcon, getReactionIconGray } from '../constants';
+import { getTopReactions } from '../utils';
 
 const AllAds = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -31,7 +48,18 @@ const AllAds = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const [keyWord, setKeyWord] = useState<string>('');
-    const [selectedAnnouncement, setselectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
+    const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     const user = useSelector((state: { user: UserState }) => state.user);
 
@@ -51,7 +79,7 @@ const AllAds = () => {
     }, [reloadFlag, user.idComplex]);
 
     const openDeleteDialog = (AnnouncementId: string, AnnouncementUser: string, userId: string) => {
-        setselectedAnnouncement({ AnnouncementId, AnnouncementUser, userId });
+        setSelectedAnnouncement({ AnnouncementId, AnnouncementUser, userId });
         setDeleteModalOpen(true);
     }
 
@@ -96,6 +124,36 @@ const AllAds = () => {
         }
         setResidentAds(sortedAnnouncements);
         setLoading(false);
+    }
+
+
+    const hanldeReaction = async (reaction: string) => {
+        handlePopoverClose();
+        const announcementId = selectedAnnouncement.AnnouncementId;
+
+        const hasReacted = residentAds.find(announcement => announcement._id === announcementId)?.reactions?.find(reaction => reaction.user === user._id);
+
+        if (hasReacted?.type === reaction) {
+            return;
+        }
+
+        try {
+            const response = await axios.post(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.ReactToAnnouncement}/${announcementId}/${user._id}`, { reactionType: reaction });
+            if (response.status === 200) {
+                setResidentAds(residentAds.map(announcement => {
+                    if (announcement._id === announcementId) {
+                        announcement.reactions = response.data.reactions;
+                    }
+                    return announcement;
+                }));
+            } else {
+                toast.error('Error al agregar la reacción');
+            }
+        } catch (error) {
+            toast.error('Error al agregar la reacción');
+        } finally {
+            setAnchorEl(null);
+        }
     }
 
     return (
@@ -165,10 +223,66 @@ const AllAds = () => {
                                                 </Typography>
                                             )}
                                         </Box>
+                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                            <Typography variant="body2" component="p" mr={2}>
+                                                {announcement.reactions?.length || 'Se el primero en reaccionar'}
+                                            </Typography>
+                                            {getTopReactions(announcement.reactions).map((reaction, index) => (
+                                                <Box key={index} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                    {getReactionIcon(reaction)}
+                                                </Box>
+                                            ))}
+                                            <IconButton onClick={(e) => { handlePopoverOpen(e); setSelectedAnnouncement({ AnnouncementId: announcement._id, AnnouncementUser: announcement.CreatedBy }) }}>
+                                                {announcement.reactions?.some(reaction => reaction.user === user._id)
+                                                    ? getReactionIconGray(announcement.reactions.find(reaction => reaction.user === user._id)?.type || '')
+                                                    : <AddReaction />}
+                                            </IconButton>
+                                        </Box>
                                     </CardContent>
                                 </Card>
                             </Grid2>
                         ))}
+                        <Popover
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClose={handlePopoverClose}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', p: 1 }}>
+                                <Tooltip title="Recomendar" placement='top'>
+                                    <IconButton onClick={() => hanldeReaction('recommend')}>
+                                        <Recommend sx={{ color: 'blue' }} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Celebrar" placement='top'>
+                                    <IconButton onClick={() => hanldeReaction('celebrate')}>
+                                        <Celebration sx={{ color: 'pink' }} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Apoyar" placement='top'>
+                                    <IconButton onClick={() => hanldeReaction('support')}>
+                                        <Handshake sx={{ color: 'purple' }} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Encantar" placement='top'>
+                                    <IconButton onClick={() => hanldeReaction('love')}>
+                                        <Favorite sx={{ color: 'red' }} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Interesar" placement='top'>
+                                    <IconButton onClick={() => hanldeReaction('interest')}>
+                                        <TipsAndUpdates sx={{ color: 'yellowgreen' }} />
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                        </Popover>
                     </Grid2>
                 )
             )}

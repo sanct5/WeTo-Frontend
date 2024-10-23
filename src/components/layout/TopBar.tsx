@@ -207,6 +207,9 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                         Deberás <b>aceptar</b> las notificaciones en tu navegador.
                         <br />
                     </Typography>
+                    <Typography>
+                        Si tienes el modo no molestar activado, no recibirás las alertas pero podrás ver las notificaciones en tu bandeja de notificaciones.
+                    </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <img src={NotifyExample} alt="Ejemplo de notificación" style={{ width: '80%', marginTop: '5px' }} />
                     </Box>
@@ -215,7 +218,7 @@ const TopBar = ({ handleDrawerToggle, handleLogout }: TopBarProps) => {
                         <br />
                     </Typography>
                     <Typography variant="body2" sx={{ marginTop: 2 }}>
-                        <b>ATENCIÓN SI USAS BRAVE:</b> para este navegador debes copiar y pegar el siguiente enlace en tu barra de búsqueda <b>brave://settings/privacy</b> y activar la opción <b>Usar servicios de Google para mensajes de inserción </b> para poder recibir notificaciones.
+                        <b>ATENCIÓN SI USAS BRAVE EN COMPUTADOR:</b> para este navegador debes copiar y pegar el siguiente enlace en tu barra de búsqueda <b>brave://settings/privacy</b> y activar la opción <b>Usar servicios de Google para mensajes de inserción/push </b> para poder recibir notificaciones.
                     </Typography>
                 </DialogContent>
                 <DialogActions>
