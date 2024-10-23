@@ -231,6 +231,12 @@ const ListAll = () => {
         handlePopoverClose();
         const announcementId = selectedAnnouncement.AnnouncementId;
 
+        const hasReacted = filteredAnnouncements.find(announcement => announcement._id === announcementId)?.reactions?.find(reaction => reaction.user === user._id);
+
+        if (hasReacted?.type === reaction) {
+            return;
+        }
+
         try {
             const response = await axios.post(`${AnnouncementsService.baseUrl}${AnnouncementsService.endpoints.ReactToAnnouncement}/${announcementId}/${user._id}`, { reactionType: reaction });
             if (response.status === 200) {

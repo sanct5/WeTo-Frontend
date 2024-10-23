@@ -134,7 +134,6 @@ const AllAds = () => {
         const hasReacted = residentAds.find(announcement => announcement._id === announcementId)?.reactions?.find(reaction => reaction.user === user._id);
 
         if (hasReacted?.type === reaction) {
-            toast.info('Ya has reaccionado a esta publicación');
             return;
         }
 
