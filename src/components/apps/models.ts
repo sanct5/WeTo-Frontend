@@ -11,6 +11,12 @@ export type Announcements = {
     LastModify: Date;
     CreatedBy: string;
     isAdmin: boolean;
+    reactions?: Reaction[];
+}
+
+export type Reaction = {
+    user: string;
+    type: 'recommend' | 'celebrate' | 'support' | 'love' | 'interest' | 'removed';
 }
 
 export type AnnouncementCategory = "Mantenimiento" | "Servicios" | "General" | "Reuniones" | "Publicidad";
@@ -35,14 +41,12 @@ export type PqrsState = "pendiente" | "tramite" | "cerrado";
 export type PqrsAnswer = {
     _id: string;
     comment: string;
-    type?:  "Normal" | "System";
+    type?: "Normal" | "System";
     date: Date;
 } & (
         | { admin: string; resident?: never }
         | { resident: string; admin?: never }
     );
-
-
 
 export type AvailableHours = {
     start: Date;
