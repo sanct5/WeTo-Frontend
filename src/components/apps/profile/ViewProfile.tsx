@@ -34,9 +34,9 @@ import {
     AssignmentInd,
     Pets,
     PedalBike,
-    Edit,
     Delete,
-    Warning
+    Warning,
+    Visibility
 } from '@mui/icons-material';
 import PetModal from './PetModal';
 import VehicleModal from './VehicleModal';
@@ -113,8 +113,12 @@ const ViewProfile = () => {
         }
     }
 
-    const handleSelectPet = (pet: Pet) => {
-        setSelectedPet(pet);
+    const handleSelectPet = (pet: Pet, isCreating?: boolean) => {
+        if (isCreating) {
+            setSelectedPet({ _id: '', name: '', type: '', breed: '', color: '' });
+        } else {
+            setSelectedPet(pet);
+        }
         setOpenPetModal(true);
     };
 
@@ -123,8 +127,12 @@ const ViewProfile = () => {
         setDeletePetModalOpen(true);
     };
 
-    const handleSelectVehicle = (vehicle: Vehicle) => {
-        setSelectedVehicle(vehicle);
+    const handleSelectVehicle = (vehicle: Vehicle, isCreating?: boolean) => {
+        if (isCreating) {
+            setSelectedVehicle({ _id: '', plate: '', model: '', color: '', year: '' });
+        } else {
+            setSelectedVehicle(vehicle);
+        }
         setOpenVehicleModal(true);
     };
 
@@ -210,7 +218,7 @@ const ViewProfile = () => {
                                             id === user._id &&
                                             <Box display="flex" alignItems="center" sx={{ gap: { xs: 0.5, sm: 2 } }}>
                                                 <IconButton edge="end" aria-label="edit" onClick={() => handleSelectPet(pet)}>
-                                                    <Edit color='primary' />
+                                                    <Visibility color='primary' />
                                                 </IconButton>
                                                 <IconButton edge="end" aria-label="delete" onClick={() => handleDeletePet(pet)}>
                                                     <Delete color='secondary' />
@@ -232,7 +240,7 @@ const ViewProfile = () => {
                                     </Typography>
                                 </Box>
                             )}
-                            {id === user._id && <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={() => setOpenPetModal(true)}>
+                            {id === user._id && <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={() => handleSelectPet({ _id: '', name: '', type: '', breed: '', color: '' }, true)}>
                                 Agregar mascota
                             </Button>}
                         </CardContent>
@@ -247,7 +255,7 @@ const ViewProfile = () => {
                                             id === user._id &&
                                             <Box display="flex" alignItems="center" gap={2}>
                                                 <IconButton edge="end" aria-label="edit" onClick={() => handleSelectVehicle(vehicle)}>
-                                                    <Edit color='primary' />
+                                                    <Visibility color='primary' />
                                                 </IconButton>
                                                 <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteVehicle(vehicle)}>
                                                     <Delete color='secondary' />
@@ -269,7 +277,7 @@ const ViewProfile = () => {
                                     </Typography>
                                 </Box>
                             )}
-                            {id === user._id && <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={() => setOpenVehicleModal(true)}>
+                            {id === user._id && <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }} onClick={() => handleSelectVehicle({ _id: '', plate: '', model: '', color: '', year: '' }, true)}>
                                 Agregar vehículo
                             </Button>}
                         </CardContent>
@@ -277,8 +285,8 @@ const ViewProfile = () => {
                 </Box>
             )}
 
-            <PetModal pet={selectedPet} open={openPetModal} setOpen={setOpenPetModal} />
-            <VehicleModal vehicle={selectedVehicle} open={openVehicleModal} setOpen={setOpenVehicleModal} />
+            <PetModal pet={selectedPet} open={openPetModal} setOpen={setOpenPetModal} reload={reloadFlag} setReload={setReloadFlag} />
+            <VehicleModal vehicle={selectedVehicle} open={openVehicleModal} setOpen={setOpenVehicleModal} reload={reloadFlag} setReload={setReloadFlag} />
 
             <Dialog open={deletePetModalOpen} onClose={() => setDeletePetModalOpen(false)}>
                 <DialogContent>
