@@ -6,5 +6,11 @@ export const UserService = {
         AddUser: '/add',
         DeleteUser: '/delete',
         GetUserById: '/getById',
+        addUserPet: '/addPet',
+        deleteUserPet: '/removePet',
+        updateUserPet: '/updatePet',
+        addUserVehicle: '/addVehicle',
+        deleteUserVehicle: '/removeVehicle',
+        updateUserVehicle: '/updateVehicle',
     },
 };
