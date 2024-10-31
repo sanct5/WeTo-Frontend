@@ -1,6 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export type Role = "RESIDENT" | "ADMIN";
+
+export type Pet = {
+    _id: string;
+    name: string;
+    type: string;
+    breed: string;
+    color: string;
+}
+
+export type Vehicle = {
+    _id: string;
+    plate: string;
+    model: string;
+    color: string;
+    year: string;
+}
 export interface UserState {
     _id: string;
     idDocument: string;
@@ -11,6 +27,8 @@ export interface UserState {
     apartment: string;
     role: Role;
     config: UserConfig;
+    pets: Pet[];
+    vehicles: Vehicle[];
     stayLogged: boolean;
     isLogged: boolean;
 }
@@ -29,6 +47,8 @@ const initialState: UserState = {
     phone: "",
     apartment: "",
     role: "RESIDENT",
+    pets: [],
+    vehicles: [],
     config: {
         primaryColor: undefined,
         secondaryColor: undefined,
