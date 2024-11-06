@@ -20,6 +20,10 @@ import CreateZoneForm from '../components/apps/config/zones/components/CreateFor
 import EditZoneForm from '../components/apps/config/zones/components/EditForm';
 import ViewZone from '../components/apps/config/zones/components/ViewZone';
 import BookingTabs from '../components/apps/booking/BookingTabs';
+import DirectoryTabs from '../components/apps/directory/DirectoryTabs';
+import CreateFormDirectory from '../components/apps/directory/CreateForm';
+import EditFormDirectory from '../components/apps/directory/EditForm';
+
 
 const router = createBrowserRouter([
     {
@@ -153,6 +157,26 @@ const router = createBrowserRouter([
                 path: 'numbers',
                 element: < AllNumbers />,
             },
+
+            //Directory
+            {
+                path: 'directory',
+                element: <DirectoryTabs />,
+            },
+            {
+                path: 'directory/create',
+                element:
+                    <ProtectedRoute allowedRoles={['RESIDENT']}>
+                        <CreateFormDirectory />
+                    </ProtectedRoute>
+            },
+            {
+                path: 'directory/edit/:id',
+                element: 
+                    <ProtectedRoute allowedRoles={['RESIDENT']}>
+                        <EditFormDirectory />
+                    </ProtectedRoute>
+            }
         ],
     },
 ]);

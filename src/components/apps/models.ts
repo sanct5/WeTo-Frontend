@@ -62,3 +62,13 @@ export type Zone = {
     availableDays: ('Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday')[];
     availableHours: AvailableHours;
 };
+
+export type Directory = {
+    _id: string;
+    userId: string;
+    complexId: string;
+    service: string;
+    phone: string;
+    hasWhatsApp: boolean;
+    whatsAppNumber?: string | null;
+}
