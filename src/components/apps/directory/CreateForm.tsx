@@ -144,7 +144,7 @@ const CreateFormDirectory = () => {
                                 color="primary"
                             />
                         }
-                        label="¿Tiene WhatsApp?"
+                        label="Tiene WhatsApp"
                     />
                     {formData.hasWhatsApp && (
                         <>
@@ -157,7 +157,7 @@ const CreateFormDirectory = () => {
                                         color="primary"
                                     />
                                 }
-                                label="¿El número de WhatsApp es el mismo que el número de teléfono?"
+                                label="El número de WhatsApp es el mismo que el número de teléfono"
                             />
                             {!sameAsPhone && (
                                 <TextField
@@ -169,7 +169,7 @@ const CreateFormDirectory = () => {
                                     value={formData.whatsAppNumber || ''}
                                     onChange={handleChange}
                                     disabled={!formData.hasWhatsApp}
-                                    slotProps={{ htmlInput: { maxLength: 10 } }}
+                                    slotProps={{ htmlInput: { maxLength: 15 } }}
                                 />
                             )}
                         </>

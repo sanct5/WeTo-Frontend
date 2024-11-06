@@ -159,7 +159,7 @@ const EditFormDirectory = () => {
                                 color="primary"
                             />
                         }
-                        label="¿Tiene WhatsApp?"
+                        label="Tiene WhatsApp"
                     />
                     {formData.hasWhatsApp && (
                         <>
@@ -172,7 +172,7 @@ const EditFormDirectory = () => {
                                         color="primary"
                                     />
                                 }
-                                label="¿El número de WhatsApp es el mismo que el número de teléfono?"
+                                label="El número de WhatsApp es el mismo que el número de teléfono"
                             />
                             {!sameAsPhone && (
                                 <TextField

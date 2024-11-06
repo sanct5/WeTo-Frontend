@@ -13,7 +13,8 @@ import {
     Tooltip,
     Grid2,
     Card,
-    CardContent
+    CardContent,
+    CardHeader
 } from '@mui/material';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -128,8 +129,8 @@ const AllDirectory = () => {
                 ) : (
                     <Grid2 container spacing={2} columns={12} sx={{ display: 'flex', alignItems: 'stretch' }}>
                         {directoryEntries.map((service) => (
-                            <Grid2 size={{ xs: 12, sm: 6, md:4 }} key={service._id}>
-                                <Card sx={{ p: 2, position: 'relative', display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={service._id}>
+                                <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
                                     {user.role === 'ADMIN' && (
                                         <Box sx={{ position: 'absolute', top: 0, right: 0 }}>
                                             <Tooltip title="Eliminar">
@@ -142,18 +143,26 @@ const AllDirectory = () => {
                                             </Tooltip>
                                         </Box>
                                     )}
+                                    <CardHeader
+                                        avatar={<ContactPhone sx={{ mr: 1, color: "secondary.main" }} />}
+                                        title={service.service}
+                                        titleTypographyProps={{ variant: 'h6', color: 'black', sx: { display: 'flex', alignItems: 'center', mb: 2, wordBreak: 'break-word' } }}
+                                    />
                                     <CardContent sx={{ flexGrow: 1 }}>
-                                        <Typography variant="h6" component="div" color="black" sx={{ display: 'flex', alignItems: 'center', mb: 2, wordBreak: 'break-word' }}>
-                                            <ContactPhone sx={{ mr: 1, color: "secondary.main" }} /> {service.service}
-                                        </Typography>
-                                        <Typography variant="body2" component="p" sx={{ display: 'flex', alignItems: 'center', mb: 1, wordBreak: 'break-word' }}>
+                                        <Typography
+                                            variant="body2"
+                                            component="p"
+                                            sx={{ display: 'flex', alignItems: 'center', mb: 1, wordBreak: 'break-word' }}
+                                        >
                                             <LocalPhone sx={{ mr: 1 }} color="primary" /> Teléfono: {service.phone}
                                         </Typography>
-                                        {service.hasWhatsApp && (
-                                            <Typography variant="body2" component="p" sx={{ display: 'flex', alignItems: 'center', wordBreak: 'break-word' }}>
-                                                <ChatBubbleOutline sx={{ mr: 1 }} color="success" /> WhatsApp: {service.whatsAppNumber}
-                                            </Typography>
-                                        )}
+                                        <Typography
+                                            variant="body2"
+                                            component="p"
+                                            sx={{ display: 'flex', alignItems: 'center', wordBreak: 'break-word' }}
+                                        >
+                                            <ChatBubbleOutline sx={{ mr: 1 }} color="success" /> WhatsApp: {service.whatsAppNumber ? service.whatsAppNumber : "No tiene"}
+                                        </Typography>
                                     </CardContent>
                                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
                                         <Tooltip title="Llamar">
@@ -196,7 +205,7 @@ const AllDirectory = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </Box >
     );
 };
 
