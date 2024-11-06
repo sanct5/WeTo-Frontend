@@ -16,6 +16,7 @@ export type Announcements = {
 
 export type Reaction = {
     user: string;
+    userName: string;
     type: 'recommend' | 'celebrate' | 'support' | 'love' | 'interest' | 'removed';
 }
 
