@@ -30,7 +30,8 @@ import {
     ChatBubbleOutline,
     ContactPhone,
     WhatsApp,
-    AddIcCall
+    AddIcCall,
+    LocationOn
 } from '@mui/icons-material';
 
 const AllDirectory = () => {
@@ -146,12 +147,19 @@ const AllDirectory = () => {
                                     <CardHeader
                                         avatar={<ContactPhone sx={{ mr: 1, color: "secondary.main" }} />}
                                         title={service.service}
-                                        titleTypographyProps={{ variant: 'h6', color: 'black', sx: { display: 'flex', alignItems: 'center', mb: 2, wordBreak: 'break-word' } }}
+                                        titleTypographyProps={{ variant: 'h6', color: 'black', sx: { display: 'flex', alignItems: 'center', wordBreak: 'break-word' } }}
                                     />
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography
                                             variant="body2"
-                                            component="p"
+                                            sx={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap', mb: 2 }}
+                                        >
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <LocationOn sx={{ mr: 1 }} color="primary" /> {service.location}
+                                            </Box>
+                                        </Typography>
+                                        <Typography
+                                            variant="body2"
                                             sx={{ display: 'flex', alignItems: 'center', mb: 1, wordBreak: 'break-word' }}
                                         >
                                             <LocalPhone sx={{ mr: 1 }} color="primary" /> Teléfono: {service.phone}
@@ -159,9 +167,9 @@ const AllDirectory = () => {
                                         <Typography
                                             variant="body2"
                                             component="p"
-                                            sx={{ display: 'flex', alignItems: 'center', wordBreak: 'break-word' }}
+                                            sx={{ display: 'flex', alignItems: 'center', wordBreak: 'break-word', mt: 2 }}
                                         >
-                                            <ChatBubbleOutline sx={{ mr: 1 }} color="success" /> WhatsApp: {service.whatsAppNumber ? service.whatsAppNumber : "No tiene"}
+                                            <ChatBubbleOutline sx={{ mr: 1 }} color="primary" /> WhatsApp: {service.whatsAppNumber ? service.whatsAppNumber : "No tiene"}
                                         </Typography>
                                     </CardContent>
                                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>

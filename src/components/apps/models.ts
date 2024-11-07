@@ -68,6 +68,7 @@ export type Directory = {
     userId: string;
     complexId: string;
     service: string;
+    location: string;
     phone: string;
     hasWhatsApp: boolean;
     whatsAppNumber?: string | null;
