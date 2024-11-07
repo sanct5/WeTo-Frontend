@@ -38,7 +38,7 @@ import {
     AddReaction,
     SellOutlined
 } from '@mui/icons-material';
-import { getReactionIcon, getReactionIconGray } from '../constants';
+import { getReactionIcon, getReactionIconGray, reactionsToSpanish } from '../constants';
 import { getTopReactions } from '../utils';
 
 const AllAds = () => {
@@ -50,6 +50,7 @@ const AllAds = () => {
     const [keyWord, setKeyWord] = useState<string>('');
     const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>({ AnnouncementId: '', AnnouncementUser: '' });
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const [openReactionsDetails, setOpenReactionsDetails] = useState<boolean>(false);
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -224,8 +225,19 @@ const AllAds = () => {
                                             )}
                                         </Box>
                                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                            <Typography variant="body2" component="p" mr={2}>
-                                                {announcement.reactions?.length || 'Se el primero en reaccionar'}
+                                            <Typography
+                                                variant="body2"
+                                                component="p"
+                                                mr={2}
+                                                onClick={() => {
+                                                    (announcement.reactions?.length ?? 0) > 0 &&
+                                                        setOpenReactionsDetails(true);
+                                                    setSelectedAnnouncement({ AnnouncementId: announcement._id, AnnouncementUser: announcement.CreatedBy });
+                                                }}
+                                            >
+                                                <Typography sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}>
+                                                    {announcement.reactions?.length || 'Sé el primero en reaccionar'}
+                                                </Typography>
                                             </Typography>
                                             {getTopReactions(announcement.reactions).map((reaction, index) => (
                                                 <Box key={index} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -286,6 +298,31 @@ const AllAds = () => {
                     </Grid2>
                 )
             )}
+
+            <Dialog open={openReactionsDetails} onClose={() => setOpenReactionsDetails(false)}>
+                <DialogContent>
+                    <Typography variant="h5" component="div" sx={{ mb: 2 }}>
+                        Reacciones
+                    </Typography>
+                    <DialogContentText>
+                        {residentAds.find(announcement => announcement._id === selectedAnnouncement.AnnouncementId)?.reactions?.map((reaction, index) => (
+                            <Box key={index} display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                                <Typography variant="body1" component="span">
+                                    <b>{reaction.userName}</b> {reactionsToSpanish(reaction.type)}
+                                </Typography>
+                                <Typography variant="body1" component="span" sx={{ ml: 6 }}>
+                                    {getReactionIcon(reaction.type)}
+                                </Typography>
+                            </Box>
+                        ))}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenReactionsDetails(false)} color="primary">
+                        Cerrar
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
             <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
                 <DialogContent>

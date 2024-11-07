@@ -1,4 +1,4 @@
-import { Dashboard, Announcement, Groups, Sell, Apartment, QuestionAnswer, Help, NotificationImportant } from '@mui/icons-material';
+import { Dashboard, Announcement, Groups, Sell, Apartment, QuestionAnswer, Help, NotificationImportant, PermContactCalendar } from '@mui/icons-material';
 import { Role } from '../../hooks/users/userSlice';
 import React from 'react';
 
@@ -19,4 +19,5 @@ export const userOptions: NavOptions[] = [
     { text: 'Configuración', icon: <Apartment />, link: '/app/config', role: ['ADMIN'] },
     { text: 'Tel.Emergencia', icon: <NotificationImportant />, link: '/app/numbers', role: ['ADMIN', 'RESIDENT'] },
     { text: 'Reservas', icon: <Apartment />, link: '/app/zone/', role: ['RESIDENT'] },
+    { text: 'Directorio', icon: <PermContactCalendar />, link: '/app/directory', role: ['ADMIN', 'RESIDENT'] },
 ];

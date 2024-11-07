@@ -39,3 +39,20 @@ export const getReactionIconGray = (type: string) => {
             return null;
     }
 };
+
+export const reactionsToSpanish = (reaction: string) => {
+    switch (reaction) {
+        case 'recommend':
+            return 'ha recomendado';
+        case 'celebrate':
+            return 'ha celebrado';
+        case 'support':
+            return 'ha apoyado';
+        case 'love':
+            return 'ha amado';
+        case 'interest':
+            return 'le ha interesado';
+        default:
+            return null;
+    }
+}
