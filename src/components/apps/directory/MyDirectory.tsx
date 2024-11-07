@@ -111,6 +111,7 @@ const MyDirectory = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell align='center'>Servicio</TableCell>
+                                    <TableCell align='center'>Ubicación</TableCell>
                                     <TableCell align='center'>Teléfono</TableCell>
                                     <TableCell align='center'>WhatsApp</TableCell>
                                     <TableCell align="right"></TableCell>
@@ -119,7 +120,7 @@ const MyDirectory = () => {
                             <TableBody>
                                 {services.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={4} align="center">
+                                        <TableCell colSpan={5} align="center">
                                             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                                                 <Help sx={{ mb: 2 }} fontSize='large' color='secondary' />
                                                 <Typography variant="h5" component="p" gutterBottom>
@@ -133,6 +134,9 @@ const MyDirectory = () => {
                                         <TableRow key={service._id}>
                                             <TableCell component="th" scope="row" align='center' sx={{ wordBreak: 'break-word' }}>
                                                 {service.service}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row" align='center' sx={{ wordBreak: 'break-word' }}>
+                                                {service.location}
                                             </TableCell>
                                             <TableCell component="th" scope="row" align='center'>
                                                 {service.phone}

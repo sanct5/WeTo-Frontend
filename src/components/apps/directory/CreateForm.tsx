@@ -16,6 +16,7 @@ const CreateFormDirectory = () => {
         userId: '',
         complexId: '',
         service: '',
+        location: '',
         phone: '',
         hasWhatsApp: false,
         whatsAppNumber: null,
@@ -56,9 +57,9 @@ const CreateFormDirectory = () => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const { service, phone, hasWhatsApp, whatsAppNumber } = formData;
+        const { service, location, phone, hasWhatsApp, whatsAppNumber } = formData;
 
-        if (!service || !phone || (hasWhatsApp && !whatsAppNumber)) {
+        if (!service || !location || !phone || (hasWhatsApp && !whatsAppNumber)) {
             toast.error('Todos los campos son obligatorios');
             return;
         }
@@ -70,6 +71,7 @@ const CreateFormDirectory = () => {
                 userId,
                 complexId,
                 service,
+                location,
                 phone,
                 hasWhatsApp,
                 whatsAppNumber: hasWhatsApp ? (sameAsPhone ? phone : whatsAppNumber) : null,
@@ -123,6 +125,17 @@ const CreateFormDirectory = () => {
                         value={formData.service}
                         onChange={handleChange}
                         slotProps={{ htmlInput: { maxLength: 50 } }}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="location"
+                        label="Ubicación"
+                        name="location"
+                        value={formData.location}
+                        onChange={handleChange}
+                        slotProps={{ htmlInput: { maxLength: 80 } }}
                     />
                     <TextField
                         margin="normal"
