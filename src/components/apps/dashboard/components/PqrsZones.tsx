@@ -145,7 +145,7 @@ const PqrsZones = () => {
                                                     <Typography>Reclamos: {pqrsData[building].Claims}</Typography>
                                                 </Box>
                                                 <Box display="flex" alignItems="center">
-                                                    <Assignment color="primary" />
+                                                    <Assignment color="info" />
                                                     <Typography>Solicitudes: {pqrsData[building].Requests}</Typography>
                                                 </Box>
                                                 <Box display="flex" alignItems="center">
