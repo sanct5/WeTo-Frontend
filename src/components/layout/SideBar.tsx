@@ -23,6 +23,8 @@ import { userOptions } from './NavOptions';
 import { Role } from '../../hooks/users/userSlice';
 import axios from 'axios';
 import { ComplexService } from '../../api/ComplexService';
+import ChatIA from './ChatIA';
+
 
 const drawerWidth = 200;
 
@@ -177,6 +179,11 @@ export default function SideBar() {
                 <Toolbar sx={{ marginBottom: 2 }} />
                 <Outlet />
             </Box>
+            {user.role === "ADMIN" && (
+            <Box sx={{position: 'relative'}}>
+                <ChatIA />
+            </Box>
+            )}
         </Box>
     );
 }
