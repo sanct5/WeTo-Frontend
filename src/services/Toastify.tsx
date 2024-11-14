@@ -16,7 +16,7 @@ const Toastify = () => {
             theme="colored"
             stacked
             closeButton={true}
-            limit={1}
+            limit={5}
             transition={Zoom}
         />
     )
