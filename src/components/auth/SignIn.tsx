@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
 import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, List, ListItem, ListItemText } from '@mui/material';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 interface BeforeInstallPromptEvent extends Event {
     prompt: () => void;
@@ -89,6 +90,14 @@ const SignIn = () => {
 
     //Si el usuario ya está logueado y marcó la casilla de recordar previamente, se redirige al dashboard
     useEffect(() => {
+        const performHealthCheck = async () => {
+            try {
+                await axios.get(import.meta.env.VITE_WETO_HEALTH_CHECK);
+            } catch (error) {
+                console.error('Health check failed', error);
+            }
+        };
+
         const loggedUser = JSON.parse(localStorage.getItem('user') as string);
 
         if (loggedUser) {
@@ -101,6 +110,8 @@ const SignIn = () => {
             } else {
                 navigate('/app/dashboard');
             }
+        } else {
+            performHealthCheck();
         }
     }, [isLogged]);
 
