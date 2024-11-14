@@ -7,8 +7,8 @@ import {
     CardContent,
     Avatar,
     Grid2,
+    useTheme,
 } from '@mui/material';
-import { red, orange, yellow, green } from '@mui/material/colors';
 import { ReportProblem, Error, Assignment, Lightbulb } from '@mui/icons-material';
 import axios from 'axios';
 import { pqrsService } from '../../../../api/Pqrs';
@@ -23,6 +23,7 @@ const PqrsZones = () => {
 
     const user = useSelector((state: { user: UserState }) => state.user);
     const navigate = useNavigate();
+    const theme = useTheme();
 
     useEffect(() => {
         if (!user.idComplex) return;
@@ -78,10 +79,17 @@ const PqrsZones = () => {
     }, [user.idComplex]);
 
     const getBackgroundColor = (totalPqrs: number) => {
-        if (totalPqrs > 20) return red[100];
-        if (totalPqrs > 10) return orange[100];
-        if (totalPqrs > 5) return yellow[100];
-        return green[100];
+        if (totalPqrs >= 20) return theme.palette.primary.light;
+        if (totalPqrs >= 10) return theme.palette.primary.main;
+        if (totalPqrs >= 5) return theme.palette.secondary.main;
+        return theme.palette.secondary.light;
+    };
+
+    const getAvatarColor = (backgroundColor: string) => {
+        if (backgroundColor === theme.palette.primary.light || backgroundColor === theme.palette.primary.main) {
+            return theme.palette.secondary.main;
+        }
+        return theme.palette.primary.main;
     };
 
     return (
@@ -104,10 +112,11 @@ const PqrsZones = () => {
                     <Grid2 container spacing={2} justifyContent="center">
                         {Object.keys(pqrsData).map((building) => {
                             const totalPqrs = pqrsData[building].Complaints + pqrsData[building].Claims + pqrsData[building].Requests + pqrsData[building].Suggestions;
+                            const backgroundColor = getBackgroundColor(totalPqrs);
                             return (
                                 <Grid2 size={{ xs: 12, sm: 6 }} key={building}>
                                     <Card onClick={() => navigate('/app/cases')} sx={{
-                                        bgcolor: getBackgroundColor(totalPqrs),
+                                        bgcolor: backgroundColor,
                                         borderRadius: '8px',
                                         boxShadow: 3,
                                         transition: 'transform 0.3s',
@@ -118,10 +127,10 @@ const PqrsZones = () => {
                                     }}>
                                         <CardContent >
                                             <Box display="flex" alignItems="center" mb={3}>
-                                                <Avatar sx={{ bgcolor: red[500] }}>
+                                                <Avatar sx={{ bgcolor: getAvatarColor(backgroundColor) }}>
                                                     {building}
                                                 </Avatar>
-                                                <Typography variant="h6" color="secondary" sx={{ marginLeft: 2 }}>
+                                                <Typography variant="h6" color="white" sx={{ marginLeft: 2 }}>
                                                     {`Edificio ${building}`}
                                                 </Typography>
                                             </Box>
@@ -136,7 +145,7 @@ const PqrsZones = () => {
                                                     <Typography>Reclamos: {pqrsData[building].Claims}</Typography>
                                                 </Box>
                                                 <Box display="flex" alignItems="center">
-                                                    <Assignment color="primary" />
+                                                    <Assignment color="info" />
                                                     <Typography>Solicitudes: {pqrsData[building].Requests}</Typography>
                                                 </Box>
                                                 <Box display="flex" alignItems="center">

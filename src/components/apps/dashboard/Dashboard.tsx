@@ -5,6 +5,8 @@ import LatestAnnouncementCard from './components/LatestAnnouncement';
 import { Box, Grid2 } from '@mui/material';
 import AnnouncementPieChart from './components/PieChart';
 import PqrsZones from './components/PqrsZones';
+import PetsCard from './components/PetsCard';
+import ServicesCard from './components/ServicesCard';
 
 const Dashboard = () => {
     return (
@@ -17,10 +19,10 @@ const Dashboard = () => {
                     <PqrsCard />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
-                    <ResidentsCard />
+                    <PetsCard />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
-                    <PqrsCard />
+                    <ServicesCard />
                 </Grid2>
             </Grid2>
 

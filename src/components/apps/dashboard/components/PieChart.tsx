@@ -82,24 +82,37 @@ const AnnouncementPieChart = () => {
                                 Anuncios por categoría
                             </Typography>
                         </Box>
-                        <Box sx={{ mt: 2 }}>
-                            <PieChart
+                        <Box sx={{ mt: 5 }}>
+                        <PieChart
                                 series={[
                                     {
+                                        arcLabel: (item) => `${((item.value / totalAnnouncements) * 100).toFixed(2)}%`,
+                                        arcLabelMinAngle: 35,
+                                        arcLabelRadius: '60%',
                                         data: pieData.map((item, index) => ({
                                             value: item.value,
                                             color: colors[index],
                                         })),
-                                        outerRadius: 100,
                                     },
                                 ]}
+                                margin={{ left: 0, right: 0, top: 0, bottom: 100 }}
                                 height={300}
                                 width={300}
+                                slotProps={{
+                                    legend: {
+                                        direction: 'row',
+                                        position: { vertical: 'bottom', horizontal: 'middle' },
+                                        padding: { top: 0, right: 0, bottom: 0, left: 0 },
+                                        labelStyle: { fontSize: 12 }
+                                    },
+                                    loadingOverlay: { message: 'Cargando servicios...' },
+                                    noDataOverlay: { message: 'No hay datos' }
+                                }}
                             />
                         </Box>
-                        <Box sx={{ mt: 2, width: '100%' }}>
+                        <Box sx={{ width: '100%' }}>
                             {pieData.map((item, index) => (
-                                <Box key={index} sx={{ mb: 1 }}>
+                                <Box key={index} >
                                     <Typography variant="body2" color="textSecondary">
                                         {item.label}: {item.value} ({((item.value / totalAnnouncements) * 100).toFixed(2)}%)
                                     </Typography>

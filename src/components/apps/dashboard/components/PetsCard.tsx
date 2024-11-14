@@ -1,5 +1,5 @@
 import { Card, Typography, CircularProgress, Alert, AlertTitle } from '@mui/material';
-import { People, Warning } from '@mui/icons-material';
+import { Pets, Warning } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -7,23 +7,23 @@ import axios from 'axios';
 import { UserService } from '../../../../api/UserService';
 import { UserState } from '../../../../hooks/users/userSlice';
 
-const ResidentsCard = () => {
-    const [residentesTotal, setResidentesTotal] = useState(0);
-    const [isLoadingResidents, setIsLoadingResidents] = useState(false);
+const PetsCard = () => {
+    const [totalPets, setTotalPets] = useState(0);
+    const [isLoadingPets, setIsLoadingPets] = useState(false);
     const user = useSelector((state: { user: UserState }) => state.user);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (!user.idComplex) return;
-        const fetchResidents = async () => {
-            setIsLoadingResidents(true);
+        const fetchPets = async () => {
+            setIsLoadingPets(true);
             const residentsResponse = await axios.get(`${UserService.baseUrl}${UserService.endpoints.GetUsersByComplex}/${user.idComplex}`);
             const residents = residentsResponse.data;
-            const filteredResidents = residents.filter((resident: any) => resident.role !== 'ADMIN');
-            setResidentesTotal(filteredResidents.length);
-            setIsLoadingResidents(false);
+            const petsCount = residents.reduce((total: number, resident: any) => total + (resident.pets ? resident.pets.length : 0), 0);
+            setTotalPets(petsCount);
+            setIsLoadingPets(false);
         };
-        fetchResidents();
+        fetchPets();
     }, [user.idComplex]);
 
     return (
@@ -37,12 +37,12 @@ const ResidentsCard = () => {
             boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
             cursor: 'pointer',
         }}>
-            <People color="primary" style={{ fontSize: '50px' }} />
-            <Typography variant="h6" color="textSecondary">Residentes Totales</Typography>
+            <Pets color="primary" style={{ fontSize: '50px' }} />
+            <Typography variant="h6" color="textSecondary">Total de Mascotas</Typography>
             <Typography variant="h4">
-                {isLoadingResidents ? <CircularProgress /> : residentesTotal > 0 ? residentesTotal : (
+                {isLoadingPets ? <CircularProgress /> : totalPets > 0 ? totalPets : (
                     <Alert severity="warning" icon={<Warning />} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <AlertTitle>No hay residentes</AlertTitle>
+                        <AlertTitle>No hay mascotas</AlertTitle>
                     </Alert>
                 )}
             </Typography>
@@ -50,4 +50,4 @@ const ResidentsCard = () => {
     );
 };
 
-export default ResidentsCard;
+export default PetsCard;
